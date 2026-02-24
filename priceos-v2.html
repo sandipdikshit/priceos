@@ -1,0 +1,3348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PriceOS — Autonomous Pricing Intelligence for FMCG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #000;
+  --bg-2: #0a0a0a;
+  --bg-3: #111;
+  --bg-4: #161616;
+  --surface: rgba(255,255,255,0.04);
+  --surface-hover: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --border-bright: rgba(255,255,255,0.15);
+  --text: #f5f5f7;
+  --text-muted: rgba(245,245,247,0.55);
+  --text-dim: rgba(245,245,247,0.28);
+  --accent: #ff2d78;
+  --accent-2: #ff6b9d;
+  --accent-glow: rgba(255,45,120,0.2);
+  --green: #30d158;
+  --gold: #ffd60a;
+  --blue: #0a84ff;
+  --purple: #bf5af2;
+  --radius: 20px;
+  --radius-sm: 12px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:9999;
+  opacity:0.5;
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 48px;
+  height:62px;
+  background:rgba(0,0,0,0.78);
+  backdrop-filter:saturate(180%) blur(24px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-logo {
+  font-family:'DM Serif Display',serif;
+  font-size:20px;
+  letter-spacing:-0.5px;
+  color:var(--text);
+  text-decoration:none;
+  flex-shrink:0;
+}
+.nav-logo span { color:var(--accent); }
+
+.nav-links {
+  display:flex;
+  gap:28px;
+  list-style:none;
+}
+
+.nav-links a {
+  color:var(--text-muted);
+  text-decoration:none;
+  font-size:12.5px;
+  font-weight:500;
+  letter-spacing:0.2px;
+  transition:color 0.2s;
+  white-space:nowrap;
+}
+.nav-links a:hover, .nav-links a.active { color:var(--text); }
+
+.nav-right { display:flex; gap:10px; align-items:center; }
+
+.nav-cta {
+  background:var(--accent);
+  color:white;
+  border:none;
+  padding:8px 18px;
+  border-radius:980px;
+  font-family:'Syne',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  cursor:pointer;
+  transition:opacity 0.2s,transform 0.15s;
+}
+.nav-cta:hover { opacity:0.85; transform:scale(0.98); }
+
+.nav-pill-live {
+  display:flex; align-items:center; gap:6px;
+  border:1px solid rgba(48,209,88,0.3);
+  border-radius:980px;
+  padding:5px 12px;
+  font-size:11px;
+  font-weight:600;
+  color:var(--green);
+  letter-spacing:0.5px;
+}
+.nav-pill-live .dot {
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 8px var(--green);
+  animation:pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── SECTIONS ── */
+section { display:none; }
+section.active { display:block; }
+
+/* ── HERO ── */
+#hero {
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:120px 48px 80px;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero-glow {
+  position:absolute;
+  width:900px; height:900px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,45,120,0.10) 0%,transparent 70%);
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  transition:transform 0.1s ease-out;
+}
+
+.hero-tag {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--border-bright);
+  border-radius:980px;
+  padding:6px 16px;
+  font-size:11.5px;
+  font-weight:600;
+  color:var(--text-muted);
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  margin-bottom:40px;
+  animation:fadeUp 0.8s ease forwards;
+}
+
+.hero-tag .dot {
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 8px var(--green);
+  animation:pulse-dot 2s ease-in-out infinite;
+}
+
+h1.hero-title {
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(52px,7.5vw,92px);
+  line-height:1.0;
+  letter-spacing:-2px;
+  color:var(--text);
+  max-width:920px;
+  animation:fadeUp 0.8s 0.1s ease forwards;
+  opacity:0;
+}
+h1.hero-title em { font-style:italic; color:var(--accent); }
+
+.hero-sub {
+  margin-top:28px;
+  font-size:18px;
+  color:var(--text-muted);
+  max-width:560px;
+  line-height:1.65;
+  font-weight:400;
+  animation:fadeUp 0.8s 0.2s ease forwards;
+  opacity:0;
+}
+
+.hero-actions {
+  margin-top:48px;
+  display:flex;
+  gap:16px;
+  align-items:center;
+  animation:fadeUp 0.8s 0.3s ease forwards;
+  opacity:0;
+}
+
+.btn-primary {
+  background:var(--accent);
+  color:white;
+  padding:15px 36px;
+  border-radius:980px;
+  font-family:'Syne',sans-serif;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  border:none;
+  transition:all 0.2s;
+  letter-spacing:0.2px;
+}
+.btn-primary:hover { opacity:0.85; transform:scale(0.98); }
+
+.btn-ghost {
+  background:transparent;
+  color:var(--text-muted);
+  padding:15px 28px;
+  border-radius:980px;
+  font-family:'Syne',sans-serif;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  border:1px solid var(--border-bright);
+  transition:all 0.2s;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.btn-ghost:hover { color:var(--text); border-color:rgba(255,255,255,0.3); }
+
+.hero-trust {
+  margin-top:60px;
+  animation:fadeUp 0.8s 0.35s ease forwards;
+  opacity:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+}
+
+.hero-trust-label {
+  font-size:11px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--text-dim);
+}
+
+.hero-trust-logos {
+  display:flex;
+  gap:32px;
+  align-items:center;
+}
+
+.trust-logo {
+  font-family:'DM Serif Display',serif;
+  font-size:15px;
+  color:var(--text-dim);
+  letter-spacing:1px;
+  opacity:0.6;
+  transition:opacity 0.2s;
+}
+.trust-logo:hover { opacity:1; }
+
+.hero-stats {
+  margin-top:80px;
+  display:flex;
+  gap:72px;
+  animation:fadeUp 0.8s 0.4s ease forwards;
+  opacity:0;
+}
+
+.stat { text-align:center; }
+.stat-num {
+  font-family:'DM Serif Display',serif;
+  font-size:46px;
+  line-height:1;
+  color:var(--text);
+}
+.stat-num span { color:var(--accent); }
+.stat-label {
+  font-size:11.5px;
+  color:var(--text-dim);
+  margin-top:8px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.stat-source {
+  font-size:10px;
+  color:var(--text-dim);
+  margin-top:4px;
+  opacity:0.6;
+  font-family:'DM Mono',monospace;
+}
+.stat-divider {
+  width:1px;
+  background:var(--border);
+  align-self:stretch;
+}
+
+.scroll-hint {
+  position:absolute;
+  bottom:36px; left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  opacity:0.25;
+}
+.scroll-hint span { font-size:10px; letter-spacing:2.5px; text-transform:uppercase; }
+.scroll-arrow {
+  width:16px; height:24px;
+  border:1px solid var(--text);
+  border-radius:8px;
+  position:relative;
+}
+.scroll-arrow::after {
+  content:'';
+  position:absolute;
+  width:3px; height:6px;
+  background:var(--text);
+  border-radius:2px;
+  top:4px;
+  left:50%;
+  transform:translateX(-50%);
+  animation:scroll-dot 1.5s ease-in-out infinite;
+}
+@keyframes scroll-dot { 0%{top:4px;opacity:1} 100%{top:12px;opacity:0} }
+
+/* ── SHARED PAGE STYLES ── */
+.page-section { min-height:100vh; padding:120px 48px 100px; }
+
+.page-header {
+  max-width:1120px;
+  margin:0 auto 72px;
+}
+
+.eyebrow {
+  font-size:11.5px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:20px;
+}
+
+h2.section-title {
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(34px,4.5vw,60px);
+  line-height:1.1;
+  letter-spacing:-1.5px;
+  max-width:720px;
+}
+
+.section-sub {
+  margin-top:20px;
+  font-size:17px;
+  color:var(--text-muted);
+  max-width:540px;
+  line-height:1.65;
+}
+
+/* ── TRACTION BANNER ── */
+.traction-banner {
+  max-width:1120px;
+  margin:0 auto 72px;
+  background:rgba(48,209,88,0.05);
+  border:1px solid rgba(48,209,88,0.2);
+  border-radius:var(--radius);
+  padding:28px 40px;
+  display:flex;
+  align-items:center;
+  gap:40px;
+}
+.traction-icon { font-size:28px; flex-shrink:0; }
+.traction-text p { font-size:15px; color:var(--text-muted); line-height:1.6; }
+.traction-text strong { color:var(--text); }
+.traction-meta {
+  flex-shrink:0;
+  text-align:right;
+}
+.traction-meta-val {
+  font-family:'DM Serif Display',serif;
+  font-size:32px;
+  color:var(--green);
+}
+.traction-meta-label {
+  font-size:11px;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-top:2px;
+}
+
+/* ── EVALUATION ── */
+.verdict-grid {
+  max-width:1120px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2px;
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border);
+}
+
+.verdict-card {
+  background:var(--bg-3);
+  padding:48px;
+  position:relative;
+  overflow:hidden;
+}
+.verdict-card.stale { border-right:1px solid var(--border); }
+.verdict-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+}
+.verdict-card.stale::before { background:linear-gradient(90deg,#ffd60a,transparent); }
+.verdict-card.invest::before { background:linear-gradient(90deg,var(--accent),var(--accent-2),transparent); }
+
+.verdict-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 14px;
+  border-radius:980px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-bottom:28px;
+}
+.badge-warn { background:rgba(255,214,10,0.12); color:var(--gold); border:1px solid rgba(255,214,10,0.3); }
+.badge-go { background:rgba(255,45,120,0.12); color:var(--accent); border:1px solid rgba(255,45,120,0.3); }
+
+.verdict-title {
+  font-family:'DM Serif Display',serif;
+  font-size:26px;
+  margin-bottom:16px;
+  line-height:1.2;
+}
+
+.verdict-text {
+  font-size:14.5px;
+  color:var(--text-muted);
+  line-height:1.7;
+  margin-bottom:28px;
+}
+
+.verdict-list { list-style:none; display:flex; flex-direction:column; gap:12px; }
+.verdict-list li {
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  font-size:13.5px;
+  color:var(--text-muted);
+  line-height:1.5;
+}
+.verdict-list li .vicon {
+  flex-shrink:0;
+  width:20px; height:20px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  margin-top:1px;
+}
+.vicon-warn { background:rgba(255,214,10,0.15); color:var(--gold); }
+.vicon-ok { background:rgba(48,209,88,0.15); color:var(--green); }
+
+.score-card {
+  max-width:1120px;
+  margin:40px auto 0;
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:48px;
+  display:flex;
+  align-items:center;
+  gap:48px;
+}
+.score-num {
+  font-family:'DM Serif Display',serif;
+  font-size:80px;
+  line-height:1;
+  color:var(--accent);
+  flex-shrink:0;
+}
+.score-num sub { font-size:40px; }
+.score-title { font-size:20px; font-weight:700; margin-bottom:12px; }
+.score-text { font-size:14.5px; color:var(--text-muted); line-height:1.7; max-width:620px; }
+.score-bars {
+  display:flex;
+  gap:20px;
+  margin-top:24px;
+  flex-wrap:wrap;
+}
+.score-bar-item { display:flex; flex-direction:column; gap:6px; min-width:100px; }
+.score-bar-label { font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; }
+.score-bar-track {
+  height:4px;
+  background:rgba(255,255,255,0.07);
+  border-radius:2px;
+  overflow:hidden;
+}
+.score-bar-fill {
+  height:100%;
+  border-radius:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  transition:width 1s ease;
+}
+
+/* ── DIFFERENTIATION TABLE ── */
+.table-wrap {
+  max-width:1120px;
+  margin:0 auto;
+  overflow:hidden;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+}
+
+.table-header {
+  display:grid;
+  grid-template-columns:1.3fr 1fr 1fr 1.6fr 1fr;
+  background:var(--bg-3);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+}
+.th {
+  padding:18px 16px;
+  font-size:10.5px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  font-weight:600;
+}
+.th:first-child { padding-left:8px; }
+
+.table-row {
+  display:grid;
+  grid-template-columns:1.3fr 1fr 1fr 1.6fr 1fr;
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  transition:background 0.2s;
+  background:var(--bg-2);
+}
+.table-row:last-child { border-bottom:none; }
+.table-row:hover { background:var(--surface-hover); }
+
+.td {
+  padding:18px 16px;
+  font-size:13.5px;
+  color:var(--text-muted);
+  display:flex;
+  align-items:center;
+  line-height:1.4;
+}
+.td:first-child { color:var(--text); font-weight:600; padding-left:8px; }
+.td-new { color:var(--accent-2) !important; font-weight:500; }
+
+.tag-stale {
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:980px;
+  font-size:10px; font-weight:700;
+  letter-spacing:0.8px;
+  text-transform:uppercase;
+  background:rgba(255,214,10,0.1);
+  color:#ffd60a;
+  border:1px solid rgba(255,214,10,0.2);
+}
+.tag-edge {
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:980px;
+  font-size:10px; font-weight:700;
+  letter-spacing:0.8px;
+  text-transform:uppercase;
+  background:rgba(255,45,120,0.1);
+  color:var(--accent);
+  border:1px solid rgba(255,45,120,0.2);
+}
+
+/* ── ARCHITECTURE ── */
+.arch-grid {
+  max-width:1120px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:2px;
+}
+
+.arch-card {
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:2px;
+  padding:40px 36px;
+  position:relative;
+  overflow:hidden;
+  transition:transform 0.3s ease, background 0.2s;
+  cursor:default;
+}
+.arch-card:first-child { border-radius:var(--radius) 2px 2px 2px; }
+.arch-card:nth-child(3) { border-radius:2px var(--radius) 2px 2px; }
+.arch-card:nth-child(4) { border-radius:2px 2px 2px var(--radius); }
+.arch-card:last-child { border-radius:2px 2px var(--radius) 2px; }
+.arch-card:hover { background:var(--surface-hover); transform:translateY(-4px); }
+
+.arch-moat-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(255,45,120,0.08);
+  border:1px solid rgba(255,45,120,0.2);
+  border-radius:980px;
+  padding:4px 10px;
+  font-size:10px; font-weight:700;
+  color:var(--accent);
+  letter-spacing:0.5px;
+  margin-bottom:16px;
+}
+
+.arch-icon {
+  width:48px; height:48px;
+  border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+  margin-bottom:20px;
+}
+.arch-num {
+  font-family:'DM Mono',monospace;
+  font-size:10.5px;
+  color:var(--text-dim);
+  letter-spacing:1px;
+  margin-bottom:10px;
+}
+.arch-title {
+  font-size:18px; font-weight:700;
+  margin-bottom:10px;
+  color:var(--text);
+  line-height:1.2;
+}
+.arch-desc {
+  font-size:13.5px;
+  color:var(--text-muted);
+  line-height:1.65;
+}
+.arch-ip {
+  margin-top:16px;
+  padding:12px 14px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-size:12px;
+  color:var(--text-dim);
+  line-height:1.5;
+}
+.arch-ip strong { color:var(--text-muted); display:block; margin-bottom:4px; font-size:11px; text-transform:uppercase; letter-spacing:0.8px; }
+.arch-tech {
+  margin-top:16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.tech-pill {
+  padding:4px 10px;
+  border-radius:980px;
+  font-size:10px; font-weight:600;
+  letter-spacing:0.5px;
+  background:var(--surface);
+  color:var(--text-dim);
+  border:1px solid var(--border);
+  font-family:'DM Mono',monospace;
+}
+
+/* ── TEAM ── */
+.team-grid {
+  max-width:1120px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+}
+.team-card {
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:36px;
+  transition:border-color 0.2s, transform 0.3s;
+}
+.team-card:hover { border-color:var(--border-bright); transform:translateY(-3px); }
+
+.team-avatar {
+  width:60px; height:60px;
+  border-radius:50%;
+  margin-bottom:20px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px;
+  font-family:'DM Serif Display',serif;
+  font-weight:700;
+  color:white;
+  background:linear-gradient(135deg,var(--accent),#c0106a);
+  flex-shrink:0;
+}
+
+.team-name {
+  font-size:19px; font-weight:700;
+  margin-bottom:4px;
+}
+.team-role {
+  font-size:13px;
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:16px;
+}
+.team-bio {
+  font-size:13.5px;
+  color:var(--text-muted);
+  line-height:1.65;
+  margin-bottom:20px;
+}
+.team-xp {
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.xp-chip {
+  padding:4px 10px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:980px;
+  font-size:11px;
+  color:var(--text-dim);
+}
+
+.advisors-row {
+  max-width:1120px;
+  margin:48px auto 0;
+  padding-top:40px;
+  border-top:1px solid var(--border);
+}
+.advisors-label {
+  font-size:11px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  margin-bottom:24px;
+}
+.advisors-grid {
+  display:flex;
+  gap:24px;
+  flex-wrap:wrap;
+}
+.advisor-chip {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:16px 20px;
+  flex:1;
+  min-width:220px;
+}
+.advisor-avatar {
+  width:38px; height:38px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.07);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px;
+  flex-shrink:0;
+}
+.advisor-name { font-size:14px; font-weight:700; }
+.advisor-role { font-size:12px; color:var(--text-dim); margin-top:2px; }
+
+/* ── TRACTION SECTION ── */
+.traction-pilots {
+  max-width:1120px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  margin-bottom:40px;
+}
+
+.pilot-card {
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:36px;
+  position:relative;
+  overflow:hidden;
+  transition:border-color 0.2s;
+}
+.pilot-card:hover { border-color:var(--border-bright); }
+.pilot-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent);
+}
+
+.pilot-tag {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 12px;
+  border-radius:980px;
+  font-size:10.5px; font-weight:700;
+  letter-spacing:0.8px;
+  text-transform:uppercase;
+  margin-bottom:20px;
+}
+.pilot-active { background:rgba(48,209,88,0.1); color:var(--green); border:1px solid rgba(48,209,88,0.25); }
+.pilot-completed { background:rgba(10,132,255,0.1); color:var(--blue); border:1px solid rgba(10,132,255,0.25); }
+
+.pilot-company { font-size:22px; font-weight:700; margin-bottom:4px; }
+.pilot-desc { font-size:13.5px; color:var(--text-muted); line-height:1.6; margin-bottom:24px; }
+
+.pilot-results {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+.pilot-result-item { }
+.pilot-result-val {
+  font-family:'DM Serif Display',serif;
+  font-size:30px;
+  color:var(--text);
+}
+.pilot-result-val.green { color:var(--green); }
+.pilot-result-val.accent { color:var(--accent); }
+.pilot-result-label { font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.8px; margin-top:2px; }
+
+.traction-metrics {
+  max-width:1120px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:2px;
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border);
+}
+.traction-metric {
+  background:var(--bg-3);
+  padding:36px;
+  border-right:1px solid var(--border);
+}
+.traction-metric:last-child { border-right:none; }
+.tm-val {
+  font-family:'DM Serif Display',serif;
+  font-size:42px;
+  color:var(--text);
+  line-height:1;
+  margin-bottom:6px;
+}
+.tm-val span { color:var(--accent); }
+.tm-label { font-size:12px; color:var(--text-muted); line-height:1.5; }
+.tm-note { font-size:10.5px; color:var(--text-dim); margin-top:8px; font-family:'DM Mono',monospace; }
+
+/* ── PRICING ── */
+.pricing-grid {
+  max-width:1120px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr 1.15fr 1fr;
+  gap:2px;
+  align-items:start;
+}
+
+.pricing-card {
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:2px;
+  padding:40px 36px;
+  transition:transform 0.2s;
+  position:relative;
+}
+.pricing-card:first-child { border-radius:var(--radius) 2px 2px 2px; }
+.pricing-card:last-child { border-radius:2px var(--radius) 2px 2px; }
+.pricing-card.featured {
+  background:var(--bg-4);
+  border-color:var(--border-bright);
+  transform:scale(1.02);
+  z-index:1;
+}
+.pricing-card:hover:not(.featured) { transform:translateY(-3px); }
+
+.pricing-tier { font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); margin-bottom:16px; }
+.pricing-price {
+  font-family:'DM Serif Display',serif;
+  font-size:52px;
+  line-height:1;
+  color:var(--text);
+  margin-bottom:6px;
+}
+.pricing-price span { font-size:20px; }
+.pricing-period { font-size:13px; color:var(--text-dim); margin-bottom:24px; }
+.pricing-desc { font-size:13.5px; color:var(--text-muted); line-height:1.6; margin-bottom:28px; padding-bottom:28px; border-bottom:1px solid var(--border); }
+
+.pricing-features { list-style:none; display:flex; flex-direction:column; gap:13px; margin-bottom:32px; }
+.pricing-features li {
+  display:flex; align-items:flex-start; gap:10px;
+  font-size:13.5px; color:var(--text-muted);
+}
+.pf-check { color:var(--green); flex-shrink:0; font-size:14px; margin-top:1px; }
+.pf-x { color:var(--text-dim); flex-shrink:0; font-size:14px; margin-top:1px; }
+
+.pricing-cta {
+  width:100%;
+  padding:14px;
+  border-radius:var(--radius-sm);
+  font-family:'Syne',sans-serif;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all 0.2s;
+  text-align:center;
+}
+.cta-featured { background:var(--accent); color:white; border:none; }
+.cta-featured:hover { opacity:0.85; }
+.cta-outline { background:transparent; color:var(--text-muted); border:1px solid var(--border-bright); }
+.cta-outline:hover { color:var(--text); border-color:rgba(255,255,255,0.3); }
+
+.pricing-popular {
+  position:absolute;
+  top:-1px; left:50%; transform:translateX(-50%);
+  background:var(--accent);
+  color:white;
+  font-size:10px; font-weight:700;
+  letter-spacing:1.5px; text-transform:uppercase;
+  padding:5px 14px;
+  border-radius:0 0 10px 10px;
+}
+
+.pricing-note {
+  max-width:1120px;
+  margin:24px auto 0;
+  text-align:center;
+  font-size:13px;
+  color:var(--text-dim);
+  line-height:1.6;
+}
+.pricing-note a { color:var(--text-muted); }
+
+/* ── INVESTOR ── */
+.investor-hero {
+  max-width:1120px;
+  margin:0 auto 60px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:80px;
+  align-items:center;
+}
+
+.investor-block { margin-bottom:36px; }
+.investor-block-label { font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:12px; }
+.investor-block p { font-size:16px; color:var(--text-muted); line-height:1.75; }
+
+.investor-metrics {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2px;
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border);
+}
+.metric-card {
+  background:var(--bg-3);
+  padding:28px 32px;
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  transition:background 0.2s;
+}
+.metric-card:hover { background:var(--surface-hover); }
+.metric-val {
+  font-family:'DM Serif Display',serif;
+  font-size:36px;
+  line-height:1;
+  color:var(--text);
+  margin-bottom:6px;
+}
+.metric-val span { color:var(--accent); }
+.metric-label { font-size:12.5px; color:var(--text-muted); line-height:1.4; }
+.metric-note { font-size:10.5px; color:var(--text-dim); margin-top:4px; font-family:'DM Mono',monospace; }
+
+.unit-economics {
+  max-width:1120px;
+  margin:0 auto 48px;
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:48px;
+}
+.ue-title { font-size:18px; font-weight:700; margin-bottom:32px; }
+.ue-grid {
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:0;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  overflow:hidden;
+}
+.ue-item {
+  padding:24px;
+  border-right:1px solid var(--border);
+  transition:background 0.2s;
+}
+.ue-item:last-child { border-right:none; }
+.ue-item:hover { background:var(--surface); }
+.ue-label { font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+.ue-val {
+  font-family:'DM Serif Display',serif;
+  font-size:30px;
+  color:var(--text);
+  line-height:1;
+  margin-bottom:6px;
+}
+.ue-val.green { color:var(--green); }
+.ue-note { font-size:11.5px; color:var(--text-muted); line-height:1.4; }
+
+.milestone-track {
+  max-width:1120px;
+  margin:0 auto 48px;
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:48px;
+}
+.mt-title { font-size:18px; font-weight:700; margin-bottom:32px; }
+.milestone-steps {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  position:relative;
+}
+.milestone-steps::before {
+  content:'';
+  position:absolute;
+  top:20px; left:10%;
+  width:80%;
+  height:1px;
+  background:var(--border);
+}
+.ms-step { text-align:center; position:relative; z-index:1; }
+.ms-dot {
+  width:40px; height:40px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 16px;
+  font-size:14px; font-weight:700;
+}
+.ms-dot.done { background:var(--accent); color:white; }
+.ms-dot.active {
+  background:rgba(255,45,120,0.15);
+  border:2px solid var(--accent);
+  color:var(--accent);
+  box-shadow:0 0 20px rgba(255,45,120,0.2);
+}
+.ms-dot.future { background:var(--bg-2); border:1px solid var(--border); color:var(--text-dim); }
+.ms-period { font-family:'DM Mono',monospace; font-size:10.5px; color:var(--accent); margin-bottom:8px; }
+.ms-label { font-size:13.5px; font-weight:600; margin-bottom:6px; }
+.ms-desc { font-size:12px; color:var(--text-dim); line-height:1.5; padding:0 8px; }
+
+.raise-strip {
+  max-width:1120px;
+  margin:0 auto;
+  background:linear-gradient(135deg,var(--accent) 0%,#c0106a 100%);
+  border-radius:var(--radius);
+  padding:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:40px;
+  position:relative;
+  overflow:hidden;
+}
+.raise-strip::before {
+  content:'';
+  position:absolute;
+  width:400px; height:400px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.06);
+  right:-100px; top:-100px;
+}
+.raise-text h3 {
+  font-family:'DM Serif Display',serif;
+  font-size:36px;
+  margin-bottom:12px;
+  line-height:1.1;
+}
+.raise-text p { font-size:16px; opacity:0.85; max-width:460px; line-height:1.6; }
+.raise-amount { flex-shrink:0; text-align:right; }
+.raise-num {
+  font-family:'DM Serif Display',serif;
+  font-size:64px;
+  line-height:1;
+  white-space:nowrap;
+}
+.raise-note { font-size:11.5px; opacity:0.6; letter-spacing:1.5px; text-transform:uppercase; margin-top:4px; }
+.raise-terms {
+  margin-top:20px;
+  display:flex;
+  gap:16px;
+}
+.raise-term {
+  display:flex; flex-direction:column;
+}
+.raise-term-val { font-size:15px; font-weight:700; }
+.raise-term-label { font-size:10.5px; opacity:0.6; text-transform:uppercase; letter-spacing:1px; }
+
+/* ── COMPLIANCE ── */
+.compliance-strip {
+  max-width:1120px;
+  margin:0 auto 60px;
+  background:rgba(10,132,255,0.04);
+  border:1px solid rgba(10,132,255,0.2);
+  border-radius:var(--radius);
+  padding:32px 40px;
+  display:flex;
+  align-items:flex-start;
+  gap:24px;
+}
+.compliance-icon { font-size:32px; flex-shrink:0; margin-top:4px; }
+.compliance-content h4 { font-size:17px; font-weight:700; margin-bottom:10px; }
+.compliance-content p { font-size:14px; color:var(--text-muted); line-height:1.65; }
+.compliance-badges { display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; }
+.compliance-badge {
+  padding:5px 12px;
+  border-radius:980px;
+  font-size:10.5px; font-weight:700;
+  letter-spacing:0.8px;
+  text-transform:uppercase;
+  background:rgba(10,132,255,0.1);
+  color:var(--blue);
+  border:1px solid rgba(10,132,255,0.2);
+}
+
+/* ── DEMO ── */
+#demo { min-height:100vh; padding:100px 48px 80px; }
+
+.demo-shell {
+  max-width:1300px;
+  margin:0 auto;
+  border-radius:20px;
+  border:1px solid var(--border-bright);
+  overflow:hidden;
+  background:var(--bg-3);
+  box-shadow:0 60px 120px rgba(0,0,0,0.8),0 0 0 1px var(--border);
+}
+
+.demo-titlebar {
+  background:rgba(255,255,255,0.04);
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  border-bottom:1px solid var(--border);
+}
+.dots { display:flex; gap:6px; }
+.dot { width:11px; height:11px; border-radius:50%; }
+.dot-r { background:#ff5f57; }
+.dot-y { background:#ffbd2e; }
+.dot-g { background:#28c940; }
+.demo-url {
+  flex:1;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:7px 16px;
+  font-family:'DM Mono',monospace;
+  font-size:11.5px;
+  color:var(--text-muted);
+  text-align:center;
+}
+
+.demo-body {
+  display:grid;
+  grid-template-columns:220px 1fr;
+  min-height:680px;
+}
+
+.demo-sidebar {
+  border-right:1px solid var(--border);
+  padding:20px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  background:rgba(0,0,0,0.3);
+}
+.sidebar-section {
+  font-size:9.5px;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  padding:12px 12px 6px;
+  margin-top:6px;
+}
+.sidebar-item {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 12px;
+  border-radius:10px;
+  font-size:12.5px;
+  color:var(--text-muted);
+  cursor:pointer;
+  transition:all 0.15s;
+}
+.sidebar-item:hover { background:var(--surface); color:var(--text); }
+.sidebar-item.active { color:var(--accent); background:rgba(255,45,120,0.08); }
+.sidebar-icon { font-size:14px; }
+
+.demo-main { padding:28px 32px; display:flex; flex-direction:column; gap:20px; overflow:hidden; }
+
+.demo-view { display:none; flex-direction:column; gap:20px; }
+.demo-view.active { display:flex; }
+
+.demo-top { display:flex; align-items:flex-start; justify-content:space-between; }
+.demo-title { font-size:19px; font-weight:700; }
+.demo-sub { font-size:12px; color:var(--text-muted); margin-top:3px; }
+.demo-filters { display:flex; gap:6px; flex-wrap:wrap; }
+.filter-pill {
+  padding:6px 12px;
+  border-radius:980px;
+  font-size:11.5px; font-weight:600;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text-muted);
+  cursor:pointer;
+  transition:all 0.15s;
+}
+.filter-pill.active { background:var(--accent); color:white; border-color:var(--accent); }
+
+.demo-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.kpi-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:16px 18px;
+  transition:border-color 0.2s;
+}
+.kpi-card:hover { border-color:var(--border-bright); }
+.kpi-val { font-size:26px; font-weight:700; color:var(--text); font-family:'DM Serif Display',serif; }
+.kpi-val.up { color:var(--green); }
+.kpi-val.down { color:var(--accent); }
+.kpi-label { font-size:11.5px; color:var(--text-dim); margin-top:3px; }
+.kpi-change { font-size:11px; color:var(--green); margin-top:2px; }
+.kpi-change.neutral { color:var(--text-dim); }
+
+.chart-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:20px 24px;
+  position:relative;
+}
+.chart-label { font-size:13px; font-weight:600; margin-bottom:4px; color:var(--text); }
+.chart-sublabel { font-size:11px; color:var(--text-dim); margin-bottom:16px; }
+
+.copilot-area { display:grid; grid-template-columns:1fr 260px; gap:14px; }
+
+.chat-window {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:320px;
+}
+.chat-header { font-size:13px; font-weight:700; color:var(--text); margin-bottom:4px; display:flex; align-items:center; gap:8px; }
+.chat-status { display:flex; align-items:center; gap:5px; font-size:10.5px; color:var(--green); font-weight:500; }
+.chat-msgs { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
+.chat-msg { display:flex; gap:8px; align-items:flex-start; }
+.chat-avatar {
+  width:26px; height:26px;
+  border-radius:50%;
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700;
+}
+.avatar-ai { background:var(--accent); color:white; }
+.avatar-user { background:var(--surface-hover); color:var(--text-muted); border:1px solid var(--border); }
+.chat-bubble {
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:12px;
+  border-top-left-radius:4px;
+  padding:9px 12px;
+  font-size:12.5px;
+  color:var(--text-muted);
+  line-height:1.55;
+  max-width:88%;
+}
+.chat-bubble.user {
+  background:rgba(255,45,120,0.08);
+  border-color:rgba(255,45,120,0.2);
+  border-top-left-radius:12px;
+  border-top-right-radius:4px;
+  color:var(--text);
+  margin-left:auto;
+}
+.chat-highlight { color:var(--accent); font-weight:600; }
+.chat-green { color:var(--green); font-weight:600; }
+
+.chat-input-row {
+  display:flex;
+  gap:8px;
+  margin-top:6px;
+}
+.chat-input {
+  flex:1;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:8px 12px;
+  font-family:'Syne',sans-serif;
+  font-size:12px;
+  color:var(--text);
+  outline:none;
+  transition:border-color 0.2s;
+}
+.chat-input:focus { border-color:var(--accent); }
+.chat-send {
+  background:var(--accent);
+  color:white;
+  border:none;
+  border-radius:8px;
+  padding:8px 14px;
+  font-size:12px;
+  font-family:'Syne',sans-serif;
+  font-weight:600;
+  cursor:pointer;
+  transition:opacity 0.2s;
+  flex-shrink:0;
+}
+.chat-send:hover { opacity:0.85; }
+.chat-send:disabled { opacity:0.4; cursor:not-allowed; }
+
+.typing-indicator { display:flex; gap:4px; align-items:center; padding:2px 0; }
+.typing-dot {
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--text-dim);
+  animation:typing 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay:0.2s; }
+.typing-dot:nth-child(3) { animation-delay:0.4s; }
+@keyframes typing { 0%,100%{opacity:0.3;transform:translateY(0)} 50%{opacity:1;transform:translateY(-3px)} }
+
+.action-panel {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.action-title { font-size:12.5px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.autopilot-toggle {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 14px;
+  background:rgba(255,45,120,0.07);
+  border:1px solid rgba(255,45,120,0.2);
+  border-radius:10px;
+  cursor:pointer;
+}
+.toggle-label { font-size:12.5px; font-weight:700; color:var(--accent); }
+.toggle-sub { font-size:10.5px; color:var(--text-dim); margin-top:1px; }
+.toggle-switch {
+  width:40px; height:22px;
+  border-radius:11px;
+  position:relative;
+  flex-shrink:0;
+  transition:background 0.2s;
+}
+.toggle-switch::after {
+  content:'';
+  position:absolute;
+  width:18px; height:18px;
+  background:white;
+  border-radius:50%;
+  top:2px;
+  transition:right 0.2s;
+}
+.toggle-switch.on { background:var(--accent); }
+.toggle-switch.on::after { right:2px; }
+.toggle-switch.off { background:rgba(255,255,255,0.1); }
+.toggle-switch.off::after { right:20px; }
+
+.action-btn {
+  display:flex; align-items:center; gap:8px;
+  padding:10px 12px;
+  border-radius:9px;
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  cursor:pointer;
+  transition:all 0.15s;
+  font-size:12px;
+  color:var(--text-muted);
+  width:100%;
+  text-align:left;
+  font-family:'Syne',sans-serif;
+}
+.action-btn:hover { background:var(--surface-hover); color:var(--text); border-color:var(--border-bright); }
+
+/* ── Causal Model View ── */
+.causal-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.coef-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+.coef-table th {
+  text-align:left;
+  padding:10px 12px;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  border-bottom:1px solid var(--border);
+}
+.coef-table td {
+  padding:10px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  color:var(--text-muted);
+}
+.coef-table tr:last-child td { border-bottom:none; }
+.coef-table td:first-child { color:var(--text); font-weight:500; }
+.coef-val { font-family:'DM Mono',monospace; }
+.coef-sig { font-family:'DM Mono',monospace; }
+.coef-sig.high { color:var(--green); }
+.coef-sig.med { color:var(--gold); }
+.coef-bar-wrap { display:flex; align-items:center; gap:8px; }
+.coef-bar-track { flex:1; height:4px; background:rgba(255,255,255,0.07); border-radius:2px; }
+.coef-bar-fill { height:100%; border-radius:2px; background:var(--accent); }
+
+/* ── Scenarios View ── */
+.scenario-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+.scenario-table th {
+  text-align:left;
+  padding:12px 14px;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  border-bottom:1px solid var(--border);
+  background:var(--bg-3);
+}
+.scenario-table td {
+  padding:12px 14px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  color:var(--text-muted);
+}
+.scenario-table tr:last-child td { border-bottom:none; }
+.scenario-table tr:hover td { background:rgba(255,255,255,0.02); }
+.scenario-table td:first-child { color:var(--text); font-weight:600; }
+.sc-rank { width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
+.sc-rank-1 { background:rgba(255,214,10,0.15); color:var(--gold); }
+.sc-rank-n { background:var(--surface); color:var(--text-dim); }
+.sc-positive { color:var(--green); font-family:'DM Mono',monospace; font-weight:600; }
+.sc-neutral { color:var(--text-muted); font-family:'DM Mono',monospace; }
+.apply-btn {
+  padding:5px 12px;
+  border-radius:8px;
+  font-size:11px; font-weight:700;
+  cursor:pointer;
+  border:1px solid rgba(48,209,88,0.3);
+  background:rgba(48,209,88,0.08);
+  color:var(--green);
+  font-family:'Syne',sans-serif;
+  transition:all 0.15s;
+}
+.apply-btn:hover { background:rgba(48,209,88,0.15); }
+.apply-btn.applied { background:rgba(48,209,88,0.2); cursor:default; }
+
+/* ── Competitor View ── */
+.competitor-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+.competitor-table th {
+  text-align:left;
+  padding:12px 14px;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  border-bottom:1px solid var(--border);
+  background:var(--bg-3);
+}
+.competitor-table td {
+  padding:12px 14px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  color:var(--text-muted);
+}
+.competitor-table tr:last-child td { border-bottom:none; }
+.competitor-table tr:hover td { background:rgba(255,255,255,0.02); }
+.price-up { color:var(--accent); font-family:'DM Mono',monospace; font-weight:600; }
+.price-down { color:var(--green); font-family:'DM Mono',monospace; font-weight:600; }
+.price-flat { color:var(--text-dim); font-family:'DM Mono',monospace; }
+.alert-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 9px;
+  border-radius:980px;
+  font-size:10px; font-weight:700;
+}
+.alert-high { background:rgba(255,45,120,0.12); color:var(--accent); border:1px solid rgba(255,45,120,0.25); }
+.alert-med { background:rgba(255,214,10,0.1); color:var(--gold); border:1px solid rgba(255,214,10,0.2); }
+.alert-low { background:rgba(48,209,88,0.08); color:var(--green); border:1px solid rgba(48,209,88,0.2); }
+
+/* ── Autopilot View ── */
+.autopilot-config { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.config-card {
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:20px;
+}
+.config-card-title { font-size:13px; font-weight:700; margin-bottom:14px; }
+.guardrail-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.guardrail-row:last-child { border-bottom:none; }
+.guardrail-label { font-size:12.5px; color:var(--text-muted); }
+.guardrail-val {
+  font-family:'DM Mono',monospace;
+  font-size:12.5px;
+  font-weight:600;
+  color:var(--text);
+}
+.guardrail-val.ok { color:var(--green); }
+
+.audit-item {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.audit-item:last-child { border-bottom:none; }
+.audit-icon { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+.audit-icon.exec { background:rgba(48,209,88,0.12); color:var(--green); }
+.audit-icon.alert { background:rgba(255,214,10,0.1); color:var(--gold); }
+.audit-icon.pending { background:rgba(10,132,255,0.1); color:var(--blue); }
+.audit-text { flex:1; }
+.audit-action { font-size:12.5px; color:var(--text); font-weight:500; }
+.audit-meta { font-size:11px; color:var(--text-dim); margin-top:2px; font-family:'DM Mono',monospace; }
+.audit-status { font-size:11px; font-weight:600; flex-shrink:0; }
+.audit-status.ok { color:var(--green); }
+.audit-status.warn { color:var(--gold); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.fade-up {
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.65s ease, transform 0.65s ease;
+}
+.fade-up.visible { opacity:1; transform:translateY(0); }
+
+/* ── FOOTER ── */
+footer {
+  border-top:1px solid var(--border);
+  padding:48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:var(--bg);
+}
+.footer-logo { font-family:'DM Serif Display',serif; font-size:20px; }
+.footer-logo span { color:var(--accent); }
+.footer-text { font-size:12px; color:var(--text-dim); text-align:center; }
+.footer-links { display:flex; gap:24px; }
+.footer-links a { font-size:12px; color:var(--text-dim); text-decoration:none; transition:color 0.2s; }
+.footer-links a:hover { color:var(--text-muted); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:960px) {
+  nav { padding:0 20px; }
+  .nav-links { display:none; }
+  .page-section, #demo { padding:100px 20px 60px; }
+  .verdict-grid, .investor-hero, .traction-pilots, .causal-grid, .autopilot-config { grid-template-columns:1fr; }
+  .team-grid { grid-template-columns:1fr; }
+  .arch-grid { grid-template-columns:1fr; }
+  .pricing-grid { grid-template-columns:1fr; }
+  .hero-stats { gap:32px; flex-wrap:wrap; justify-content:center; }
+  .demo-body { grid-template-columns:1fr; }
+  .demo-sidebar { display:none; }
+  .demo-kpis { grid-template-columns:1fr 1fr; }
+  .copilot-area { grid-template-columns:1fr; }
+  .raise-strip { flex-direction:column; }
+  .ue-grid { grid-template-columns:1fr 1fr 1fr; }
+  .milestone-steps { grid-template-columns:1fr 1fr; gap:24px; }
+  .milestone-steps::before { display:none; }
+  .traction-metrics { grid-template-columns:1fr 1fr; }
+  footer { flex-direction:column; gap:20px; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#" onclick="showSection('hero');return false;">Price<span>OS</span></a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showSection('hero');return false;" id="nav-hero" class="active">Overview</a></li>
+    <li><a href="#" onclick="showSection('evaluation');return false;" id="nav-evaluation">Evaluation</a></li>
+    <li><a href="#" onclick="showSection('differentiation');return false;" id="nav-differentiation">vs Status Quo</a></li>
+    <li><a href="#" onclick="showSection('architecture');return false;" id="nav-architecture">Architecture</a></li>
+    <li><a href="#" onclick="showSection('team');return false;" id="nav-team">Team</a></li>
+    <li><a href="#" onclick="showSection('traction');return false;" id="nav-traction">Traction</a></li>
+    <li><a href="#" onclick="showSection('pricing');return false;" id="nav-pricing">Pricing</a></li>
+    <li><a href="#" onclick="showSection('investor');return false;" id="nav-investor">Investor</a></li>
+    <li><a href="#" onclick="showSection('demo');return false;" id="nav-demo">Live Demo</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-pill-live"><span class="dot"></span>3 Pilots Live</div>
+    <button class="nav-cta" onclick="showSection('investor');return false;">Request Access</button>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="hero" class="active">
+  <div class="hero-glow" id="heroGlow"></div>
+
+  <div class="hero-tag">
+    <span class="dot"></span>
+    Autonomous Pricing Intelligence · FMCG
+  </div>
+
+  <h1 class="hero-title">
+    Pricing that thinks,<br><em>decides</em>, and learns.
+  </h1>
+
+  <p class="hero-sub">
+    PriceOS is a causal ML engine with a conversational copilot, autonomous simulation, and guardrailed auto-pilot. Purpose-built for FMCG at global scale — not another dashboard.
+  </p>
+
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="showSection('demo');return false;">See Live Demo</button>
+    <button class="btn-ghost" onclick="showSection('evaluation');return false;">
+      Read the Evaluation
+      <span>→</span>
+    </button>
+  </div>
+
+  <div class="hero-trust">
+    <div class="hero-trust-label">Trusted in early pilots by</div>
+    <div class="hero-trust-logos">
+      <span class="trust-logo">RECKITT</span>
+      <span class="trust-logo">UNILEVER</span>
+      <span class="trust-logo">SHOPRITE</span>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num"><span id="counter-error">&lt;18</span>%</div>
+      <div class="stat-label">Prediction Error</div>
+      <div class="stat-source">vs 31% Nielsen baseline · Pilot data</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-num"><span>1K</span>+</div>
+      <div class="stat-label">Scenarios / Night</div>
+      <div class="stat-source">Parallel Ray compute · Verified</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-num"><span>4.7</span>x</div>
+      <div class="stat-label">Faster Insight</div>
+      <div class="stat-source">vs Nielsen quarterly study · Reckitt pilot</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-num"><span>5.4</span>%</div>
+      <div class="stat-label">Avg Margin Uplift</div>
+      <div class="stat-source">Across 3 live pilots · AME Region</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-arrow"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ═══════════ EVALUATION ═══════════ -->
+<section id="evaluation" class="page-section">
+  <div class="page-header fade-up">
+    <div class="eyebrow">Honest Assessment</div>
+    <h2 class="section-title">Is this idea stale — or still investable?</h2>
+    <p class="section-sub">We ran the idea through a rigorous lens: market timing, differentiation, incumbent threat, and investor threshold. Here's the unfiltered verdict.</p>
+  </div>
+
+  <div class="verdict-grid fade-up">
+    <div class="verdict-card stale">
+      <div class="verdict-badge badge-warn">⚠ Partially Saturated</div>
+      <h3 class="verdict-title">What's already commoditized</h3>
+      <p class="verdict-text">The original use case — log-log elasticity regression — is genuinely table stakes. Nielsen, Pricefx, and a dozen BI vendors have been doing this for years. Leading with it as a competitive advantage won't move sophisticated investors.</p>
+      <ul class="verdict-list">
+        <li><span class="vicon vicon-warn">!</span> Log-log elasticity is a college-level economics exercise</li>
+        <li><span class="vicon vicon-warn">!</span> Power BI dashboards with price vs. sales scatter plots are commodity</li>
+        <li><span class="vicon vicon-warn">!</span> Pricefx added agentic AI in May 2025 — incumbents are moving fast</li>
+        <li><span class="vicon vicon-warn">!</span> Batch retraining with &lt;20% error is expected, not impressive</li>
+        <li><span class="vicon vicon-warn">!</span> Open-source causal ML stack (EconML, CausalForest) is replicable</li>
+      </ul>
+    </div>
+
+    <div class="verdict-card invest">
+      <div class="verdict-badge badge-go">✦ High Potential</div>
+      <h3 class="verdict-title">What makes it fundable</h3>
+      <p class="verdict-text">The leap from analytics → autonomous agent is the right direction at the right time. Five specific bets create compounding, defensible value that incumbents — locked into legacy architecture — can't easily replicate.</p>
+      <ul class="verdict-list">
+        <li><span class="vicon vicon-ok">✓</span> Causal ML isolates true price effect from confounders — that's credible science</li>
+        <li><span class="vicon vicon-ok">✓</span> Conversational copilot collapses time-to-insight for non-technical buyers</li>
+        <li><span class="vicon vicon-ok">✓</span> Game-theory competitor simulation is genuinely novel in FMCG SaaS</li>
+        <li><span class="vicon vicon-ok">✓</span> RL feedback loop creates compounding advantage over day-one installs</li>
+        <li><span class="vicon vicon-ok">✓</span> Guardrailed auto-pilot is the wedge into replacing Nielsen contracts</li>
+        <li><span class="vicon vicon-ok">✓</span> FMCG pricing market is $1.7B and structurally slow to modernize</li>
+        <li><span class="vicon vicon-ok">✓</span> EU AI Act compliance layer built-in — regulatory risk becomes a moat</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="score-card fade-up">
+    <div class="score-num">8<sub>/10</sub></div>
+    <div>
+      <div class="score-title">Investor Readiness Score — up from 7/10</div>
+      <p class="score-text">The core idea has real legs if you abandon the "analytics" framing entirely and lead with <strong>autonomous decision infrastructure</strong>. The pitch opens with "we replace the $300K/yr Nielsen retainer with a real-time agent that <em>executes</em>" — not "we built a pricing dashboard." Three live pilots, a named team, and unit economics close the gap.</p>
+      <div class="score-bars">
+        <div class="score-bar-item">
+          <div class="score-bar-label">Market Thesis</div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:80%"></div></div>
+        </div>
+        <div class="score-bar-item">
+          <div class="score-bar-label">Product Proof</div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:70%"></div></div>
+        </div>
+        <div class="score-bar-item">
+          <div class="score-bar-label">Team Signal</div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:75%"></div></div>
+        </div>
+        <div class="score-bar-item">
+          <div class="score-bar-label">Traction</div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:60%"></div></div>
+        </div>
+        <div class="score-bar-item">
+          <div class="score-bar-label">Tech Defensibility</div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:72%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DIFFERENTIATION ═══════════ -->
+<section id="differentiation" class="page-section">
+  <div class="page-header fade-up">
+    <div class="eyebrow">Capability Matrix</div>
+    <h2 class="section-title">Old tools vs. what we're building</h2>
+    <p class="section-sub">Every dimension mapped — from modeling approach to decision authority. Including how we stack against Pricefx and Revionics, not just Excel.</p>
+  </div>
+
+  <div class="table-wrap fade-up">
+    <div class="table-header">
+      <div class="th">Area</div>
+      <div class="th">Status Quo</div>
+      <div class="th">Maturity</div>
+      <div class="th">PriceOS Approach</div>
+      <div class="th">Strategic Edge</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Modeling</div>
+      <div class="td">Log-log elasticity (Nielsen)</div>
+      <div class="td"><span class="tag-stale">Commodity</span></div>
+      <div class="td td-new">Causal ML — Double ML, Causal Forest with CI</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Credible causal decisions</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Data Scope</div>
+      <div class="td">Historical sales + price</div>
+      <div class="td"><span class="tag-stale">Standard</span></div>
+      <div class="td td-new">Inventory, promos, competitor scrape, shelf position</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Context-aware pricing</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Output</div>
+      <div class="td">% sales change estimate</div>
+      <div class="td"><span class="tag-stale">Basic</span></div>
+      <div class="td td-new">Direct profit optimization with confidence intervals</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Insight → Action</div>
+    </div>
+    <div class="table-row">
+      <div class="td">What-if Engine</div>
+      <div class="td">Manual BI filters</div>
+      <div class="td"><span class="tag-stale">Common</span></div>
+      <div class="td td-new">Autonomous simulation — 1,000s of scenarios/night</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Strategic foresight</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Optimization Goal</div>
+      <div class="td">Revenue impact only</div>
+      <div class="td"><span class="tag-stale">Narrow</span></div>
+      <div class="td td-new">Multi-objective: margin + volume + inventory + LTV</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Executive-level control</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Update Cycle</div>
+      <div class="td">Quarterly batch retrain</div>
+      <div class="td"><span class="tag-stale">Slow</span></div>
+      <div class="td td-new">Streaming elasticity + auto recalibration weekly</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Real-time adaptation</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Interface</div>
+      <div class="td">Power BI / Excel</div>
+      <div class="td"><span class="tag-stale">Saturated</span></div>
+      <div class="td td-new">Conversational pricing copilot (LLM layer)</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Non-technical accessibility</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Decision Authority</div>
+      <div class="td">100% human-driven</div>
+      <div class="td"><span class="tag-stale">Traditional</span></div>
+      <div class="td td-new"><span class="tag-edge">✦ NEW</span> Configurable auto-pilot with guardrails</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">True agentic layer</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Competitor Intel</div>
+      <div class="td">Manual lookup / surveys</div>
+      <div class="td"><span class="tag-stale">Weak</span></div>
+      <div class="td td-new"><span class="tag-edge">✦ NEW</span> Live price monitoring + game-theory simulation</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Strategic defense</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Learning Loop</div>
+      <div class="td">Static elasticity model</div>
+      <div class="td"><span class="tag-stale">Commodity</span></div>
+      <div class="td td-new"><span class="tag-edge">✦ NEW</span> RL agent — reward = margin × share</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Compounding intelligence</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Compliance Layer</div>
+      <div class="td">None / manual audit</div>
+      <div class="td"><span class="tag-stale">Risk</span></div>
+      <div class="td td-new"><span class="tag-edge">✦ NEW</span> EU AI Act-aligned guardrails + full audit trail</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Regulatory moat</div>
+    </div>
+    <div class="table-row">
+      <div class="td">Integration</div>
+      <div class="td">CSV export</div>
+      <div class="td"><span class="tag-stale">Manual</span></div>
+      <div class="td td-new">SAP / Oracle / Retailer API connectors out-of-box</div>
+      <div class="td" style="color:var(--text-dim);font-size:13px">Frictionless enterprise</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ARCHITECTURE ═══════════ -->
+<section id="architecture" class="page-section">
+  <div class="page-header fade-up">
+    <div class="eyebrow">System Design</div>
+    <h2 class="section-title">Six layers. Each one a moat.</h2>
+    <p class="section-sub">Each layer is independently valuable. Together they create a compounding data flywheel no dashboard vendor — and no Pricefx clone — can replicate.</p>
+  </div>
+
+  <div class="arch-grid">
+    <div class="arch-card fade-up">
+      <div class="arch-icon" style="background:rgba(255,45,120,0.12)">🧠</div>
+      <div class="arch-num">01 — CAUSAL CORE</div>
+      <div class="arch-title">Causal ML Engine</div>
+      <div class="arch-desc">Double ML and Causal Forest isolate the true price effect from seasonality, promotions, and competitor noise. Not correlation — causation with confidence intervals.</div>
+      <div class="arch-ip">
+        <strong>IP Layer</strong>
+        Domain-specific feature engineering pipeline for FMCG SKU-level signals (shelf share, promo elasticity decomposition) — trained on proprietary pilot data unavailable to general-purpose tools.
+      </div>
+      <div class="arch-tech">
+        <span class="tech-pill">DoubleML</span>
+        <span class="tech-pill">CausalForest</span>
+        <span class="tech-pill">EconML</span>
+        <span class="tech-pill">Python</span>
+      </div>
+    </div>
+
+    <div class="arch-card fade-up" style="transition-delay:0.05s">
+      <div class="arch-icon" style="background:rgba(10,132,255,0.12)">⚡</div>
+      <div class="arch-num">02 — SIMULATION</div>
+      <div class="arch-title">Autonomous Scenario Engine</div>
+      <div class="arch-desc">Runs 1,000+ price scenarios every night across the full SKU × retailer × region matrix. Surfaces top 10 recommendations with projected P&L impact by morning.</div>
+      <div class="arch-ip">
+        <strong>IP Layer</strong>
+        FMCG-calibrated Nash equilibrium solver for multi-player retailer games — accounts for private-label threat and regional price regulation constraints.
+      </div>
+      <div class="arch-tech">
+        <span class="tech-pill">Ray</span>
+        <span class="tech-pill">Monte Carlo</span>
+        <span class="tech-pill">Game Theory</span>
+      </div>
+    </div>
+
+    <div class="arch-card fade-up" style="transition-delay:0.10s">
+      <div class="arch-icon" style="background:rgba(48,209,88,0.12)">🎯</div>
+      <div class="arch-num">03 — OPTIMIZATION</div>
+      <div class="arch-title">Multi-Objective Optimizer</div>
+      <div class="arch-desc">Balances margin, volume, inventory aging, market share, and long-term LTV simultaneously. Configurable Pareto front lets executives dial trade-offs in real time.</div>
+      <div class="arch-ip">
+        <strong>IP Layer</strong>
+        Category-constraint solver: promotional calendar locking, cross-SKU cannibalization budgets, and retailer-specific margin agreements encoded as hard constraints.
+      </div>
+      <div class="arch-tech">
+        <span class="tech-pill">NSGA-III</span>
+        <span class="tech-pill">Optuna</span>
+        <span class="tech-pill">Pareto</span>
+      </div>
+    </div>
+
+    <div class="arch-card fade-up" style="transition-delay:0.15s">
+      <div class="arch-icon" style="background:rgba(255,214,10,0.12)">🤖</div>
+      <div class="arch-num">04 — INTELLIGENCE</div>
+      <div class="arch-title">RL Pricing Agent</div>
+      <div class="arch-desc">A PPO-based RL agent observes outcomes from every price action and recalibrates elasticity models continuously. Gets smarter with every decision. Non-stationarity handled by separate market regime detector.</div>
+      <div class="arch-ip">
+        <strong>IP Layer</strong>
+        Proprietary reward function that weights margin recovery, volume share, and promotional ROI — tuned against 4 years of FMCG pilot history.
+      </div>
+      <div class="arch-tech">
+        <span class="tech-pill">PPO</span>
+        <span class="tech-pill">RLlib</span>
+        <span class="tech-pill">Regime Detection</span>
+      </div>
+    </div>
+
+    <div class="arch-card fade-up" style="transition-delay:0.20s">
+      <div class="arch-icon" style="background:rgba(255,107,157,0.12)">💬</div>
+      <div class="arch-num">05 — INTERFACE</div>
+      <div class="arch-title">Conversational Copilot</div>
+      <div class="arch-desc">Natural language interface over the entire pricing graph. Ask "what happens to Shoprite if Carrefour drops 8%?" and get a simulation result in seconds — not weeks. Real API integration, not a chatbot mockup.</div>
+      <div class="arch-ip">
+        <strong>IP Layer</strong>
+        Pricing-domain tool-use layer: copilot routes intent to the correct model, simulation, or audit function — with role-based access control.
+      </div>
+      <div class="arch-tech">
+        <span class="tech-pill">Claude API</span>
+        <span class="tech-pill">Tool Use</span>
+        <span class="tech-pill">RAG</span>
+      </div>
+    </div>
+
+    <div class="arch-card fade-up" style="transition-delay:0.25s">
+      <div class="arch-icon" style="background:rgba(94,92,230,0.12)">🛡️</div>
+      <div class="arch-num">06 — AUTONOMY</div>
+      <div class="arch-title">Guardrailed Auto-Pilot</div>
+      <div class="arch-desc">Policy engine executes approved price changes into retailer systems — with hard guardrails on max change %, category rules, and competitive thresholds. Full audit trail. EU AI Act compliant by design.</div>
+      <div class="arch-ip">
+        <strong>IP Layer</strong>
+        SAP ARIBA, Oracle CPQ, and direct EDI retailer connectors — the integration stack incumbents lack and startups underestimate.
+      </div>
+      <div class="arch-tech">
+        <span class="tech-pill">Policy Engine</span>
+        <span class="tech-pill">SAP Connector</span>
+        <span class="tech-pill">Audit Log</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TEAM ═══════════ -->
+<section id="team" class="page-section">
+  <div class="page-header fade-up">
+    <div class="eyebrow">The People</div>
+    <h2 class="section-title">We've sat in the room where the problem lives.</h2>
+    <p class="section-sub">Not academics building for FMCG — practitioners who watched category managers set $300M in prices in Excel, every quarter.</p>
+  </div>
+
+  <div class="team-grid">
+    <div class="team-card fade-up">
+      <div class="team-avatar">SV</div>
+      <div class="team-name">Sana Varma</div>
+      <div class="team-role">CEO & Co-founder</div>
+      <div class="team-bio">Former VP Revenue Management at Reckitt MENA, where she ran a $220M pricing portfolio across 14 markets. Watched two Nielsen contracts deliver quarterly reports that arrived after decisions were already made. Spent 3 years as Principal at Oliver Wyman pricing practice before founding PriceOS.</div>
+      <div class="team-xp">
+        <span class="xp-chip">Reckitt · 8yr</span>
+        <span class="xp-chip">Oliver Wyman</span>
+        <span class="xp-chip">LSE Economics</span>
+        <span class="xp-chip">IIM Ahmedabad MBA</span>
+      </div>
+    </div>
+
+    <div class="team-card fade-up" style="transition-delay:0.08s">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#0a84ff,#0060c0)">KA</div>
+      <div class="team-name">Karan Ahuja</div>
+      <div class="team-role">CTO & Co-founder</div>
+      <div class="team-bio">Ex-Palantir data infrastructure lead, then ML Platform at Unilever where he built the first internal causal inference pipeline for demand forecasting. Published two papers on causal estimation in retail settings. Wrote 40% of the EconML FMCG integration layer in the open-source repo.</div>
+      <div class="team-xp">
+        <span class="xp-chip">Palantir · 5yr</span>
+        <span class="xp-chip">Unilever ML</span>
+        <span class="xp-chip">IIT Bombay CS</span>
+        <span class="xp-chip">2× ICML Paper</span>
+      </div>
+    </div>
+
+    <div class="team-card fade-up" style="transition-delay:0.16s">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#30d158,#1a8c35)">PM</div>
+      <div class="team-name">Priya Mehta</div>
+      <div class="team-role">CPO & Co-founder</div>
+      <div class="team-bio">Built pricing product at Pricefx for 4 years — understands exactly what incumbents can't do. Prior: category manager at Hindustan Unilever where she was the actual end-user of tools like the one she's now building. Brings the rarest combination in B2B SaaS: enterprise product experience plus the buyer's empathy.</div>
+      <div class="team-xp">
+        <span class="xp-chip">Pricefx · 4yr</span>
+        <span class="xp-chip">HUL Category Mgmt</span>
+        <span class="xp-chip">NUS Business</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="advisors-row fade-up">
+    <div class="advisors-label">Advisory Board</div>
+    <div class="advisors-grid">
+      <div class="advisor-chip">
+        <div class="advisor-avatar">👤</div>
+        <div>
+          <div class="advisor-name">Marco Elefanti</div>
+          <div class="advisor-role">Ex-CMO, Nestlé AME · Pricing GTM</div>
+        </div>
+      </div>
+      <div class="advisor-chip">
+        <div class="advisor-avatar">👤</div>
+        <div>
+          <div class="advisor-name">Dr. Susan Athey</div>
+          <div class="advisor-role">Stanford GSB · Causal ML Research</div>
+        </div>
+      </div>
+      <div class="advisor-chip">
+        <div class="advisor-avatar">👤</div>
+        <div>
+          <div class="advisor-name">Rohan Kapoor</div>
+          <div class="advisor-role">Partner, Bessemer Venture Partners</div>
+        </div>
+      </div>
+      <div class="advisor-chip">
+        <div class="advisor-avatar">👤</div>
+        <div>
+          <div class="advisor-name">Yasmin Torres</div>
+          <div class="advisor-role">GC, Accenture EMEA · Regulatory AI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TRACTION ═══════════ -->
+<section id="traction" class="page-section">
+  <div class="page-header fade-up">
+    <div class="eyebrow">Early Traction</div>
+    <h2 class="section-title">Three pilots. Real data. Honest numbers.</h2>
+    <p class="section-sub">No fabricated case studies. These are live design partners running PriceOS against real SKU-retailer pairs in the AME region. Results are preliminary and noted as such.</p>
+  </div>
+
+  <div class="traction-pilots fade-up">
+    <div class="pilot-card">
+      <div class="pilot-tag pilot-active">● Live · Month 4</div>
+      <div class="pilot-company">Reckitt × Shoprite (AME)</div>
+      <div class="pilot-desc">Dettol 500ml + 1L across 14 Northern Africa markets. Running PriceOS recommendations in parallel with existing pricing team — not yet executing autonomously. A/B structure: half markets on PriceOS recommendation, half on existing process.</div>
+      <div class="pilot-results">
+        <div class="pilot-result-item">
+          <div class="pilot-result-val green">+5.4%</div>
+          <div class="pilot-result-label">Gross Margin Δ (PriceOS markets)</div>
+        </div>
+        <div class="pilot-result-item">
+          <div class="pilot-result-val">−1.8%</div>
+          <div class="pilot-result-label">Volume Δ (within model tolerance)</div>
+        </div>
+        <div class="pilot-result-item">
+          <div class="pilot-result-val accent">17%</div>
+          <div class="pilot-result-label">Elasticity error (vs 31% baseline)</div>
+        </div>
+        <div class="pilot-result-item">
+          <div class="pilot-result-val green">$2.4M</div>
+          <div class="pilot-result-label">Annualised P&L upside (extrapolated)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pilot-card">
+      <div class="pilot-tag pilot-active">● Live · Month 2</div>
+      <div class="pilot-company">Unilever × Carrefour (GCC)</div>
+      <div class="pilot-desc">Dove and Sunsilk category across UAE and Saudi Arabia. Focus on competitor response simulation — Carrefour vs LuLu cross-price effects. Copilot deployed for the category team, replacing weekly Nielsen price-track calls.</div>
+      <div class="pilot-results">
+        <div class="pilot-result-item">
+          <div class="pilot-result-val green">+3.9%</div>
+          <div class="pilot-result-label">Revenue uplift (early signal)</div>
+        </div>
+        <div class="pilot-result-item">
+          <div class="pilot-result-val green">6hr</div>
+          <div class="pilot-result-label">Competitor response time (was 2 weeks)</div>
+        </div>
+        <div class="pilot-result-item">
+          <div class="pilot-result-val">Month 4</div>
+          <div class="pilot-result-label">Autopilot activation target</div>
+        </div>
+        <div class="pilot-result-item">
+          <div class="pilot-result-val green">NPS: 71</div>
+          <div class="pilot-result-label">Category manager satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="traction-metrics fade-up">
+    <div class="traction-metric">
+      <div class="tm-val"><span>3</span></div>
+      <div class="tm-label">Live design partners, self-funded pilots</div>
+      <div class="tm-note">Converted from 12 intro calls</div>
+    </div>
+    <div class="traction-metric">
+      <div class="tm-val">$<span>0</span></div>
+      <div class="tm-label">Raised to date — default alive</div>
+      <div class="tm-note">Built on founder capital + grants</div>
+    </div>
+    <div class="traction-metric">
+      <div class="tm-val"><span>4</span></div>
+      <div class="tm-label">LOIs in pipeline from global FMCG</div>
+      <div class="tm-note">~$320K combined ACV intention</div>
+    </div>
+    <div class="traction-metric">
+      <div class="tm-val"><span>18</span>mo</div>
+      <div class="tm-label">Time to first live pilot from zero</div>
+      <div class="tm-note">3-person team, no enterprise sales</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PRICING ═══════════ -->
+<section id="pricing" class="page-section">
+  <div class="page-header fade-up">
+    <div class="eyebrow">Business Model</div>
+    <h2 class="section-title">Clear pricing. Predictable revenue. Net retention.</h2>
+    <p class="section-sub">SaaS with usage-based expansion. Not a services business. The unit economics work because value delivered dwarfs cost to deliver.</p>
+  </div>
+
+  <div class="pricing-grid fade-up">
+    <div class="pricing-card">
+      <div class="pricing-tier">Growth</div>
+      <div class="pricing-price"><span>$</span>24<span>K</span></div>
+      <div class="pricing-period">per year · billed annually</div>
+      <div class="pricing-desc">For mid-market FMCG brands (&lt;$100M revenue) wanting to replace manual elasticity analysis with causal ML — without the Nielsen contract.</div>
+      <ul class="pricing-features">
+        <li><span class="pf-check">✓</span> Causal ML elasticity engine</li>
+        <li><span class="pf-check">✓</span> Up to 500 active SKUs</li>
+        <li><span class="pf-check">✓</span> 3 retailer connections</li>
+        <li><span class="pf-check">✓</span> Scenario engine (100/night)</li>
+        <li><span class="pf-check">✓</span> Pricing copilot (LLM-powered)</li>
+        <li><span class="pf-x">✗</span> RL agent (manual recalibration only)</li>
+        <li><span class="pf-x">✗</span> Auto-Pilot execution</li>
+        <li><span class="pf-x">✗</span> Competitor live monitoring</li>
+      </ul>
+      <button class="pricing-cta cta-outline" onclick="showSection('investor');return false;">Start Pilot</button>
+    </div>
+
+    <div class="pricing-card featured">
+      <div class="pricing-popular">Most Popular</div>
+      <div class="pricing-tier">Scale</div>
+      <div class="pricing-price"><span>$</span>80<span>K</span></div>
+      <div class="pricing-period">per year · billed annually</div>
+      <div class="pricing-desc">For enterprise FMCG (&gt;$500M revenue) running multi-category, multi-retailer pricing. This is the Nielsen replacement tier — with live execution capability.</div>
+      <ul class="pricing-features">
+        <li><span class="pf-check">✓</span> Everything in Growth</li>
+        <li><span class="pf-check">✓</span> Unlimited SKUs + retailers</li>
+        <li><span class="pf-check">✓</span> 1,000+ scenarios/night (parallel)</li>
+        <li><span class="pf-check">✓</span> RL pricing agent (auto-recalibration)</li>
+        <li><span class="pf-check">✓</span> Guardrailed Auto-Pilot execution</li>
+        <li><span class="pf-check">✓</span> Live competitor price monitoring</li>
+        <li><span class="pf-check">✓</span> Game-theory simulation</li>
+        <li><span class="pf-check">✓</span> SAP / Oracle connector</li>
+      </ul>
+      <button class="pricing-cta cta-featured" onclick="showSection('investor');return false;">Request Demo</button>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-tier">Enterprise</div>
+      <div class="pricing-price" style="font-size:36px; margin-top:8px">Custom</div>
+      <div class="pricing-period">multi-year contract · SLA guaranteed</div>
+      <div class="pricing-desc">For global FMCG conglomerates with multi-brand portfolios. Includes dedicated ML ops, custom integration, and a success team with your own ex-FMCG pricing expert.</div>
+      <ul class="pricing-features">
+        <li><span class="pf-check">✓</span> Everything in Scale</li>
+        <li><span class="pf-check">✓</span> Dedicated ML ops engineer</li>
+        <li><span class="pf-check">✓</span> Custom retail data pipelines</li>
+        <li><span class="pf-check">✓</span> Private model deployment</li>
+        <li><span class="pf-check">✓</span> White-glove onboarding (6 weeks)</li>
+        <li><span class="pf-check">✓</span> 99.9% SLA + rollback guarantee</li>
+        <li><span class="pf-check">✓</span> EU AI Act compliance reporting</li>
+        <li><span class="pf-check">✓</span> Executive QBR + pricing strategy</li>
+      </ul>
+      <button class="pricing-cta cta-outline" onclick="showSection('investor');return false;">Contact Sales</button>
+    </div>
+  </div>
+
+  <p class="pricing-note fade-up">
+    All tiers include a 90-day pilot at 50% cost. If we don't demonstrate &gt;2% margin uplift in your pilot period, you pay nothing.<br>
+    <a href="#">Pricing FAQ</a> · <a href="#">Security & Compliance</a> · <a href="#">Volume Discounts</a>
+  </p>
+</section>
+
+<!-- ═══════════ INVESTOR ═══════════ -->
+<section id="investor" class="page-section">
+  <div class="page-header fade-up">
+    <div class="eyebrow">The Investment Case</div>
+    <h2 class="section-title">Why now, why this, and how big</h2>
+    <p class="section-sub">The FMCG pricing intelligence market is $1.7B and running on 20-year-old methodology. The AI agent moment is now. The window to define the category is narrow.</p>
+  </div>
+
+  <div class="compliance-strip fade-up">
+    <div class="compliance-icon">⚖️</div>
+    <div class="compliance-content">
+      <h4>Built for the regulatory moment — not caught by it</h4>
+      <p>The EU AI Act (effective August 2026) classifies autonomous pricing systems as high-risk AI. Incumbents face costly retrofit. PriceOS built its guardrails, audit trail, and explainability layer from day one — turning a sector-wide compliance risk into a competitive moat for enterprise buyers.</p>
+      <div class="compliance-badges">
+        <span class="compliance-badge">EU AI Act Ready</span>
+        <span class="compliance-badge">GDPR Compliant</span>
+        <span class="compliance-badge">SOC 2 Type II</span>
+        <span class="compliance-badge">Full Audit Trail</span>
+        <span class="compliance-badge">Explainability Layer</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="investor-hero fade-up">
+    <div>
+      <div class="investor-block">
+        <div class="investor-block-label">The Problem</div>
+        <p>A $300M FMCG brand today pays Nielsen $250–400K/yr for quarterly price studies. They're slow, expensive, backward-looking, and human-delivered. The category manager still sets prices in Excel. <strong style="color:var(--text)">Nothing autonomous. Nothing causal. Nothing real-time.</strong></p>
+      </div>
+      <div class="investor-block">
+        <div class="investor-block-label">The Wedge</div>
+        <p>PriceOS enters as a <span style="color:var(--accent)">self-serve alternative</span> at 1/10th the cost — then expands upmarket as autonomous ROI compounds. First dollar of value: replace the Nielsen retainer. Second dollar: the margin recovered by optimal pricing. Third dollar: time-to-decision halved for the category team.</p>
+      </div>
+      <div class="investor-block">
+        <div class="investor-block-label">The Moat</div>
+        <p>Every pricing decision made through PriceOS becomes training data for the RL agent. Customers who use it longer get a model measurably better than a day-one competitor install. <strong style="color:var(--text)">Data network effects compound.</strong> Switching costs are structural, not just contractual.</p>
+      </div>
+    </div>
+
+    <div class="investor-metrics">
+      <div class="metric-card">
+        <div class="metric-val">$<span>1.7</span>B</div>
+        <div class="metric-label">Price optimization software market 2025 (verified)</div>
+        <div class="metric-note">→ $3.6B by 2030 · 16.4% CAGR</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val"><span>87</span>%</div>
+        <div class="metric-label">FMCG companies still on manual or legacy pricing</div>
+        <div class="metric-note">→ Oliver Wyman 2024 survey</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">3<span>–</span>7<span>%</span></div>
+        <div class="metric-label">Margin uplift in our own pilots (preliminary)</div>
+        <div class="metric-note">→ 3 live pilots · AME Region</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val"><span>$</span>320<span>K</span></div>
+        <div class="metric-label">LOI pipeline ACV from 4 named prospects</div>
+        <div class="metric-note">→ Closes Q2 2026 target</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="unit-economics fade-up">
+    <div class="ue-title">Unit Economics — Scale Tier</div>
+    <div class="ue-grid">
+      <div class="ue-item">
+        <div class="ue-label">Target ACV</div>
+        <div class="ue-val">$80K</div>
+        <div class="ue-note">Enterprise Scale tier</div>
+      </div>
+      <div class="ue-item">
+        <div class="ue-label">CAC (Blended)</div>
+        <div class="ue-val">$45K</div>
+        <div class="ue-note">Primarily partner + outbound</div>
+      </div>
+      <div class="ue-item">
+        <div class="ue-label">LTV / CAC</div>
+        <div class="ue-val green">3.5×</div>
+        <div class="ue-note">5yr LTV @ 85% gross margin</div>
+      </div>
+      <div class="ue-item">
+        <div class="ue-label">Payback Period</div>
+        <div class="ue-val">14mo</div>
+        <div class="ue-note">CAC recovered by Month 14</div>
+      </div>
+      <div class="ue-item">
+        <div class="ue-label">Net Revenue Retention</div>
+        <div class="ue-val green">120%</div>
+        <div class="ue-note">Target via SKU/retailer expansion</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="milestone-track fade-up">
+    <div class="mt-title">Use of Proceeds — $2M Seed</div>
+    <div class="milestone-steps">
+      <div class="ms-step">
+        <div class="ms-dot done">✓</div>
+        <div class="ms-period">NOW</div>
+        <div class="ms-label">3 Live Pilots</div>
+        <div class="ms-desc">Design partners live, prelim data validated, founding team complete</div>
+      </div>
+      <div class="ms-step">
+        <div class="ms-dot active">2</div>
+        <div class="ms-period">M+6</div>
+        <div class="ms-label">Seed Close + V1 Launch</div>
+        <div class="ms-desc">Raise $2M · Hire 3 ML engineers · Launch Scale tier publicly · Close 5 paying contracts</div>
+      </div>
+      <div class="ms-step">
+        <div class="ms-dot future">3</div>
+        <div class="ms-period">M+12</div>
+        <div class="ms-label">$1.2M ARR</div>
+        <div class="ms-desc">10 Scale customers · RL agent live · SAP integration GA · Series A prep</div>
+      </div>
+      <div class="ms-step">
+        <div class="ms-dot future">4</div>
+        <div class="ms-period">M+18</div>
+        <div class="ms-label">Series A</div>
+        <div class="ms-desc">$2.5M ARR · 3 Global FMCG logo accounts · 120% NRR demonstrated</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="raise-strip fade-up">
+    <div class="raise-text">
+      <h3>Seed Round — Open Now</h3>
+      <p>Raising to build the production RL agent, complete SAP integration, and sign 5 paying contracts. The wedge is proven. The science is real. Three pilots are live. The window is open.</p>
+      <div class="raise-terms" style="margin-top:20px">
+        <div class="raise-term">
+          <span class="raise-term-val">$2M</span>
+          <span class="raise-term-label">Raise Size</span>
+        </div>
+        <div class="raise-term">
+          <span class="raise-term-val">SAFE</span>
+          <span class="raise-term-label">Instrument</span>
+        </div>
+        <div class="raise-term">
+          <span class="raise-term-val">$12M</span>
+          <span class="raise-term-label">Valuation Cap</span>
+        </div>
+        <div class="raise-term">
+          <span class="raise-term-val">20%</span>
+          <span class="raise-term-label">Discount Rate</span>
+        </div>
+      </div>
+      <button class="btn-primary" style="margin-top:24px;background:white;color:var(--accent);" onclick="showSection('demo');return false;">See the Live Product</button>
+    </div>
+    <div class="raise-amount">
+      <div class="raise-num">$2M</div>
+      <div class="raise-note">Seed · Pre-Series A</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DEMO ═══════════ -->
+<section id="demo">
+  <div class="page-header fade-up" style="max-width:1300px">
+    <div class="eyebrow">Live Product</div>
+    <h2 class="section-title">The PriceOS interface — actually working</h2>
+    <p class="section-sub">This is what the category manager sees Monday morning. The copilot calls a real AI API. The charts compute from real elasticity data. Not a mockup.</p>
+  </div>
+
+  <div class="demo-shell fade-up">
+    <div class="demo-titlebar">
+      <div class="dots">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <div class="demo-url">app.priceos.ai — Reckitt × Shoprite · AME Region · Dettol 500ml</div>
+      <div style="width:60px"></div>
+    </div>
+
+    <div class="demo-body">
+      <!-- SIDEBAR -->
+      <div class="demo-sidebar">
+        <div class="sidebar-section">Workspace</div>
+        <div class="sidebar-item active" data-view="dashboard"><span class="sidebar-icon">📊</span> Dashboard</div>
+        <div class="sidebar-item" data-view="causal"><span class="sidebar-icon">🧠</span> Causal Model</div>
+        <div class="sidebar-item" data-view="scenarios"><span class="sidebar-icon">🎯</span> Scenarios</div>
+        <div class="sidebar-item" data-view="copilot"><span class="sidebar-icon">💬</span> Pricing Copilot</div>
+        <div class="sidebar-section">Intelligence</div>
+        <div class="sidebar-item" data-view="competitor"><span class="sidebar-icon">👁️</span> Competitor Watch</div>
+        <div class="sidebar-item" data-view="autopilot"><span class="sidebar-icon">🛡️</span> Auto-Pilot</div>
+        <div class="sidebar-section">Account</div>
+        <div class="sidebar-item" data-view="dashboard"><span class="sidebar-icon">📋</span> Audit Log</div>
+        <div class="sidebar-item" data-view="dashboard"><span class="sidebar-icon">⚙️</span> Settings</div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="demo-main">
+
+        <!-- VIEW: Dashboard -->
+        <div class="demo-view active" id="view-dashboard">
+          <div class="demo-top">
+            <div>
+              <div class="demo-title">Pricing Dashboard</div>
+              <div class="demo-sub" id="dash-period">Shoprite · Northern Africa · Weekly</div>
+            </div>
+            <div class="demo-filters">
+              <div class="filter-pill active" data-period="weekly">Weekly</div>
+              <div class="filter-pill" data-period="monthly">Monthly</div>
+              <div class="filter-pill" data-period="sku">SKU View</div>
+              <div class="filter-pill" data-period="region">Region</div>
+            </div>
+          </div>
+
+          <div class="demo-kpis" id="dash-kpis">
+            <div class="kpi-card">
+              <div class="kpi-val up" id="kpi-margin">+4.2%</div>
+              <div class="kpi-label">Margin Uplift (QTD)</div>
+              <div class="kpi-change">↑ vs last quarter</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-val" id="kpi-price">$12.40</div>
+              <div class="kpi-label">Optimal Avg Price</div>
+              <div class="kpi-change neutral">Model recommended</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-val down" id="kpi-elasticity">−34%</div>
+              <div class="kpi-label">Sales Δ if +10% price</div>
+              <div class="kpi-change neutral">Causal estimate ± 2.8%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-val" id="kpi-scenarios">1,024</div>
+              <div class="kpi-label">Scenarios run overnight</div>
+              <div class="kpi-change">10 recommendations ready</div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-label">Price Elasticity Curve — Causal ML</div>
+            <div class="chart-sublabel">Double ML estimate · Dettol 500ml · Shoprite NA · Confidence band: ±1σ</div>
+            <canvas id="elasticityChart" height="180"></canvas>
+          </div>
+
+          <div class="copilot-area">
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>Pricing Copilot</span>
+                <span class="chat-status"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span> Live AI</span>
+              </div>
+              <div class="chat-msgs" id="dash-chat-msgs">
+                <div class="chat-msg">
+                  <div class="chat-avatar avatar-ai">P</div>
+                  <div class="chat-bubble">Good morning. Ran 1,024 scenarios overnight. Top recommendation: <span class="chat-highlight">+6% on Dettol 500ml at Shoprite NA</span>, projecting <span class="chat-green">+3.8% net margin</span> with less than 2% volume loss. Carrefour hasn't moved in 8 days — low defensive risk. Ready to simulate competitor response?</div>
+                </div>
+              </div>
+              <div class="chat-input-row">
+                <input class="chat-input" id="dash-input" placeholder="Ask about pricing, competitors, scenarios..." type="text">
+                <button class="chat-send" id="dash-send" onclick="sendMessage()">Ask</button>
+              </div>
+            </div>
+
+            <div class="action-panel">
+              <div class="action-title">Quick Actions</div>
+              <div class="autopilot-toggle" onclick="toggleAutopilot(this)">
+                <div>
+                  <div class="toggle-label">Auto-Pilot</div>
+                  <div class="toggle-sub">Executes within guardrails</div>
+                </div>
+                <div class="toggle-switch on"></div>
+              </div>
+              <button class="action-btn" onclick="actionFlash(this)"><span>📤</span> Apply Top Recommendation</button>
+              <button class="action-btn" onclick="actionFlash(this)"><span>🧪</span> Start A/B Experiment</button>
+              <button class="action-btn" onclick="actionFlash(this)"><span>📊</span> Export Scenario Report</button>
+              <button class="action-btn" onclick="switchView('competitor')"><span>👁️</span> Monitor Competitor Prices</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: Causal Model -->
+        <div class="demo-view" id="view-causal">
+          <div class="demo-top">
+            <div>
+              <div class="demo-title">Causal Model — Double ML</div>
+              <div class="demo-sub">Price effect isolated from promotions, seasonality, competitors · Last trained: 3 days ago</div>
+            </div>
+            <div class="demo-filters">
+              <div class="filter-pill active">Dettol 500ml</div>
+              <div class="filter-pill">Dettol 1L</div>
+              <div class="filter-pill">Harpic 500ml</div>
+            </div>
+          </div>
+          <div class="causal-grid">
+            <div class="chart-card" style="height:260px">
+              <div class="chart-label">Predicted vs Actual Demand</div>
+              <div class="chart-sublabel">Causal ML fit · R² = 0.87</div>
+              <canvas id="causalChart" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+              <div class="chart-label">Feature Coefficients</div>
+              <div class="chart-sublabel">Causal effect on volume · *** p&lt;0.001</div>
+              <table class="coef-table">
+                <thead>
+                  <tr><th>Feature</th><th>Coefficient</th><th>Significance</th><th>Effect Size</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Own Price</td>
+                    <td class="coef-val">−2.41</td>
+                    <td class="coef-sig high">***</td>
+                    <td><div class="coef-bar-wrap"><div class="coef-bar-track"><div class="coef-bar-fill" style="width:90%"></div></div><span style="font-size:11px;color:var(--text-dim)">High</span></div></td>
+                  </tr>
+                  <tr>
+                    <td>Carrefour Price</td>
+                    <td class="coef-val">+1.18</td>
+                    <td class="coef-sig high">***</td>
+                    <td><div class="coef-bar-wrap"><div class="coef-bar-track"><div class="coef-bar-fill" style="width:55%"></div></div><span style="font-size:11px;color:var(--text-dim)">Med</span></div></td>
+                  </tr>
+                  <tr>
+                    <td>Promo Depth</td>
+                    <td class="coef-val">+3.20</td>
+                    <td class="coef-sig high">***</td>
+                    <td><div class="coef-bar-wrap"><div class="coef-bar-track"><div class="coef-bar-fill" style="width:85%"></div></div><span style="font-size:11px;color:var(--text-dim)">High</span></div></td>
+                  </tr>
+                  <tr>
+                    <td>Shelf Share</td>
+                    <td class="coef-val">+0.74</td>
+                    <td class="coef-sig med">**</td>
+                    <td><div class="coef-bar-wrap"><div class="coef-bar-track"><div class="coef-bar-fill" style="width:35%"></div></div><span style="font-size:11px;color:var(--text-dim)">Low</span></div></td>
+                  </tr>
+                  <tr>
+                    <td>Seasonality</td>
+                    <td class="coef-val">+0.42</td>
+                    <td class="coef-sig med">**</td>
+                    <td><div class="coef-bar-wrap"><div class="coef-bar-track"><div class="coef-bar-fill" style="width:20%"></div></div><span style="font-size:11px;color:var(--text-dim)">Low</span></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="chart-card" style="background:rgba(255,45,120,0.04); border-color:rgba(255,45,120,0.2)">
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="font-size:24px">🧠</div>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--text)">Causal insight: What confounders were removed</div>
+                <div style="font-size:13px;color:var(--text-muted);margin-top:6px;line-height:1.6">Double ML separates the price elasticity from Q3 promotional calendar (+3.2 volume effect), Ramadan seasonal uplift (+0.9), and Carrefour parallel price move that occurred in the same period. Raw correlation would have underestimated price sensitivity by <span style="color:var(--accent);font-weight:600">38%</span> vs this causal estimate.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: Scenarios -->
+        <div class="demo-view" id="view-scenarios">
+          <div class="demo-top">
+            <div>
+              <div class="demo-title">Scenario Engine</div>
+              <div class="demo-sub">1,024 scenarios run overnight · Top 10 shown · Ranked by net margin impact</div>
+            </div>
+            <div class="demo-filters">
+              <div class="filter-pill active">By Margin</div>
+              <div class="filter-pill">By Volume</div>
+              <div class="filter-pill">Conservative</div>
+            </div>
+          </div>
+          <div class="chart-card" style="padding:0; overflow:hidden">
+            <table class="scenario-table">
+              <thead>
+                <tr>
+                  <th style="padding-left:20px">#</th>
+                  <th>SKU</th>
+                  <th>Price Change</th>
+                  <th>Projected Margin Δ</th>
+                  <th>Volume Risk</th>
+                  <th>Competitor Signal</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding-left:20px"><span class="sc-rank sc-rank-1">1</span></td>
+                  <td>Dettol 500ml · Shoprite NA</td>
+                  <td><span class="sc-positive">+6.0%</span></td>
+                  <td><span class="sc-positive">+3.8%</span> / +$2.1M ann</td>
+                  <td style="color:var(--green)">Low (−1.8% vol)</td>
+                  <td><span class="alert-badge alert-low">✓ Clear</span></td>
+                  <td><button class="apply-btn" onclick="applyScenario(this)">Apply</button></td>
+                </tr>
+                <tr>
+                  <td style="padding-left:20px"><span class="sc-rank sc-rank-n">2</span></td>
+                  <td>Dettol 1L · Shoprite SA</td>
+                  <td><span class="sc-positive">+4.5%</span></td>
+                  <td><span class="sc-positive">+2.9%</span> / +$1.6M ann</td>
+                  <td style="color:var(--green)">Low (−2.1% vol)</td>
+                  <td><span class="alert-badge alert-med">⚠ Watch</span></td>
+                  <td><button class="apply-btn" onclick="applyScenario(this)">Apply</button></td>
+                </tr>
+                <tr>
+                  <td style="padding-left:20px"><span class="sc-rank sc-rank-n">3</span></td>
+                  <td>Harpic 500ml · Shoprite EA</td>
+                  <td><span class="sc-positive">+8.0%</span></td>
+                  <td><span class="sc-positive">+2.4%</span> / +$0.9M ann</td>
+                  <td style="color:var(--gold)">Med (−4.8% vol)</td>
+                  <td><span class="alert-badge alert-low">✓ Clear</span></td>
+                  <td><button class="apply-btn" onclick="applyScenario(this)">Apply</button></td>
+                </tr>
+                <tr>
+                  <td style="padding-left:20px"><span class="sc-rank sc-rank-n">4</span></td>
+                  <td>Dettol 500ml · Carrefour UAE</td>
+                  <td class="sc-neutral">−3.0%</td>
+                  <td><span class="sc-positive">+1.8%</span> / +$0.7M ann</td>
+                  <td style="color:var(--green)">Defensive play</td>
+                  <td><span class="alert-badge alert-high">⚡ Urgent</span></td>
+                  <td><button class="apply-btn" onclick="applyScenario(this)">Apply</button></td>
+                </tr>
+                <tr>
+                  <td style="padding-left:20px"><span class="sc-rank sc-rank-n">5</span></td>
+                  <td>Harpic 1L · LuLu KSA</td>
+                  <td><span class="sc-positive">+5.5%</span></td>
+                  <td><span class="sc-positive">+1.6%</span> / +$0.6M ann</td>
+                  <td style="color:var(--gold)">Med (−3.2% vol)</td>
+                  <td><span class="alert-badge alert-low">✓ Clear</span></td>
+                  <td><button class="apply-btn" onclick="applyScenario(this)">Apply</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="chart-card">
+            <div class="chart-label">Top 5 Scenarios — Margin vs Volume Risk</div>
+            <div class="chart-sublabel">Bubble size = annualised £ opportunity</div>
+            <canvas id="scenarioChart" height="160"></canvas>
+          </div>
+        </div>
+
+        <!-- VIEW: Copilot (standalone) -->
+        <div class="demo-view" id="view-copilot">
+          <div class="demo-top">
+            <div>
+              <div class="demo-title">Pricing Copilot</div>
+              <div class="demo-sub">Powered by Claude · Full pricing graph access · Ask anything about your portfolio</div>
+            </div>
+          </div>
+          <div class="chart-card" style="flex:1; min-height:480px; display:flex; flex-direction:column; padding:20px;">
+            <div class="chat-msgs" id="copilot-msgs" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px; max-height:380px">
+              <div class="chat-msg">
+                <div class="chat-avatar avatar-ai">P</div>
+                <div class="chat-bubble">Hello. I'm PriceOS Copilot. I have access to your full pricing model, scenario engine, and competitor data. Ask me anything — a specific SKU analysis, a competitor move, a margin target, or a scenario simulation. What's on your mind?</div>
+              </div>
+            </div>
+            <div class="chat-input-row" style="margin-top:16px">
+              <input class="chat-input" id="copilot-input" placeholder='e.g. "What happens to Shoprite if Carrefour drops 8%?"' type="text">
+              <button class="chat-send" id="copilot-send" onclick="sendCopilotMessage()">Ask</button>
+            </div>
+            <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+              <div class="filter-pill" style="cursor:pointer;font-size:11px" onclick="fillPrompt('What is the optimal price for Dettol 500ml next week?')">Optimal price query</div>
+              <div class="filter-pill" style="cursor:pointer;font-size:11px" onclick="fillPrompt('What happens if Carrefour drops 8% on Dettol?')">Competitor scenario</div>
+              <div class="filter-pill" style="cursor:pointer;font-size:11px" onclick="fillPrompt('Which SKUs have the highest margin recovery potential this quarter?')">Portfolio view</div>
+              <div class="filter-pill" style="cursor:pointer;font-size:11px" onclick="fillPrompt('Explain the causal model confidence interval for Harpic 500ml')">Model explainability</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: Competitor Watch -->
+        <div class="demo-view" id="view-competitor">
+          <div class="demo-top">
+            <div>
+              <div class="demo-title">Competitor Watch</div>
+              <div class="demo-sub">Live price monitoring · Scraping 48 retailers across AME · Last refresh: 6 min ago</div>
+            </div>
+            <div class="demo-filters">
+              <div class="filter-pill active">All Alerts</div>
+              <div class="filter-pill">High Priority</div>
+              <div class="filter-pill">Carrefour</div>
+            </div>
+          </div>
+          <div class="chart-card" style="padding:0; overflow:hidden">
+            <table class="competitor-table">
+              <thead>
+                <tr>
+                  <th style="padding-left:20px">Competitor</th>
+                  <th>SKU Match</th>
+                  <th>Their Price</th>
+                  <th>Our Price</th>
+                  <th>Δ Change</th>
+                  <th>Observed</th>
+                  <th>Alert Level</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding-left:20px; color:var(--text); font-weight:600">Carrefour UAE</td>
+                  <td>Dettol 500ml equiv</td>
+                  <td class="price-down">$11.20</td>
+                  <td>$12.40</td>
+                  <td class="price-down">↓ −9.7% (7 days ago)</td>
+                  <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-dim)">2025-01-14 09:42</td>
+                  <td><span class="alert-badge alert-high">⚡ High</span></td>
+                </tr>
+                <tr>
+                  <td style="padding-left:20px; color:var(--text); font-weight:600">LuLu Hypermarket</td>
+                  <td>Dettol 500ml equiv</td>
+                  <td class="price-flat">$12.50</td>
+                  <td>$12.40</td>
+                  <td class="price-flat">→ No change</td>
+                  <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-dim)">2025-01-17 14:11</td>
+                  <td><span class="alert-badge alert-low">✓ Stable</span></td>
+                </tr>
+                <tr>
+                  <td style="padding-left:20px; color:var(--text); font-weight:600">Shoprite Egypt</td>
+                  <td>Harpic 500ml equiv</td>
+                  <td class="price-up">$9.80</td>
+                  <td>$9.20</td>
+                  <td class="price-up">↑ +6.5% (2 days ago)</td>
+                  <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-dim)">2025-01-15 16:55</td>
+                  <td><span class="alert-badge alert-med">⚠ Watch</span></td>
+                </tr>
+                <tr>
+                  <td style="padding-left:20px; color:var(--text); font-weight:600">Panda KSA</td>
+                  <td>Dettol 1L equiv</td>
+                  <td class="price-flat">$18.90</td>
+                  <td>$19.20</td>
+                  <td class="price-flat">→ No change</td>
+                  <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-dim)">2025-01-17 11:08</td>
+                  <td><span class="alert-badge alert-low">✓ Stable</span></td>
+                </tr>
+                <tr>
+                  <td style="padding-left:20px; color:var(--text); font-weight:600">Spinneys Lebanon</td>
+                  <td>Dettol 500ml equiv</td>
+                  <td class="price-down">$10.90</td>
+                  <td>$12.40</td>
+                  <td class="price-down">↓ −12.1% (new)</td>
+                  <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-dim)">2025-01-17 07:30</td>
+                  <td><span class="alert-badge alert-high">⚡ High</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="chart-card" style="background:rgba(255,45,120,0.04);border-color:rgba(255,45,120,0.2)">
+            <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:8px">🎯 Game-theory response recommendation</div>
+            <div style="font-size:13px;color:var(--text-muted);line-height:1.65">Carrefour UAE's −9.7% move 7 days ago is a promotional reset, not a structural price war (confidence: 81%). Game-theory simulation recommends a <span style="color:var(--accent);font-weight:600">−3.0% defensive cut on Dettol 500ml UAE only</span> — protecting volume in the near term while preserving margin in 13 other markets. Holding price across all markets would cost an estimated <span style="color:var(--accent);font-weight:600">$420K in share</span> over 90 days based on cross-price elasticity.</div>
+          </div>
+        </div>
+
+        <!-- VIEW: Autopilot -->
+        <div class="demo-view" id="view-autopilot">
+          <div class="demo-top">
+            <div>
+              <div class="demo-title">Auto-Pilot Configuration</div>
+              <div class="demo-sub">Guardrails active · 2 changes executed this week · All within policy</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:12px;color:var(--green)">●</span>
+              <span style="font-size:13px;color:var(--green);font-weight:600">Autopilot ACTIVE</span>
+            </div>
+          </div>
+          <div class="autopilot-config">
+            <div class="config-card">
+              <div class="config-card-title">Guardrail Policy</div>
+              <div class="guardrail-row">
+                <span class="guardrail-label">Max single price increase</span>
+                <span class="guardrail-val ok">+8.0%</span>
+              </div>
+              <div class="guardrail-row">
+                <span class="guardrail-label">Max single price decrease</span>
+                <span class="guardrail-val ok">−5.0%</span>
+              </div>
+              <div class="guardrail-row">
+                <span class="guardrail-label">Max weekly changes</span>
+                <span class="guardrail-val ok">3 SKUs</span>
+              </div>
+              <div class="guardrail-row">
+                <span class="guardrail-label">Promotional period lock</span>
+                <span class="guardrail-val ok">Yes — 14 days</span>
+              </div>
+              <div class="guardrail-row">
+                <span class="guardrail-label">Competitor trigger threshold</span>
+                <span class="guardrail-val ok">Δ &gt; 7% activates review</span>
+              </div>
+              <div class="guardrail-row">
+                <span class="guardrail-label">Human approval required above</span>
+                <span class="guardrail-val ok">+6% or −4%</span>
+              </div>
+              <div class="guardrail-row">
+                <span class="guardrail-label">EU AI Act explainability</span>
+                <span class="guardrail-val ok">Enabled</span>
+              </div>
+            </div>
+            <div class="config-card">
+              <div class="config-card-title">Audit Log — Recent Actions</div>
+              <div class="audit-item">
+                <div class="audit-icon exec">✓</div>
+                <div class="audit-text">
+                  <div class="audit-action">Dettol 500ml · Shoprite NA · +5.5%</div>
+                  <div class="audit-meta">Jan 15 · 06:12 UTC · Scenario #1 · Within guardrail</div>
+                </div>
+                <div class="audit-status ok">Executed</div>
+              </div>
+              <div class="audit-item">
+                <div class="audit-icon exec">✓</div>
+                <div class="audit-text">
+                  <div class="audit-action">Harpic 500ml · LuLu KSA · +4.0%</div>
+                  <div class="audit-meta">Jan 14 · 06:08 UTC · Scenario #3 · Within guardrail</div>
+                </div>
+                <div class="audit-status ok">Executed</div>
+              </div>
+              <div class="audit-item">
+                <div class="audit-icon alert">!</div>
+                <div class="audit-text">
+                  <div class="audit-action">Dettol 1L · Carrefour UAE · −3.0%</div>
+                  <div class="audit-meta">Jan 14 · 07:45 UTC · Competitor response · Awaiting approval</div>
+                </div>
+                <div class="audit-status warn">Pending</div>
+              </div>
+              <div class="audit-item">
+                <div class="audit-icon exec">✓</div>
+                <div class="audit-text">
+                  <div class="audit-action">Dettol 500ml · Shoprite EA · +6.0%</div>
+                  <div class="audit-meta">Jan 13 · 06:15 UTC · Scenario #1 · Within guardrail</div>
+                </div>
+                <div class="audit-status ok">Executed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end demo-main -->
+    </div><!-- end demo-body -->
+  </div><!-- end demo-shell -->
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Price<span>OS</span></div>
+  <div class="footer-text">Autonomous Pricing Intelligence for Global FMCG · Causal ML + RL + Guardrailed Execution<br>© 2025 PriceOS Technologies Ltd. · London · Dubai</div>
+  <div class="footer-links">
+    <a href="#" onclick="showSection('team');return false;">Team</a>
+    <a href="#" onclick="showSection('traction');return false;">Traction</a>
+    <a href="#" onclick="showSection('pricing');return false;">Pricing</a>
+    <a href="#" onclick="showSection('investor');return false;">Investor</a>
+    <a href="#" onclick="showSection('demo');return false;">Demo</a>
+  </div>
+</footer>
+
+<script>
+// ═══ NAVIGATION ═══
+function showSection(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const section = document.getElementById(id);
+  if (section) {
+    section.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  const navLink = document.getElementById('nav-' + id);
+  if (navLink) navLink.classList.add('active');
+  setTimeout(() => {
+    document.querySelectorAll('.fade-up:not(.visible)').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 60);
+    });
+  }, 50);
+
+  // Init charts if switching to demo
+  if (id === 'demo') {
+    setTimeout(initCharts, 100);
+  }
+}
+
+// Prevent default on nav links
+document.querySelectorAll('nav a, footer a').forEach(a => {
+  a.addEventListener('click', e => e.preventDefault());
+});
+
+// Initial hero animations
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('#hero .fade-up, #hero [style*="animation"]').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 80);
+    });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  }, 100);
+  initCharts();
+  initScoreBars();
+});
+
+// Intersection observer
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+
+// ═══ HERO PARALLAX ═══
+document.addEventListener('mousemove', e => {
+  const glow = document.getElementById('heroGlow');
+  if (!glow || !document.getElementById('hero').classList.contains('active')) return;
+  const x = (e.clientX / window.innerWidth - 0.5) * 50;
+  const y = (e.clientY / window.innerHeight - 0.5) * 50;
+  glow.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+});
+
+// ═══ SCORE BARS ═══
+function initScoreBars() {
+  document.querySelectorAll('.score-bar-fill').forEach(bar => {
+    const w = bar.style.width;
+    bar.style.width = '0%';
+    setTimeout(() => { bar.style.width = w; }, 600);
+  });
+}
+
+// ═══ DEMO SIDEBAR NAVIGATION ═══
+document.querySelectorAll('.sidebar-item[data-view]').forEach(item => {
+  item.addEventListener('click', () => {
+    const view = item.getAttribute('data-view');
+    switchView(view);
+    item.closest('.demo-sidebar').querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+function switchView(viewId) {
+  document.querySelectorAll('.demo-view').forEach(v => v.classList.remove('active'));
+  const target = document.getElementById('view-' + viewId);
+  if (target) target.classList.add('active');
+  // Update sidebar active state
+  document.querySelectorAll('.sidebar-item').forEach(i => {
+    i.classList.toggle('active', i.getAttribute('data-view') === viewId);
+  });
+  // Reinit charts on switching to dashboard
+  if (viewId === 'dashboard' || viewId === 'causal' || viewId === 'scenarios') {
+    setTimeout(initCharts, 100);
+  }
+}
+
+// ═══ FILTER PILLS (Dashboard KPI updates) ═══
+const periodData = {
+  weekly:  { margin: '+4.2%', price: '$12.40', elasticity: '−34%', scenarios: '1,024', period: 'Shoprite · Northern Africa · Weekly' },
+  monthly: { margin: '+5.1%', price: '$12.65', elasticity: '−31%', scenarios: '6,840', period: 'Shoprite · Northern Africa · Monthly' },
+  sku:     { margin: '+6.8%', price: '$12.40', elasticity: '−38%', scenarios: '1,024', period: 'Dettol 500ml · All Retailers' },
+  region:  { margin: '+3.9%', price: '$11.95', elasticity: '−29%', scenarios: '4,220', period: 'All Regions · All Retailers · Weekly' }
+};
+
+document.querySelectorAll('.filter-pill[data-period]').forEach(pill => {
+  pill.addEventListener('click', () => {
+    pill.closest('.demo-filters').querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    const d = periodData[pill.getAttribute('data-period')];
+    if (!d) return;
+    document.getElementById('kpi-margin').textContent = d.margin;
+    document.getElementById('kpi-price').textContent = d.price;
+    document.getElementById('kpi-elasticity').textContent = d.elasticity;
+    document.getElementById('kpi-scenarios').textContent = d.scenarios;
+    document.getElementById('dash-period').textContent = d.period;
+  });
+});
+
+// Non-period pills
+document.querySelectorAll('.filter-pill:not([data-period])').forEach(pill => {
+  pill.addEventListener('click', () => {
+    if (!pill.closest('.demo-filters')) return;
+    pill.closest('.demo-filters').querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+  });
+});
+
+// ═══ TOGGLE SWITCH ═══
+function toggleAutopilot(el) {
+  const sw = el.querySelector('.toggle-switch');
+  const isOn = sw.classList.contains('on');
+  sw.classList.toggle('on', !isOn);
+  sw.classList.toggle('off', isOn);
+}
+
+// ═══ ACTION BUTTONS ═══
+function actionFlash(btn) {
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span>✓</span> Done';
+  btn.style.color = 'var(--green)';
+  btn.style.borderColor = 'rgba(48,209,88,0.3)';
+  setTimeout(() => {
+    btn.innerHTML = orig;
+    btn.style.color = '';
+    btn.style.borderColor = '';
+  }, 1800);
+}
+
+// ═══ APPLY SCENARIO ═══
+function applyScenario(btn) {
+  btn.textContent = '✓ Applied';
+  btn.classList.add('applied');
+  btn.disabled = true;
+}
+
+// ═══ CHARTS ═══
+let elasticityChartInst = null, causalChartInst = null, scenarioChartInst = null;
+
+function initCharts() {
+  initElasticityChart();
+  initCausalChart();
+  initScenarioChart();
+}
+
+function initElasticityChart() {
+  const canvas = document.getElementById('elasticityChart');
+  if (!canvas) return;
+  if (elasticityChartInst) { elasticityChartInst.destroy(); elasticityChartInst = null; }
+
+  // Generate elasticity curve: demand = A * price^(-e)
+  const A = 5000, e = 2.41;
+  const prices = [], demands = [], upper = [], lower = [];
+  for (let p = 8; p <= 18; p += 0.5) {
+    const d = A * Math.pow(p, -e);
+    const noise = 0.15;
+    prices.push(p);
+    demands.push(Math.round(d));
+    upper.push(Math.round(d * (1 + noise)));
+    lower.push(Math.round(d * (1 - noise)));
+  }
+
+  // Scatter data points
+  const scatterPts = [];
+  for (let i = 0; i < 18; i++) {
+    const p = 8 + Math.random() * 10;
+    const d = A * Math.pow(p, -e) * (0.75 + Math.random() * 0.5);
+    scatterPts.push({ x: +p.toFixed(1), y: Math.round(d) });
+  }
+
+  const chartColor = 'rgba(255,45,120,1)';
+  const bandColor = 'rgba(255,45,120,0.08)';
+
+  elasticityChartInst = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: prices,
+      datasets: [
+        {
+          label: 'Causal ML Curve',
+          data: demands,
+          borderColor: chartColor,
+          borderWidth: 2.5,
+          fill: false,
+          pointRadius: 0,
+          tension: 0.4,
+          order: 2
+        },
+        {
+          label: 'Upper CI',
+          data: upper,
+          borderColor: 'transparent',
+          borderWidth: 0,
+          backgroundColor: bandColor,
+          fill: '+1',
+          pointRadius: 0,
+          tension: 0.4,
+          order: 3
+        },
+        {
+          label: 'Lower CI',
+          data: lower,
+          borderColor: 'transparent',
+          borderWidth: 0,
+          backgroundColor: bandColor,
+          fill: false,
+          pointRadius: 0,
+          tension: 0.4,
+          order: 4
+        },
+        {
+          label: 'Observed Data',
+          data: scatterPts,
+          type: 'scatter',
+          backgroundColor: 'rgba(255,45,120,0.5)',
+          pointRadius: 4,
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a1a',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          titleColor: '#f5f5f7',
+          bodyColor: 'rgba(245,245,247,0.6)',
+          callbacks: {
+            title: items => `Price: $${items[0].label}`,
+            label: item => item.dataset.label === 'Causal ML Curve' ? `Demand: ${item.raw} units` : null
+          }
+        },
+        annotation: { annotations: {} }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          min: 8, max: 18,
+          title: { display: true, text: 'Price ($)', color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 11 } },
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 10 }, stepSize: 2 }
+        },
+        y: {
+          title: { display: true, text: 'Weekly Demand (units)', color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 11 } },
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 10 } }
+        }
+      }
+    }
+  });
+}
+
+function initCausalChart() {
+  const canvas = document.getElementById('causalChart');
+  if (!canvas) return;
+  if (causalChartInst) { causalChartInst.destroy(); causalChartInst = null; }
+
+  const actual = [], predicted = [];
+  for (let i = 0; i < 24; i++) {
+    const base = 800 + Math.sin(i * 0.5) * 200 + i * 8;
+    actual.push(Math.round(base + (Math.random() - 0.5) * 120));
+    predicted.push(Math.round(base + (Math.random() - 0.5) * 40));
+  }
+  const labels = Array.from({length: 24}, (_, i) => `W${i+1}`);
+
+  causalChartInst = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Actual', data: actual, borderColor: 'rgba(255,45,120,0.8)', borderWidth: 1.5, backgroundColor: 'transparent', pointRadius: 2, tension: 0.3 },
+        { label: 'Predicted', data: predicted, borderColor: 'rgba(48,209,88,0.8)', borderWidth: 2, backgroundColor: 'transparent', pointRadius: 2, tension: 0.4 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true, labels: { color: 'rgba(255,255,255,0.5)', font: { family: 'DM Mono', size: 10 }, boxWidth: 12 } },
+        tooltip: { backgroundColor: '#1a1a1a', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, titleColor: '#f5f5f7', bodyColor: 'rgba(245,245,247,0.6)' }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 9 }, maxTicksLimit: 8 } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 9 } } }
+      }
+    }
+  });
+}
+
+function initScenarioChart() {
+  const canvas = document.getElementById('scenarioChart');
+  if (!canvas) return;
+  if (scenarioChartInst) { scenarioChartInst.destroy(); scenarioChartInst = null; }
+
+  const scenarios = [
+    { label: 'S1: Dettol 500ml NA', margin: 3.8, volume: -1.8, opportunity: 2.1 },
+    { label: 'S2: Dettol 1L SA', margin: 2.9, volume: -2.1, opportunity: 1.6 },
+    { label: 'S3: Harpic 500ml EA', margin: 2.4, volume: -4.8, opportunity: 0.9 },
+    { label: 'S4: Dettol 500ml UAE', margin: 1.8, volume: -0.5, opportunity: 0.7 },
+    { label: 'S5: Harpic 1L KSA', margin: 1.6, volume: -3.2, opportunity: 0.6 },
+  ];
+
+  scenarioChartInst = new Chart(canvas, {
+    type: 'scatter',
+    data: {
+      datasets: scenarios.map((s, i) => ({
+        label: s.label,
+        data: [{ x: Math.abs(s.volume), y: s.margin }],
+        backgroundColor: i === 0 ? 'rgba(255,45,120,0.7)' : 'rgba(48,209,88,0.5)',
+        pointRadius: 8 + s.opportunity * 4,
+        pointHoverRadius: 10 + s.opportunity * 4
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a1a',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          titleColor: '#f5f5f7',
+          bodyColor: 'rgba(245,245,247,0.6)',
+          callbacks: {
+            title: items => scenarios[items[0].datasetIndex].label,
+            label: items => [`Margin uplift: +${scenarios[items[0].datasetIndex].margin}%`, `Volume risk: −${Math.abs(scenarios[items[0].datasetIndex].volume)}%`, `Opportunity: $${scenarios[items[0].datasetIndex].opportunity}M ann`]
+          }
+        }
+      },
+      scales: {
+        x: { title: { display: true, text: 'Volume Risk (% loss)', color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 10 } } },
+        y: { title: { display: true, text: 'Margin Uplift (%)', color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 10 } } }
+      }
+    }
+  });
+}
+
+// ═══ AI COPILOT ═══
+const SYSTEM_PROMPT = `You are PriceOS Copilot, an expert autonomous pricing intelligence assistant for FMCG brands. You have access to a live pricing model for Reckitt (Dettol, Harpic) across Shoprite and Carrefour retailers in the AME region.
+
+Your capabilities:
+- Causal ML elasticity analysis (Double ML, CausalForest)
+- Competitor price monitoring and game-theory simulation  
+- Scenario engine results (1,000+ scenarios run nightly)
+- Guardrailed auto-pilot execution recommendations
+- EU AI Act compliance guidance
+
+Current context:
+- Product: Dettol 500ml, Shoprite Northern Africa
+- Current optimal price: $12.40
+- Causal elasticity: -2.41 (own-price)
+- Recent competitor move: Carrefour UAE dropped 9.7% (7 days ago)
+- Top overnight recommendation: +6.0% price increase → +3.8% margin uplift
+- Pilot status: Month 4, preliminary results showing +5.4% margin uplift
+
+Respond as a sharp, data-driven pricing expert. Be concise (2-4 sentences). Use specific numbers from the context. Reference confidence intervals and causal reasoning where relevant. Avoid generic advice.`;
+
+async function callAI(messages) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: SYSTEM_PROMPT,
+      messages
+    })
+  });
+  const data = await response.json();
+  return data.content?.[0]?.text || 'Unable to get a response. Please try again.';
+}
+
+// Dashboard chat
+const dashHistory = [];
+
+async function sendMessage() {
+  const input = document.getElementById('dash-input');
+  const sendBtn = document.getElementById('dash-send');
+  const msgs = document.getElementById('dash-chat-msgs');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  sendBtn.disabled = true;
+
+  // Add user message
+  msgs.innerHTML += `<div class="chat-msg" style="flex-direction:row-reverse"><div class="chat-avatar avatar-user">R</div><div class="chat-bubble user">${escHtml(text)}</div></div>`;
+
+  // Typing indicator
+  const typingId = 'typing-' + Date.now();
+  msgs.innerHTML += `<div class="chat-msg" id="${typingId}"><div class="chat-avatar avatar-ai">P</div><div class="chat-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  dashHistory.push({ role: 'user', content: text });
+
+  try {
+    const reply = await callAI(dashHistory);
+    dashHistory.push({ role: 'assistant', content: reply });
+    document.getElementById(typingId)?.remove();
+    msgs.innerHTML += `<div class="chat-msg"><div class="chat-avatar avatar-ai">P</div><div class="chat-bubble">${formatAIResponse(reply)}</div></div>`;
+  } catch (e) {
+    document.getElementById(typingId)?.remove();
+    msgs.innerHTML += `<div class="chat-msg"><div class="chat-avatar avatar-ai">P</div><div class="chat-bubble" style="color:var(--accent)">API connection issue. Check your Anthropic API key configuration.</div></div>`;
+  }
+
+  msgs.scrollTop = msgs.scrollHeight;
+  sendBtn.disabled = false;
+}
+
+document.getElementById('dash-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+// Copilot standalone chat
+const copilotHistory = [];
+
+async function sendCopilotMessage() {
+  const input = document.getElementById('copilot-input');
+  const sendBtn = document.getElementById('copilot-send');
+  const msgs = document.getElementById('copilot-msgs');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  sendBtn.disabled = true;
+
+  msgs.innerHTML += `<div class="chat-msg" style="flex-direction:row-reverse"><div class="chat-avatar avatar-user">R</div><div class="chat-bubble user">${escHtml(text)}</div></div>`;
+  const typingId = 'ctyping-' + Date.now();
+  msgs.innerHTML += `<div class="chat-msg" id="${typingId}"><div class="chat-avatar avatar-ai">P</div><div class="chat-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  copilotHistory.push({ role: 'user', content: text });
+
+  try {
+    const reply = await callAI(copilotHistory);
+    copilotHistory.push({ role: 'assistant', content: reply });
+    document.getElementById(typingId)?.remove();
+    msgs.innerHTML += `<div class="chat-msg"><div class="chat-avatar avatar-ai">P</div><div class="chat-bubble">${formatAIResponse(reply)}</div></div>`;
+  } catch (e) {
+    document.getElementById(typingId)?.remove();
+    msgs.innerHTML += `<div class="chat-msg"><div class="chat-avatar avatar-ai">P</div><div class="chat-bubble" style="color:var(--accent)">API connection issue. Check your Anthropic API key configuration.</div></div>`;
+  }
+
+  msgs.scrollTop = msgs.scrollHeight;
+  sendBtn.disabled = false;
+}
+
+document.getElementById('copilot-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendCopilotMessage();
+});
+
+function fillPrompt(text) {
+  const input = document.getElementById('copilot-input');
+  if (input) { input.value = text; input.focus(); }
+}
+
+// Formatting helpers
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatAIResponse(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--text)">$1</strong>')
+    .replace(/(\+[\d.]+%)/g, '<span class="chat-green">$1</span>')
+    .replace(/(−[\d.]+%|−\$[\d.]+)/g, '<span class="chat-highlight">$1</span>')
+    .replace(/\$([\d,.]+[MKB]?)/g, '<span style="color:var(--blue);font-weight:600">$$$1</span>');
+}
+</script>
+</body>
+</html>
