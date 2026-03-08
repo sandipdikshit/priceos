@@ -3,1543 +3,1617 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>PriceOS — Autonomous Pricing Intelligence</title>
+<title>PriceOS v2 — Revenue Growth Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 /* ═══════════════════════════════════════════════════════════════════
-   PriceOS — Standalone Product UI
-   Dark terminal × editorial serif × autonomous pricing intelligence
+   PriceOS v2 — Scientific Bright Mode
+   Clean · Dense · Clinical · Revenue Intelligence Platform
    ═══════════════════════════════════════════════════════════════════ */
 :root {
-  --bg:       #090B0D;
-  --bg2:      #0E1114;
-  --bg3:      #131618;
-  --surface:  #181B1F;
-  --surface2: #1E2226;
-  --border:   rgba(255,255,255,.07);
-  --border-m: rgba(255,255,255,.12);
-  --border-b: rgba(255,255,255,.05);
+  /* Background system */
+  --bg:        #F4F6F9;
+  --bg2:       #ECEEF2;
+  --surface:   #FFFFFF;
+  --surface2:  #F8F9FB;
+  --surface3:  #F1F3F7;
 
-  --pink:     #FF2D78;
-  --pink-l:   #FF6B9D;
-  --pink-dim: rgba(255,45,120,.12);
-  --pink-glow:rgba(255,45,120,.25);
-  --teal:     #00D4B4;
-  --teal-dim: rgba(0,212,180,.1);
-  --gold:     #F4B942;
-  --gold-dim: rgba(244,185,66,.1);
-  --green:    #10D4A0;
-  --green-dim:rgba(16,212,160,.1);
-  --red:      #FF4D6A;
-  --red-dim:  rgba(255,77,106,.1);
-  --amber:    #F59E0B;
-  --blue:     #60A5FA;
+  /* Borders */
+  --border:    #DDE1E9;
+  --border-m:  #C8CDD8;
+  --border-s:  #E8EBF0;
 
-  --text:     #F0F2F5;
-  --text-m:   #9AA5B4;
-  --text-d:   #5A6777;
-  --text-dim: #3A4452;
+  /* Text */
+  --text:      #0D1117;
+  --text-m:    #374151;
+  --text-d:    #6B7280;
+  --text-dim:  #9CA3AF;
 
-  --sidebar-w: 240px;
-  --topbar-h:  52px;
-  --agentbar-h:46px;
-  --mono: 'JetBrains Mono', monospace;
-  --serif: 'DM Serif Display', Georgia, serif;
-  --sans: 'Syne', -apple-system, sans-serif;
-  --r6:6px; --r8:8px; --r10:10px; --r12:12px; --r14:14px; --r16:16px;
-  --ease: cubic-bezier(0.23,1,0.32,1);
-  --t: 0.2s var(--ease);
+  /* Brand colors */
+  --blue:      #1D4ED8;
+  --blue-l:    #3B82F6;
+  --blue-dim:  rgba(29,78,216,.08);
+  --blue-mid:  rgba(29,78,216,.14);
+  --sky:       #0EA5E9;
+  --sky-dim:   rgba(14,165,233,.1);
+  --green:     #059669;
+  --green-l:   #10B981;
+  --green-dim: rgba(5,150,105,.08);
+  --red:       #DC2626;
+  --red-l:     #EF4444;
+  --red-dim:   rgba(220,38,38,.08);
+  --amber:     #D97706;
+  --amber-dim: rgba(217,119,6,.08);
+  --purple:    #7C3AED;
+  --purple-dim:rgba(124,58,237,.08);
+  --teal:      #0D9488;
+  --teal-dim:  rgba(13,148,136,.08);
+  --rose:      #E11D48;
+  --navy:      #1E3A5F;
+
+  /* Fonts */
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Lora', Georgia, serif;
+  --sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+
+  /* Sizes */
+  --sidebar-w: 230px;
+  --topbar-h: 54px;
+  --flowbar-h: 44px;
+  --r4:4px; --r6:6px; --r8:8px; --r10:10px; --r12:12px; --r14:14px;
+  --ease: cubic-bezier(0.22,1,0.36,1);
+  --t: 0.18s var(--ease);
+  --shadow-s: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow: 0 4px 12px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.04);
+  --shadow-l: 0 8px 24px rgba(0,0,0,.1), 0 2px 8px rgba(0,0,0,.04);
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;background:var(--bg);}
-body{font-family:var(--sans);color:var(--text);font-size:14px;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--sans);color:var(--text);font-size:13px;-webkit-font-smoothing:antialiased;}
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--border-m);}
 
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes ping{0%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-@keyframes countUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-.animate-in{animation:fadeUp .3s var(--ease) both;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@keyframes barGrow{from{width:0}to{width:var(--w)}}
+.anim{animation:fadeUp .28s var(--ease) both;}
 
 /* ── LAYOUT ── */
-#app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;grid-template-rows:var(--topbar-h) var(--agentbar-h) 1fr;height:100vh;gap:0;}
+#app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;grid-template-rows:var(--topbar-h) var(--flowbar-h) 1fr;height:100vh;}
 
 /* ── TOPBAR ── */
 #topbar{
   grid-column:1/-1;grid-row:1;
+  background:var(--navy);
   display:flex;align-items:center;
-  background:var(--bg2);
-  border-bottom:1px solid var(--border);
-  padding:0 20px;
-  gap:16px;
-  z-index:50;
+  padding:0 20px;gap:14px;z-index:50;
 }
 .top-logo{
-  font-family:var(--serif);font-size:20px;color:var(--text);
-  letter-spacing:-.01em;display:flex;align-items:center;gap:6px;
-  margin-right:4px;flex-shrink:0;
+  font-family:var(--serif);font-size:18px;color:white;
+  letter-spacing:-.02em;display:flex;align-items:center;gap:8px;flex-shrink:0;
 }
-.top-logo em{color:var(--pink);font-style:normal;}
-.top-logo-badge{
-  font-family:var(--sans);font-size:8.5px;font-weight:800;
-  background:var(--pink);color:white;padding:2px 7px;border-radius:980px;
-  letter-spacing:.08em;text-transform:uppercase;
+.top-logo em{color:#60A5FA;font-style:normal;}
+.logo-chip{
+  font-family:var(--sans);font-size:8px;font-weight:800;
+  background:rgba(96,165,250,.2);color:#93C5FD;
+  padding:2px 8px;border-radius:3px;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid rgba(96,165,250,.25);
 }
-.top-divider{width:1px;height:20px;background:var(--border);flex-shrink:0;}
-.top-workspace{
-  font-size:12px;color:var(--text-d);display:flex;align-items:center;gap:6px;
-}
-.top-workspace strong{color:var(--text-m);}
-.top-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.top-div{width:1px;height:18px;background:rgba(255,255,255,.15);}
+.top-crumb{font-size:12px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:6px;}
+.top-crumb strong{color:rgba(255,255,255,.85);}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
 .live-pill{
-  display:flex;align-items:center;gap:6px;
-  padding:4px 10px;border-radius:980px;
-  background:rgba(16,212,160,.08);border:1px solid rgba(16,212,160,.2);
-  font-size:11px;font-weight:700;color:var(--green);letter-spacing:.04em;
+  display:flex;align-items:center;gap:5px;padding:4px 10px;
+  border-radius:4px;background:rgba(5,150,105,.2);border:1px solid rgba(16,185,129,.3);
+  font-size:10.5px;font-weight:700;color:#34D399;letter-spacing:.04em;
 }
-.live-dot{
-  width:6px;height:6px;border-radius:50%;background:var(--green);
-  animation:ping 2s ease-in-out infinite;color:var(--green);
+.live-dot{width:5px;height:5px;border-radius:50%;background:#34D399;animation:ping 2s ease-in-out infinite;color:#34D399;}
+.top-btn{
+  font-family:var(--sans);font-size:11px;font-weight:700;
+  padding:5px 12px;border-radius:var(--r6);cursor:pointer;
+  border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.75);transition:var(--t);letter-spacing:.02em;
 }
+.top-btn:hover{background:rgba(255,255,255,.1);color:white;}
+.top-btn.cta{background:var(--blue);border-color:var(--blue);color:white;}
+.top-btn.cta:hover{background:#1E40AF;}
 .top-avatar{
-  width:30px;height:30px;border-radius:50%;
-  background:linear-gradient(135deg,var(--pink),#9B1DFF);
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,#60A5FA,#A78BFA);
   display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:800;color:white;
+  font-size:11px;font-weight:800;color:white;flex-shrink:0;
 }
 
-/* ── AGENT BAR ── */
-#agentbar{
+/* ── FLOW BAR (E2E pipeline) ── */
+#flowbar{
   grid-column:1/-1;grid-row:2;
-  background:rgba(255,45,120,.03);
+  background:var(--surface);
   border-bottom:1px solid var(--border);
   display:flex;align-items:center;
-  padding:0 20px;gap:0;
-  overflow-x:auto;z-index:40;
+  padding:0 16px;gap:0;z-index:40;overflow-x:auto;
 }
-.ab-label{
-  font-size:9.5px;font-weight:800;color:var(--text-dim);
-  letter-spacing:.12em;text-transform:uppercase;
-  flex-shrink:0;margin-right:16px;
-  white-space:nowrap;
+.fb-step{
+  display:flex;align-items:center;gap:7px;
+  padding:6px 12px;font-size:11.5px;font-weight:600;
+  color:var(--text-dim);cursor:pointer;transition:var(--t);
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  white-space:nowrap;flex-shrink:0;
 }
-.ab-agents{display:flex;align-items:center;gap:0;flex:1;}
-.ab-agent{
-  display:flex;align-items:center;gap:6px;
-  padding:6px 12px;border-radius:var(--r8);
-  font-size:11.5px;font-weight:600;color:var(--text-d);
-  transition:var(--t);cursor:default;flex-shrink:0;
-  white-space:nowrap;
+.fb-step:hover{color:var(--text-m);}
+.fb-step.done{color:var(--green);}
+.fb-step.active{color:var(--blue);border-bottom-color:var(--blue);}
+.fb-step.active .fb-num{background:var(--blue);color:white;}
+.fb-step.done .fb-num{background:var(--green);color:white;}
+.fb-num{
+  width:17px;height:17px;border-radius:50%;
+  background:var(--bg2);color:var(--text-dim);
+  font-size:9.5px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;transition:var(--t);
 }
-.ab-agent.done   {color:var(--green);}
-.ab-agent.active {color:var(--text);background:rgba(255,45,120,.08);border:1px solid rgba(255,45,120,.2);}
-.ab-agent.idle   {color:var(--text-dim);}
-.ab-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
-.ab-dot.pulse{animation:pulse 1.8s ease-in-out infinite;}
-.ab-arrow{color:var(--text-dim);font-size:12px;margin:0 2px;flex-shrink:0;}
-.ab-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.ab-cycle-time{font-family:var(--mono);font-size:10px;color:var(--text-dim);}
-.ab-cycle-time strong{color:var(--text-m);}
-.ab-btn{
-  font-family:var(--sans);font-size:10.5px;font-weight:700;
-  padding:4px 12px;border-radius:var(--r8);cursor:pointer;
-  border:1px solid var(--border-m);background:rgba(255,255,255,.04);
-  color:var(--text-m);transition:var(--t);letter-spacing:.04em;
+.fb-arrow{color:var(--border-m);font-size:12px;margin:0 2px;flex-shrink:0;}
+.fb-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;padding-left:12px;}
+.cycle-badge{
+  font-family:var(--mono);font-size:10px;color:var(--text-d);
+  background:var(--surface2);border:1px solid var(--border);
+  padding:3px 9px;border-radius:var(--r4);
 }
-.ab-btn:hover{background:rgba(255,255,255,.08);color:var(--text);}
-.ab-btn.armed{background:var(--pink);border-color:var(--pink);color:white;}
 
 /* ── SIDEBAR ── */
 #sidebar{
   grid-column:1;grid-row:3;
-  background:var(--bg2);
+  background:var(--surface);
   border-right:1px solid var(--border);
-  display:flex;flex-direction:column;
-  overflow:hidden;
+  display:flex;flex-direction:column;overflow:hidden;
 }
-.sb-scroll{flex:1;overflow-y:auto;padding:12px 10px;}
-.sb-section{
-  font-size:9px;font-weight:800;color:var(--text-dim);
+.sb-scroll{flex:1;overflow-y:auto;padding:10px 8px;}
+.sb-sec{
+  font-size:8.5px;font-weight:800;color:var(--text-dim);
   letter-spacing:.14em;text-transform:uppercase;
-  padding:8px 8px 4px;margin-top:4px;
+  padding:10px 8px 4px;
 }
 .nav-item{
   display:flex;align-items:center;gap:9px;
-  padding:8px 10px;border-radius:var(--r8);
-  font-size:13px;font-weight:600;color:var(--text-d);
+  padding:7.5px 10px;border-radius:var(--r6);
+  font-size:12.5px;font-weight:600;color:var(--text-d);
   cursor:pointer;transition:var(--t);margin-bottom:1px;
   position:relative;
 }
-.nav-item:hover{color:var(--text);background:rgba(255,255,255,.04);}
+.nav-item:hover{color:var(--text);background:var(--surface2);}
 .nav-item.active{
-  color:var(--text);background:rgba(255,45,120,.1);
+  color:var(--blue);background:var(--blue-dim);
 }
 .nav-item.active::before{
   content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
-  width:2px;height:60%;background:var(--pink);border-radius:2px;
+  width:2.5px;height:55%;background:var(--blue);border-radius:2px;
 }
-.nav-icon{font-size:15px;flex-shrink:0;}
+.nav-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center;}
 .nav-badge{
   margin-left:auto;font-size:9px;font-weight:800;
-  padding:2px 6px;border-radius:980px;letter-spacing:.04em;
+  padding:1.5px 6px;border-radius:3px;letter-spacing:.03em;
 }
-.nb-pink{background:var(--pink-dim);color:var(--pink);border:1px solid rgba(255,45,120,.3);}
+.nb-blue{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(29,78,216,.2);}
 .nb-green{background:var(--green-dim);color:var(--green);}
-.nb-amber{background:var(--gold-dim);color:var(--gold);}
-.nb-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;}
+.nb-amber{background:var(--amber-dim);color:var(--amber);}
+.nb-red{background:var(--red-dim);color:var(--red);}
+.nb-live{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 
 .sb-bottom{
-  padding:12px;border-top:1px solid var(--border);
-  flex-shrink:0;
+  padding:10px;border-top:1px solid var(--border);flex-shrink:0;
 }
-.sb-context{
-  background:rgba(255,45,120,.06);border:1px solid rgba(255,45,120,.15);
-  border-radius:var(--r10);padding:10px 12px;
+.sb-ctx{
+  background:var(--blue-dim);border:1px solid rgba(29,78,216,.15);
+  border-radius:var(--r8);padding:9px 12px;
 }
-.sb-context-label{font-size:9.5px;color:var(--pink);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
-.sb-context-brand{font-size:13px;font-weight:700;color:var(--text);}
-.sb-context-detail{font-size:11px;color:var(--text-d);margin-top:1px;}
+.sb-ctx-label{font-size:9px;color:var(--blue);font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;}
+.sb-ctx-brand{font-size:12.5px;font-weight:700;color:var(--text);}
+.sb-ctx-detail{font-size:11px;color:var(--text-d);margin-top:1px;}
 
 /* ── MAIN CONTENT ── */
 #content{
   grid-column:2;grid-row:3;
   overflow-y:auto;overflow-x:hidden;
-  padding:24px;background:var(--bg);
+  padding:22px 24px;background:var(--bg);
 }
 
 /* ── PAGE HEADER ── */
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px;}
-.page-title{font-family:var(--serif);font-size:26px;line-height:1.1;letter-spacing:-.02em;color:var(--text);}
-.page-title em{color:var(--pink);font-style:normal;}
-.page-sub{font-size:12px;color:var(--text-d);margin-top:4px;line-height:1.5;}
-.page-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;}
+.ph-left{}
+.page-title{font-family:var(--serif);font-size:22px;letter-spacing:-.02em;color:var(--text);}
+.page-title em{color:var(--blue);font-style:normal;}
+.page-sub{font-size:11.5px;color:var(--text-d);margin-top:4px;line-height:1.5;}
+.page-actions{display:flex;gap:7px;align-items:center;flex-shrink:0;}
 
 /* ── BUTTONS ── */
 .btn{
-  font-family:var(--sans);font-size:12.5px;font-weight:700;
-  padding:8px 16px;border-radius:var(--r8);border:none;
+  font-family:var(--sans);font-size:12px;font-weight:700;
+  padding:7px 14px;border-radius:var(--r6);border:none;
   cursor:pointer;transition:var(--t);display:inline-flex;
-  align-items:center;gap:6px;letter-spacing:.02em;white-space:nowrap;
+  align-items:center;gap:5px;letter-spacing:.01em;white-space:nowrap;
 }
 .btn:active{transform:scale(.97);}
-.btn-pink{background:var(--pink);color:white;box-shadow:0 2px 12px var(--pink-glow);}
-.btn-pink:hover{transform:translateY(-1px);box-shadow:0 4px 20px var(--pink-glow);}
-.btn-ghost{background:rgba(255,255,255,.05);color:var(--text-m);border:1px solid var(--border-m);}
-.btn-ghost:hover{background:rgba(255,255,255,.09);color:var(--text);}
-.btn-teal{background:rgba(0,212,180,.12);color:var(--teal);border:1px solid rgba(0,212,180,.25);}
-.btn-teal:hover{background:rgba(0,212,180,.18);}
-.btn-sm{padding:6px 13px;font-size:11.5px;}
-.btn-xs{padding:4px 10px;font-size:11px;border-radius:var(--r6);}
+.btn-blue{background:var(--blue);color:white;box-shadow:var(--shadow-s);}
+.btn-blue:hover{background:#1E40AF;box-shadow:var(--shadow);}
+.btn-ghost{background:var(--surface);color:var(--text-m);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);border-color:var(--border-m);}
+.btn-green{background:var(--green);color:white;}
+.btn-green:hover{background:#047857;}
+.btn-sm{padding:5px 11px;font-size:11.5px;}
+.btn-xs{padding:4px 9px;font-size:11px;border-radius:var(--r4);}
 
 /* ── CARDS ── */
 .card{
   background:var(--surface);
   border:1px solid var(--border);
-  border-radius:var(--r14);
-  transition:border-color var(--t),box-shadow var(--t);
+  border-radius:var(--r12);
+  box-shadow:var(--shadow-s);
+  transition:box-shadow var(--t),border-color var(--t);
 }
-.card:hover{border-color:var(--border-m);}
-.card-lift:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(0,0,0,.4);}
-.card-header{padding:16px 20px 12px;border-bottom:1px solid var(--border-b);}
-.card-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
-.card-sub{font-size:11.5px;color:var(--text-d);margin-top:2px;}
+.card:hover{border-color:var(--border-m);box-shadow:var(--shadow);}
+.card-header{padding:14px 18px 12px;border-bottom:1px solid var(--border-s);}
+.card-title{font-size:13px;font-weight:700;color:var(--text);}
+.card-sub{font-size:11px;color:var(--text-d);margin-top:2px;}
 
 /* ── KPI ── */
 .kpi{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r12);padding:16px 18px;
-  position:relative;overflow:hidden;transition:var(--t);
+  border-radius:var(--r10);padding:14px 16px;
+  box-shadow:var(--shadow-s);position:relative;overflow:hidden;
 }
-.kpi::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1.5px;
-  background:var(--kc,var(--pink));border-radius:2px 2px 0 0;opacity:.6;
-}
-.kpi:hover{border-color:var(--border-m);transform:translateY(-1px);}
-.kpi-label{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
-.kpi-val{font-family:var(--mono);font-size:26px;font-weight:700;line-height:1;letter-spacing:-.02em;}
-.kpi-delta{font-size:11.5px;font-weight:700;margin-top:6px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;}
+.kpi-accent{position:absolute;top:0;left:0;right:0;height:2px;background:var(--kc,var(--blue));}
+.kpi-label{font-size:9.5px;font-weight:800;color:var(--text-d);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.kpi-val{font-family:var(--mono);font-size:24px;font-weight:600;line-height:1;letter-spacing:-.02em;color:var(--kc,var(--text));}
+.kpi-delta{font-size:10.5px;font-weight:700;margin-top:6px;display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:3px;}
 .kpi-delta.up{background:var(--green-dim);color:var(--green);}
 .kpi-delta.down{background:var(--red-dim);color:var(--red);}
-.kpi-delta.neutral{background:var(--teal-dim);color:var(--teal);}
-.kpi-sub{font-size:10px;color:var(--text-dim);margin-top:4px;}
+.kpi-delta.neutral{background:var(--blue-dim);color:var(--blue);}
+.kpi-sub{font-size:9.5px;color:var(--text-dim);margin-top:4px;}
 
 /* ── GRIDS ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-.g-main{display:grid;grid-template-columns:1fr 320px;gap:14px;}
+.g-main{display:grid;grid-template-columns:1fr 300px;gap:14px;}
+.g-3-1{display:grid;grid-template-columns:2fr 1fr;gap:14px;}
 
-/* ── LIVE STRIP ── */
-.live-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
-.lc{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r12);padding:16px 18px;
-  position:relative;overflow:hidden;transition:var(--t);
-}
-.lc::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:var(--lcc,var(--teal));border-radius:2px 2px 0 0;
-}
-.lc-label{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
-.lc-dot{width:5px;height:5px;border-radius:50%;background:var(--lcc,var(--teal));animation:pulse 2s ease-in-out infinite;}
-.lc-val{font-family:var(--mono);font-size:28px;font-weight:700;line-height:1;letter-spacing:-.02em;}
-.lc-delta{font-size:11.5px;font-weight:600;color:var(--text-d);margin-top:6px;}
+/* ── STAT STRIP ── */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
 
 /* ── BADGES ── */
-.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:5px;font-size:10.5px;font-weight:700;letter-spacing:.03em;white-space:nowrap;}
-.b-green{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,212,160,.2);}
-.b-red   {background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,106,.2);}
-.b-amber {background:var(--gold-dim);color:var(--gold);border:1px solid rgba(244,185,66,.2);}
-.b-teal  {background:var(--teal-dim);color:var(--teal);border:1px solid rgba(0,212,180,.2);}
-.b-pink  {background:var(--pink-dim);color:var(--pink);border:1px solid rgba(255,45,120,.25);}
-.b-blue  {background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.2);}
-.b-dark  {background:rgba(255,255,255,.06);color:var(--text-m);border:1px solid var(--border);}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.03em;white-space:nowrap;}
+.b-blue  {background:var(--blue-dim);color:var(--blue);border:1px solid rgba(29,78,216,.18);}
+.b-green {background:var(--green-dim);color:var(--green);border:1px solid rgba(5,150,105,.18);}
+.b-red   {background:var(--red-dim);color:var(--red);border:1px solid rgba(220,38,38,.18);}
+.b-amber {background:var(--amber-dim);color:var(--amber);border:1px solid rgba(217,119,6,.18);}
+.b-purple{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(124,58,237,.18);}
+.b-teal  {background:var(--teal-dim);color:var(--teal);border:1px solid rgba(13,148,136,.18);}
+.b-dark  {background:var(--surface2);color:var(--text-m);border:1px solid var(--border);}
+.b-sky   {background:var(--sky-dim);color:var(--sky);border:1px solid rgba(14,165,233,.18);}
+.b-navy  {background:#1E3A5F;color:#93C5FD;border:1px solid rgba(96,165,250,.2);}
 
 /* ── TOGGLE ── */
-.toggle{width:38px;height:22px;background:var(--surface2);border:1px solid var(--border-m);border-radius:11px;cursor:pointer;position:relative;transition:var(--t);}
-.toggle.on{background:var(--pink);border-color:var(--pink);}
-.toggle::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:white;transition:var(--t);}
+.toggle{width:36px;height:20px;background:var(--border-m);border-radius:10px;cursor:pointer;position:relative;transition:var(--t);}
+.toggle.on{background:var(--green);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:white;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:var(--t);}
 .toggle.on::after{transform:translateX(16px);}
 
-/* ── COPILOT ── */
-.copilot-shell{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r14);overflow:hidden;
-  display:flex;flex-direction:column;height:600px;
-}
-.copilot-header{
-  padding:14px 20px;border-bottom:1px solid var(--border);
-  background:rgba(255,45,120,.06);
-  display:flex;align-items:center;gap:10px;
-}
-.copilot-title{font-size:13.5px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
-.copilot-msgs{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:12px;}
-.msg{display:flex;gap:9px;align-items:flex-start;}
-.msg-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;margin-top:1px;}
-.avatar-ai{background:var(--pink);color:white;}
-.avatar-user{background:var(--surface2);border:1px solid var(--border-m);color:var(--text-d);}
-.msg-bubble{padding:10px 14px;border-radius:var(--r10);max-width:85%;font-size:13px;line-height:1.6;}
-.bubble-ai{background:var(--surface);border:1px solid var(--border);}
-.bubble-user{background:var(--pink-dim);border:1px solid rgba(255,45,120,.2);margin-left:auto;}
-.msg.user{flex-direction:row-reverse;}
-.p-pink{color:var(--pink);font-weight:700;}
-.p-green{color:var(--green);font-weight:700;}
-.p-teal{color:var(--teal);font-weight:700;}
-.copilot-chips{padding:10px 16px 8px;border-top:1px solid var(--border-b);display:flex;gap:6px;flex-wrap:wrap;}
-.chip{font-size:11px;padding:4px 10px;border-radius:980px;background:var(--surface2);border:1px solid var(--border-m);color:var(--text-d);cursor:pointer;transition:var(--t);}
-.chip:hover{border-color:var(--pink);color:var(--pink);}
-.copilot-input-row{display:flex;gap:0;border-top:1px solid var(--border);}
-.copilot-input{
-  flex:1;background:transparent;border:none;padding:12px 16px;
-  font-family:var(--sans);font-size:13px;color:var(--text);outline:none;
-}
-.copilot-input::placeholder{color:var(--text-dim);}
-.copilot-send{
-  padding:0 16px;background:var(--pink);border:none;cursor:pointer;
-  font-family:var(--sans);font-size:12.5px;font-weight:700;color:white;
-  transition:var(--t);
-}
-.copilot-send:hover{opacity:.88;}
-
-/* ── AGENT DETAIL CARD ── */
-.agent-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r12);padding:14px 16px;
-  display:flex;align-items:center;gap:12px;transition:var(--t);
-}
-.agent-card:hover{border-color:var(--border-m);}
-.agent-icon-wrap{
-  width:38px;height:38px;border-radius:var(--r8);
-  display:flex;align-items:center;justify-content:center;font-size:18px;
-  flex-shrink:0;
-}
-.agent-status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-
-/* ── SCENARIO CARD ── */
-.scenario-row{
-  padding:14px 18px;border-bottom:1px solid var(--border-b);
-  transition:var(--t);cursor:pointer;
-}
-.scenario-row:hover{background:rgba(255,45,120,.04);}
-.scenario-row:last-child{border-bottom:none;}
-
 /* ── TABLE ── */
-.tbl-head{
-  display:grid;padding:9px 18px;
-  background:var(--bg2);border-bottom:1px solid var(--border);
-}
-.tbl-col{font-size:9.5px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.09em;}
-.tbl-row{
-  display:grid;padding:12px 18px;
-  border-bottom:1px solid var(--border-b);
-  align-items:center;transition:var(--t);font-size:13px;
-}
-.tbl-row:hover{background:rgba(255,255,255,.02);}
+.tbl-head{padding:8px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:grid;gap:8px;}
+.tbl-col{font-size:9px;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;}
+.tbl-row{padding:11px 16px;border-bottom:1px solid var(--border-s);display:grid;gap:8px;align-items:center;font-size:12.5px;transition:var(--t);}
+.tbl-row:hover{background:var(--surface2);}
 .tbl-row:last-child{border-bottom:none;}
 .mono{font-family:var(--mono);}
 
-/* ── STEP FLOW ── */
-.step-flow{display:flex;align-items:center;gap:0;margin-bottom:20px;overflow-x:auto;}
-.step{
-  flex-shrink:0;padding:8px 14px;border-radius:var(--r8);
-  font-size:12px;font-weight:600;
-  display:flex;align-items:center;gap:6px;cursor:pointer;transition:var(--t);
-  border:1px solid var(--border);color:var(--text-d);background:var(--surface);
-}
-.step.done{color:var(--green);border-color:rgba(16,212,160,.3);background:rgba(16,212,160,.05);}
-.step.active{color:var(--pink);border-color:rgba(255,45,120,.35);background:rgba(255,45,120,.08);}
-.step-arrow{color:var(--text-dim);font-size:14px;margin:0 4px;flex-shrink:0;}
+/* ── WATERFALL ── */
+.waterfall-bar{display:flex;align-items:center;gap:10px;margin:6px 0;}
+.wf-label{font-size:11.5px;color:var(--text-m);min-width:180px;font-weight:500;}
+.wf-track{flex:1;height:24px;background:var(--surface2);border-radius:var(--r4);position:relative;overflow:hidden;}
+.wf-fill{height:100%;border-radius:var(--r4);display:flex;align-items:center;padding:0 8px;font-size:10.5px;font-weight:700;color:white;transition:width .8s var(--ease);}
+.wf-val{font-family:var(--mono);font-size:11.5px;font-weight:700;min-width:70px;text-align:right;}
 
-/* ── GUARDRAIL ── */
-.guardrail-row{padding:10px 0;border-bottom:1px solid var(--border-b);}
-.guardrail-bar-wrap{position:relative;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;margin:6px 0 4px;}
-.guardrail-bar-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;transition:width .8s var(--ease);}
-
-/* ── AUDIT LOG ── */
-.audit-entry{
-  padding:12px 18px;border-bottom:1px solid var(--border-b);
-  display:grid;grid-template-columns:120px 1fr 90px 100px;align-items:center;
-  gap:12px;font-size:12.5px;transition:var(--t);
-}
-.audit-entry:hover{background:rgba(255,255,255,.02);}
-
-/* ── OVERVIEW HERO ── */
-.overview-hero{
-  background:linear-gradient(135deg,#0D0506 0%,#150A0D 50%,#0D0C06 100%);
-  border:1px solid rgba(255,45,120,.15);
-  border-radius:var(--r16);padding:28px 32px;
-  margin-bottom:18px;position:relative;overflow:hidden;
-}
-.overview-hero::before{
-  content:'';position:absolute;top:-60px;right:-60px;
-  width:280px;height:280px;
-  background:radial-gradient(circle,rgba(255,45,120,.14) 0%,transparent 70%);
-  pointer-events:none;
-}
-.overview-hero::after{
-  content:'';position:absolute;bottom:-40px;left:30%;
-  width:200px;height:200px;
-  background:radial-gradient(circle,rgba(0,212,180,.08) 0%,transparent 70%);
-  pointer-events:none;
-}
-
-/* ── TYPING DOTS ── */
-.typing{display:flex;gap:3px;align-items:center;padding:4px 0;}
-.typing span{width:6px;height:6px;border-radius:50%;background:var(--text-dim);animation:pulse 1.2s ease-in-out infinite;}
+/* ── TYPING ── */
+.typing{display:flex;gap:4px;align-items:center;padding:4px 0;}
+.typing span{width:5px;height:5px;border-radius:50%;background:var(--text-dim);animation:pulse 1.2s ease-in-out infinite;}
 .typing span:nth-child(2){animation-delay:.15s;}
 .typing span:nth-child(3){animation-delay:.3s;}
 
-/* ── EXEC ACTION CARD ── */
-.exec-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r12);padding:16px;transition:var(--t);
+/* ── COPILOT ── */
+.copilot-shell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r12);overflow:hidden;display:flex;flex-direction:column;height:580px;box-shadow:var(--shadow);}
+.copilot-header{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;gap:10px;}
+.copilot-msgs{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:10px;}
+.msg{display:flex;gap:8px;align-items:flex-start;}
+.msg-avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;margin-top:1px;}
+.avatar-ai{background:var(--navy);color:#93C5FD;}
+.avatar-user{background:var(--blue);color:white;}
+.msg-bubble{padding:9px 13px;border-radius:var(--r8);max-width:88%;font-size:12.5px;line-height:1.65;}
+.bubble-ai{background:var(--surface2);border:1px solid var(--border);}
+.bubble-user{background:var(--blue);color:white;margin-left:auto;border:1px solid transparent;}
+.msg.user{flex-direction:row-reverse;}
+.chip{font-size:11px;padding:4px 10px;border-radius:980px;background:var(--surface2);border:1px solid var(--border);color:var(--text-d);cursor:pointer;transition:var(--t);}
+.chip:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
+.copilot-input-row{display:flex;gap:0;border-top:1px solid var(--border);}
+.copilot-input{flex:1;background:transparent;border:none;padding:11px 14px;font-family:var(--sans);font-size:12.5px;color:var(--text);outline:none;}
+.copilot-input::placeholder{color:var(--text-dim);}
+.copilot-send{padding:0 16px;background:var(--blue);border:none;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:700;color:white;transition:var(--t);}
+.copilot-send:hover{background:#1E40AF;}
+
+/* ── AGENT STEP ── */
+.agent-step{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 16px;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--r10);
+  box-shadow:var(--shadow-s);transition:var(--t);
 }
-.exec-card:hover{border-color:rgba(255,45,120,.3);}
+.agent-step:hover{border-color:var(--border-m);}
+.agent-step-icon{width:36px;height:36px;border-radius:var(--r8);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+
+/* ── CONSUMER SIM ── */
+.consumer-bar{
+  display:flex;align-items:center;gap:10px;padding:10px 0;
+  border-bottom:1px solid var(--border-s);
+}
+.c-brand{font-size:12px;font-weight:600;color:var(--text);min-width:100px;}
+.c-track{flex:1;height:20px;background:var(--surface2);border-radius:3px;position:relative;overflow:hidden;}
+.c-fill{height:100%;border-radius:3px;display:flex;align-items:center;padding:0 7px;font-size:9.5px;font-weight:700;color:white;}
+.c-pct{font-family:var(--mono);font-size:11px;font-weight:700;min-width:38px;text-align:right;}
+
+/* ── DATA QUALITY ── */
+.dq-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border-s);}
+.dq-name{font-size:12px;font-weight:600;color:var(--text-m);min-width:120px;}
+.dq-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+.dq-fill{height:100%;border-radius:3px;}
+.dq-pct{font-family:var(--mono);font-size:11px;color:var(--text-d);min-width:36px;text-align:right;}
+.dq-status{min-width:60px;}
+
+/* ── GUARDRAIL ── */
+.gr-row{padding:10px 0;border-bottom:1px solid var(--border-s);}
+.gr-track{height:8px;background:var(--surface2);border-radius:4px;position:relative;overflow:hidden;margin:5px 0 3px;}
+.gr-fill{height:100%;border-radius:4px;transition:width .8s var(--ease);}
+
+/* ── SCENARIO COMPARE ── */
+.sc-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--r10);padding:16px;box-shadow:var(--shadow-s);}
+.sc-col.recommended{border-color:var(--green);background:rgba(5,150,105,.02);}
+.sc-col-header{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-d);margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--border-s);}
+.sc-col.recommended .sc-col-header{color:var(--green);}
+.sc-metric{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border-s);}
+.sc-metric:last-child{border-bottom:none;}
+.sc-metric-l{font-size:11.5px;color:var(--text-d);}
+.sc-metric-v{font-family:var(--mono);font-size:13px;font-weight:700;}
+
+/* ── PPA ── */
+.ppa-cell{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r8);padding:12px 14px;
+  cursor:pointer;transition:var(--t);text-align:center;
+}
+.ppa-cell:hover{border-color:var(--blue);box-shadow:var(--shadow);}
+.ppa-cell.highlight{border-color:var(--green);background:var(--green-dim);}
+.ppa-cell.overpriced{border-color:var(--red);background:var(--red-dim);}
+.ppa-cell.gap{border-color:var(--amber);background:var(--amber-dim);border-style:dashed;}
+
+/* ── STAT BOX ── */
+.stat-box{background:var(--surface2);border-radius:var(--r6);padding:10px 12px;border:1px solid var(--border-s);}
+.stat-box-label{font-size:9.5px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.stat-box-val{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:-.02em;}
+
+/* ── ALERT STRIP ── */
+.alert-strip{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 16px;border-radius:var(--r10);margin-bottom:16px;
+}
+.alert-strip.warning{background:rgba(220,38,38,.04);border:1px solid rgba(220,38,38,.2);}
+.alert-strip.info{background:var(--blue-dim);border:1px solid rgba(29,78,216,.2);}
+.alert-strip.success{background:var(--green-dim);border:1px solid rgba(5,150,105,.2);}
+
+/* ── NRM WATERFALL ── */
+.nrm-row{display:flex;align-items:center;gap:0;margin-bottom:3px;}
+.nrm-label{font-size:11.5px;color:var(--text-d);min-width:160px;font-weight:500;}
+.nrm-bar-outer{flex:1;position:relative;height:26px;}
+.nrm-bar-inner{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:8px;}
+.nrm-bar-label{font-size:10px;font-weight:700;color:white;}
+.nrm-val{font-family:var(--mono);font-size:12px;font-weight:700;min-width:90px;text-align:right;}
+.nrm-delta{font-family:var(--mono);font-size:10px;min-width:60px;text-align:right;}
+
+/* ── PIPELINE TAG ── */
+.pipeline{display:flex;gap:0;align-items:center;margin-bottom:18px;overflow-x:auto;flex-wrap:nowrap;}
+.pipe-step{
+  padding:7px 13px;font-size:11.5px;font-weight:600;
+  display:flex;align-items:center;gap:5px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text-d);transition:var(--t);flex-shrink:0;
+  box-shadow:var(--shadow-s);
+}
+.pipe-step:first-child{border-radius:var(--r6) 0 0 var(--r6);}
+.pipe-step:last-child{border-radius:0 var(--r6) var(--r6) 0;}
+.pipe-step:not(:first-child){margin-left:-1px;}
+.pipe-step.done{background:var(--green-dim);color:var(--green);border-color:rgba(5,150,105,.25);}
+.pipe-step.active{background:var(--blue-dim);color:var(--blue);border-color:rgba(29,78,216,.3);z-index:1;}
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- ── TOPBAR ── -->
+<!-- TOPBAR -->
 <nav id="topbar">
-  <div class="top-logo">Price<em>OS</em> <span class="top-logo-badge">FMCG</span></div>
-  <div class="top-divider"></div>
-  <div class="top-workspace">
+  <div class="top-logo">Price<em>OS</em> <span class="logo-chip">v2 · FMCG</span></div>
+  <div class="top-div"></div>
+  <div class="top-crumb">
     <span>Reckitt</span>
-    <span style="color:var(--text-dim)">›</span>
+    <span style="color:rgba(255,255,255,.25)">›</span>
     <strong>Dettol · Harpic · Finish</strong>
-    <span style="color:var(--text-dim)">›</span>
-    <span>AME Region</span>
+    <span style="color:rgba(255,255,255,.25)">›</span>
+    <span>AME Region · 14 Markets</span>
   </div>
   <div class="top-right">
-    <div class="live-pill"><div class="live-dot"></div>3 Pilots Live</div>
-    <div class="top-divider"></div>
-    <button class="btn btn-ghost btn-sm" onclick="nav('audit')">EU AI Act ✓</button>
-    <button class="btn btn-pink btn-sm" onclick="nav('execute')">⚡ +£2.1M Apply Now</button>
+    <div class="live-pill"><div class="live-dot"></div>6 Agents Active</div>
+    <div class="top-div"></div>
+    <button class="top-btn" onclick="nav('audit')">EU AI Act ✓</button>
+    <button class="top-btn cta" onclick="nav('execute')">Apply +£2.1M →</button>
     <div class="top-avatar">R</div>
   </div>
 </nav>
 
-<!-- ── AGENT STATUS BAR ── -->
-<div id="agentbar">
-  <div class="ab-label">6 Agents</div>
-  <div class="ab-agents">
-    <div class="ab-agent done" id="ab-1"><div class="ab-dot"></div>Signal</div>
-    <div class="ab-arrow">›</div>
-    <div class="ab-agent done" id="ab-2"><div class="ab-dot"></div>Causal ML</div>
-    <div class="ab-arrow">›</div>
-    <div class="ab-agent active" id="ab-3"><div class="ab-dot pulse"></div>Scenario Engine</div>
-    <div class="ab-arrow">›</div>
-    <div class="ab-agent idle" id="ab-4"><div class="ab-dot"></div>Competitor Intel</div>
-    <div class="ab-arrow">›</div>
-    <div class="ab-agent idle" id="ab-5"><div class="ab-dot"></div>Risk Guard</div>
-    <div class="ab-arrow">›</div>
-    <div class="ab-agent idle" id="ab-6"><div class="ab-dot"></div>Execution</div>
-  </div>
-  <div class="ab-right">
-    <div class="ab-cycle-time">Next cycle <strong id="ab-timer">14:32</strong></div>
-    <button class="ab-btn armed" id="ab-autopilot" onclick="toggleAutopilot(this)">Autopilot ON</button>
+<!-- E2E FLOW BAR -->
+<div id="flowbar">
+  <div class="fb-step done" onclick="nav('datahub')"><div class="fb-num">✓</div>Data Hub</div>
+  <div class="fb-arrow">›</div>
+  <div class="fb-step done" onclick="nav('consumer')"><div class="fb-num">✓</div>Consumer Lab</div>
+  <div class="fb-arrow">›</div>
+  <div class="fb-step done" onclick="nav('causal')"><div class="fb-num">✓</div>Elasticity Engine</div>
+  <div class="fb-arrow">›</div>
+  <div class="fb-step active" id="fb-ppa" onclick="nav('ppa')"><div class="fb-num">4</div>PPA Optimizer</div>
+  <div class="fb-arrow">›</div>
+  <div class="fb-step" onclick="nav('promo')"><div class="fb-num">5</div>Promo Modeler</div>
+  <div class="fb-arrow">›</div>
+  <div class="fb-step" onclick="nav('scenarios')"><div class="fb-num">6</div>Scenario Lab</div>
+  <div class="fb-arrow">›</div>
+  <div class="fb-step" onclick="nav('execute')"><div class="fb-num">7</div>Execute</div>
+  <div class="fb-arrow">›</div>
+  <div class="fb-step" onclick="nav('monitor')"><div class="fb-num">8</div>Monitor</div>
+  <div class="fb-right">
+    <div class="cycle-badge" id="ab-timer-display">Next cycle 14:32</div>
+    <button class="btn btn-ghost btn-sm" id="ab-autopilot" onclick="toggleAutopilot(this)">⚡ Autopilot ON</button>
   </div>
 </div>
 
-<!-- ── SIDEBAR ── -->
+<!-- SIDEBAR -->
 <aside id="sidebar">
   <div class="sb-scroll">
-    <div class="sb-section">Product</div>
-    <div class="nav-item active" id="nav-overview" onclick="nav('overview')">
-      <span class="nav-icon">◎</span>Overview
-      <span class="nav-badge nb-pink">LIVE</span>
-    </div>
-    <div class="nav-item" id="nav-causal" onclick="nav('causal')">
-      <span class="nav-icon">🧠</span>Causal Engine
-    </div>
-    <div class="nav-item" id="nav-scenarios" onclick="nav('scenarios')">
-      <span class="nav-icon">🎯</span>Scenario Lab
-      <span class="nav-badge nb-green">1,024</span>
-    </div>
-    <div class="nav-item" id="nav-competitor" onclick="nav('competitor')">
-      <span class="nav-icon">👁</span>Competitor Intel
-      <span class="nav-badge nb-amber">2 alerts</span>
-    </div>
-    <div class="sb-section">Intelligence</div>
-    <div class="nav-item" id="nav-copilot" onclick="nav('copilot')">
-      <span class="nav-icon">💬</span>AI Copilot
-      <div class="nav-badge"><div class="nb-dot"></div></div>
-    </div>
-    <div class="nav-item" id="nav-agents" onclick="nav('agents')">
-      <span class="nav-icon">🤖</span>Agent Status
-    </div>
-    <div class="sb-section">Execution</div>
-    <div class="nav-item" id="nav-execute" onclick="nav('execute')">
-      <span class="nav-icon">⚡</span>Execute
-      <span class="nav-badge nb-pink">+£2.1M</span>
-    </div>
-    <div class="nav-item" id="nav-audit" onclick="nav('audit')">
-      <span class="nav-icon">📋</span>Audit Log
-    </div>
+    <div class="sb-sec">Workflow</div>
+    <div class="nav-item" id="nav-overview" onclick="nav('overview')"><span class="nav-icon">◎</span>Overview<span class="nav-badge nb-live"></span></div>
+    <div class="nav-item" id="nav-datahub" onclick="nav('datahub')"><span class="nav-icon">🗄</span>Data Hub<span class="nav-badge nb-green">LIVE</span></div>
+    <div class="nav-item" id="nav-consumer" onclick="nav('consumer')"><span class="nav-icon">🧬</span>Consumer Lab</div>
+    <div class="nav-item" id="nav-causal" onclick="nav('causal')"><span class="nav-icon">📐</span>Elasticity Engine</div>
+    <div class="nav-item active" id="nav-ppa" onclick="nav('ppa')"><span class="nav-icon">🗂</span>PPA Optimizer<span class="nav-badge nb-blue">NEW</span></div>
+    <div class="nav-item" id="nav-promo" onclick="nav('promo')"><span class="nav-icon">🏷</span>Promo Modeler</div>
+    <div class="sb-sec">Decision</div>
+    <div class="nav-item" id="nav-scenarios" onclick="nav('scenarios')"><span class="nav-icon">🔬</span>Scenario Lab<span class="nav-badge nb-green">1,024</span></div>
+    <div class="nav-item" id="nav-competitor" onclick="nav('competitor')"><span class="nav-icon">👁</span>Competitor Intel<span class="nav-badge nb-red">2 alerts</span></div>
+    <div class="nav-item" id="nav-copilot" onclick="nav('copilot')"><span class="nav-icon">💬</span>AI Copilot<span class="nav-badge"><div class="nb-live"></div></span></div>
+    <div class="sb-sec">Execution</div>
+    <div class="nav-item" id="nav-execute" onclick="nav('execute')"><span class="nav-icon">⚡</span>Execute<span class="nav-badge nb-blue">+£2.1M</span></div>
+    <div class="nav-item" id="nav-monitor" onclick="nav('monitor')"><span class="nav-icon">📊</span>Monitor</div>
+    <div class="nav-item" id="nav-audit" onclick="nav('audit')"><span class="nav-icon">📋</span>Audit Log</div>
   </div>
   <div class="sb-bottom">
-    <div class="sb-context">
-      <div class="sb-context-label">Active Context</div>
-      <div class="sb-context-brand">Dettol 500ml</div>
-      <div class="sb-context-detail">Shoprite NA · Weekly · v4.2 model</div>
+    <div class="sb-ctx">
+      <div class="sb-ctx-label">Active SKU</div>
+      <div class="sb-ctx-brand">Dettol 500ml</div>
+      <div class="sb-ctx-detail">Shoprite NA · Model v4.2 · 14 mkts</div>
     </div>
   </div>
 </aside>
 
-<!-- ── MAIN CONTENT ── -->
 <main id="content"></main>
-
-</div><!-- #app -->
+</div>
 
 <script>
-// ══════════════════════════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════════════════════════
-let currentModule = 'overview';
+let currentModule = 'ppa';
 let copilotHistory = [];
 let autopilotOn = true;
 let abTimer = 14*60+32;
-let abInterval;
 let chartRegistry = {};
+let abInterval;
 
-// ══════════════════════════════════════════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════ NAVIGATION ═══════════════════
 function nav(m) {
   currentModule = m;
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navEl = document.getElementById('nav-' + m);
-  if (navEl) navEl.classList.add('active');
-
-  // Destroy charts
-  Object.values(chartRegistry).forEach(c => { try{c.destroy();}catch(e){} });
-  chartRegistry = {};
-
-  const el = document.getElementById('content');
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(6px)';
-  requestAnimationFrame(() => {
-    el.innerHTML = getModuleHTML(m);
-    el.style.transition = 'none';
-    el.style.opacity = '1';
-    el.style.transform = 'none';
-    requestAnimationFrame(() => {
-      el.style.transition = 'opacity .25s var(--ease), transform .25s var(--ease)';
-      afterRender(m);
-    });
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const el = document.getElementById('nav-'+m);
+  if(el) el.classList.add('active');
+  document.querySelectorAll('.fb-step').forEach(n=>n.classList.remove('active'));
+  const fb = document.getElementById('fb-'+m);
+  if(fb) fb.classList.add('active');
+  Object.values(chartRegistry).forEach(c=>{try{c.destroy();}catch(e){}});
+  chartRegistry={};
+  const cont = document.getElementById('content');
+  cont.style.opacity='0';
+  requestAnimationFrame(()=>{
+    cont.innerHTML = getHTML(m);
+    cont.style.opacity='1';
+    requestAnimationFrame(()=>afterRender(m));
   });
 }
-
-function getModuleHTML(m) {
-  switch(m) {
+function getHTML(m){
+  switch(m){
     case 'overview':   return renderOverview();
+    case 'datahub':    return renderDataHub();
+    case 'consumer':   return renderConsumer();
     case 'causal':     return renderCausal();
+    case 'ppa':        return renderPPA();
+    case 'promo':      return renderPromo();
     case 'scenarios':  return renderScenarios();
     case 'competitor': return renderCompetitor();
     case 'copilot':    return renderCopilot();
-    case 'agents':     return renderAgents();
     case 'execute':    return renderExecute();
+    case 'monitor':    return renderMonitor();
     case 'audit':      return renderAudit();
-    default:           return '<div style="padding:40px;color:var(--text-d)">Module not found</div>';
+    default: return '';
   }
 }
-
-function afterRender(m) {
-  switch(m) {
+function afterRender(m){
+  switch(m){
     case 'overview':   buildOverview(); break;
     case 'causal':     buildCausal(); break;
     case 'scenarios':  buildScenarios(); break;
+    case 'consumer':   buildConsumer(); break;
+    case 'promo':      buildPromo(); break;
+    case 'monitor':    buildMonitor(); break;
     case 'copilot':    buildCopilot(); break;
   }
 }
-
-// ══════════════════════════════════════════════════════════════════════════════
-// AGENT BAR — countdown + simulation
-// ══════════════════════════════════════════════════════════════════════════════
-function startAgentBar() {
-  abInterval = setInterval(() => {
+function startAgentBar(){
+  abInterval=setInterval(()=>{
     abTimer--;
-    if (abTimer < 0) { abTimer = 15*60; runAgentCycle(); }
-    const el = document.getElementById('ab-timer');
-    if (el) {
-      const m = String(Math.floor(abTimer/60)).padStart(2,'0');
-      const s = String(abTimer%60).padStart(2,'0');
-      el.textContent = `${m}:${s}`;
+    if(abTimer<0){abTimer=15*60;}
+    const el=document.getElementById('ab-timer-display');
+    if(el){
+      const mm=String(Math.floor(abTimer/60)).padStart(2,'0');
+      const ss=String(abTimer%60).padStart(2,'0');
+      el.textContent=`Next cycle ${mm}:${ss}`;
     }
-  }, 1000);
+  },1000);
+}
+function toggleAutopilot(btn){
+  autopilotOn=!autopilotOn;
+  btn.textContent=autopilotOn?'⚡ Autopilot ON':'⚡ Autopilot OFF';
+  btn.style.borderColor=autopilotOn?'var(--green)':'';
+  btn.style.color=autopilotOn?'var(--green)':'';
 }
 
-function runAgentCycle() {
-  const ids = ['ab-1','ab-2','ab-3','ab-4','ab-5','ab-6'];
-  ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.className = 'ab-agent idle';
-  });
-  let step = 0;
-  const tick = setInterval(() => {
-    if (step > 0) {
-      const prev = document.getElementById(ids[step-1]);
-      if (prev) prev.className = 'ab-agent done';
-    }
-    if (step < ids.length) {
-      const cur = document.getElementById(ids[step]);
-      if (cur) cur.className = 'ab-agent active';
-      step++;
-    } else { clearInterval(tick); }
-  }, 700);
-}
-
-function toggleAutopilot(btn) {
-  autopilotOn = !autopilotOn;
-  btn.textContent = autopilotOn ? 'Autopilot ON' : 'Autopilot OFF';
-  btn.className = autopilotOn ? 'ab-btn armed' : 'ab-btn';
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 1. OVERVIEW
-// ══════════════════════════════════════════════════════════════════════════════
-function renderOverview() {
-  return `
-  <div class="animate-in">
-    <!-- Hero -->
-    <div class="overview-hero">
-      <div style="position:relative;z-index:1">
-        <div style="font-size:10.5px;color:var(--pink);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px">Monday · 2 Mar 2026 · Q1 Pricing Cycle</div>
-        <div style="font-family:var(--serif);font-size:32px;color:white;line-height:1.15;margin-bottom:10px;letter-spacing:-.02em">
-          Good morning, Ravi.<br><span style="color:var(--pink)">£2.1M</span> margin opportunity identified overnight.
-        </div>
-        <div style="font-size:13px;color:rgba(255,255,255,.5);max-width:540px;line-height:1.65;">
-          Causal ML ran 1,024 scenarios across Dettol · Harpic · Finish in 14 AME markets.
-          3 high-confidence actions ready. Carrefour hasn't moved in 8 days — execution window is open.
-        </div>
-        <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
-          <button class="btn btn-pink" onclick="nav('execute')">⚡ Apply All 3 Scenarios → +£2.1M</button>
-          <button class="btn btn-ghost btn-sm" onclick="nav('scenarios')">View Scenario Lab →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Live Strip -->
-    <div class="live-strip">
-      <div class="lc" style="--lcc:var(--green)">
-        <div class="lc-label"><div class="lc-dot"></div>Margin Opportunity</div>
-        <div class="lc-val" style="color:var(--green)">+£2.1M</div>
-        <div class="lc-delta">↑ Top 3 scenarios · 1,024 runs</div>
-      </div>
-      <div class="lc" style="--lcc:var(--pink)">
-        <div class="lc-label"><div class="lc-dot" style="background:var(--pink)"></div>Optimal Price · Dettol 500ml</div>
-        <div class="lc-val" style="color:var(--pink)">£12.40</div>
-        <div class="lc-delta">↑ +6.0% recommended · Shoprite NA</div>
-      </div>
-      <div class="lc" style="--lcc:var(--teal)">
-        <div class="lc-label"><div class="lc-dot" style="background:var(--teal)"></div>Causal Elasticity</div>
-        <div class="lc-val" style="color:var(--teal)">−2.41</div>
-        <div class="lc-delta">Double ML · ±0.18 CI · p&lt;0.001</div>
-      </div>
-    </div>
-
-    <!-- KPI Grid -->
-    <div class="g4" style="margin-bottom:18px">
-      <div class="kpi" style="--kc:var(--green)">
-        <div class="kpi-label">Margin Uplift QTD</div>
-        <div class="kpi-val" style="color:var(--green)">+4.2%</div>
-        <div class="kpi-delta up">↑ vs Q4 +2.8%</div>
-      </div>
-      <div class="kpi" style="--kc:var(--teal)">
-        <div class="kpi-label">Prediction Error</div>
-        <div class="kpi-val" style="color:var(--teal)">17%</div>
-        <div class="kpi-delta neutral">vs 31% Nielsen baseline</div>
-        <div class="kpi-sub">−45% relative improvement</div>
-      </div>
-      <div class="kpi" style="--kc:var(--pink)">
-        <div class="kpi-label">Scenarios / Night</div>
-        <div class="kpi-val">1,024</div>
-        <div class="kpi-delta up">10 recs ready</div>
-      </div>
-      <div class="kpi" style="--kc:var(--gold)">
-        <div class="kpi-label">Speed vs Consultant</div>
-        <div class="kpi-val" style="color:var(--gold)">4.7×</div>
-        <div class="kpi-delta neutral">Faster time to decision</div>
-      </div>
-    </div>
-
-    <!-- Main grid -->
-    <div class="g-main">
-      <div>
-        <div class="card" style="margin-bottom:14px">
-          <div class="card-header">
-            <div class="card-title">Price Elasticity — Causal ML vs Naive Correlation</div>
-            <div class="card-sub">Double ML · Dettol 500ml · Shoprite Northern Africa · 18 months training</div>
-          </div>
-          <div style="padding:16px 18px"><canvas id="ov-elasticity" height="180"></canvas></div>
-        </div>
-        <div class="card">
-          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div class="card-title">Pilot Performance vs Baseline</div>
-              <div class="card-sub">A/B split · 14 Northern Africa markets · Month 4</div>
-            </div>
-            <span class="badge b-green">● Active Pilot</span>
-          </div>
-          <div style="padding:14px 18px">
-            ${[
-              ['+5.4%','Gross Margin Δ (PriceOS markets)','var(--green)',92],
-              ['−1.8%','Volume Δ (within tolerance band)','var(--text-d)',20],
-              ['+17%','Elasticity prediction accuracy','var(--teal)',55],
-              ['+£2.4M','Annualised P&L upside (run-rate)','var(--green)',78],
-            ].map(([v,l,c,w])=>`
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border-b)">
-                <span style="font-size:13px;color:var(--text-m)">${l}</span>
-                <div style="display:flex;align-items:center;gap:12px">
-                  <div style="width:60px;height:4px;background:var(--bg2);border-radius:2px">
-                    <div style="width:${w}%;height:100%;background:${c};border-radius:2px"></div>
-                  </div>
-                  <span style="font-family:var(--mono);font-size:14px;font-weight:700;color:${c};min-width:48px;text-align:right">${v}</span>
-                </div>
-              </div>`).join('')}
-          </div>
-        </div>
-      </div>
-
-      <!-- Right panel -->
-      <div>
-        <div class="card" style="margin-bottom:14px">
-          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
-            <div class="card-title">Top 3 Actions Ready</div>
-            <button class="btn btn-pink btn-xs" onclick="nav('execute')">Apply All</button>
-          </div>
-          ${[
-            {sku:'Dettol 500ml · Shoprite NA',chg:'+6.0%',val:'+£2.1M',conf:94},
-            {sku:'Dettol 1L · Shoprite SA',chg:'+4.5%',val:'+£1.6M',conf:89},
-            {sku:'Harpic 500ml · Shoprite EA',chg:'+8.0%',val:'+£0.9M',conf:82},
-          ].map((s,i)=>`
-            <div class="scenario-row" onclick="nav('execute')">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <div>
-                  <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px">${s.sku}</div>
-                  <div style="font-size:11px;color:var(--text-d)">Conf: ${s.conf}% · Causal ML · Within guardrail</div>
-                </div>
-                <div style="text-align:right;flex-shrink:0">
-                  <div style="font-family:var(--mono);font-size:15px;font-weight:700;color:var(--green)">${s.val}</div>
-                  <div style="font-family:var(--mono);font-size:11.5px;color:var(--text-d)">${s.chg}</div>
-                </div>
-              </div>
-            </div>`).join('')}
-        </div>
-
-        <div class="card" style="margin-bottom:14px">
-          <div class="card-header"><div class="card-title">⚡ Competitor Alert</div></div>
-          <div style="padding:14px 16px">
-            <div style="font-size:13px;color:var(--text-m);line-height:1.6;margin-bottom:10px">
-              <span style="color:var(--red);font-weight:700">Carrefour UAE</span> cut Dettol 500ml by −9.7% seven days ago. Competitive window closing.
-            </div>
-            <div style="font-size:12.5px;color:var(--text-d);line-height:1.5;margin-bottom:12px">
-              Recommend −3.0% defensive cut on UAE only. Holding all markets = est. <strong style="color:var(--red)">−£420K</strong> share loss over 90 days.
-            </div>
-            <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="nav('competitor')">View Competitor Intel →</button>
-          </div>
-        </div>
-
-        <div class="card" style="border-color:rgba(0,212,180,.15);background:rgba(0,212,180,.03)">
-          <div style="padding:14px 16px">
-            <div style="font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">EU AI Act</div>
-            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">Full Compliance Enabled</div>
-            <div style="font-size:11.5px;color:var(--text-d);line-height:1.5">Every action includes causal reasoning trace, counterfactual explanation + human override record.</div>
-            <button class="btn btn-teal btn-xs" style="margin-top:10px" onclick="nav('audit')">View Audit Log →</button>
-          </div>
-        </div>
-      </div>
-    </div>
+// ═══════════════════ HELPERS ═══════════════════
+const c=(v,color='var(--text)')=>`<span style="font-family:var(--mono);font-weight:700;color:${color}">${v}</span>`;
+const badge=(txt,cls)=>`<span class="badge ${cls}">${txt}</span>`;
+const kpi=(label,val,color,delta,dclass,sub='')=>`
+  <div class="kpi"><div class="kpi-accent" style="--kc:${color}"></div>
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-val" style="color:${color}">${val}</div>
+    ${delta?`<div class="kpi-delta ${dclass}">${delta}</div>`:''}
+    ${sub?`<div class="kpi-sub">${sub}</div>`:''}
   </div>`;
-}
 
-function buildOverview() {
-  const ctx = document.getElementById('ov-elasticity');
-  if (!ctx) return;
-  const prices = [], causal = [], naive = [], upper = [], lower = [];
-  const A = 5000, eC = 2.41, eN = 1.78;
-  for (let p = 8; p <= 18; p += 0.5) {
-    prices.push('£'+p.toFixed(1));
-    const dC = A * Math.pow(p,-eC);
-    const dN = A * Math.pow(p,-eN);
-    causal.push(Math.round(dC));
-    naive.push(Math.round(dN));
-    upper.push(Math.round(dC*1.14));
-    lower.push(Math.round(dC*0.86));
-  }
-  chartRegistry['ov-e'] = new Chart(ctx, {
-    type:'line',
-    data:{
-      labels:prices,
-      datasets:[
-        {label:'Confidence Band',data:upper,borderWidth:0,backgroundColor:'rgba(0,212,180,.08)',fill:'+1',tension:.4,pointRadius:0},
-        {label:'Confidence Band Lower',data:lower,borderWidth:0,backgroundColor:'rgba(0,212,180,.08)',fill:false,tension:.4,pointRadius:0},
-        {label:'Causal ML (Double ML)',data:causal,borderColor:'var(--teal)',backgroundColor:'transparent',borderWidth:2,tension:.4,pointRadius:0},
-        {label:'Naive Correlation',data:naive,borderColor:'rgba(255,77,106,.5)',backgroundColor:'transparent',borderWidth:1.5,borderDash:[4,4],tension:.4,pointRadius:0},
-      ]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{
-        legend:{position:'bottom',labels:{color:'var(--text-d)',font:{size:11},boxWidth:12}},
-        tooltip:{backgroundColor:'#1E2226',titleColor:'rgba(255,255,255,.8)',bodyColor:'rgba(255,255,255,.6)',padding:10}
-      },
-      scales:{
-        x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'var(--text-dim)',font:{size:10},maxTicksLimit:8}},
-        y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'var(--text-dim)',font:{size:10}}}
-      }
-    }
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 2. CAUSAL ENGINE
-// ══════════════════════════════════════════════════════════════════════════════
-function renderCausal() {
-  return `
-  <div class="animate-in">
-    <div class="page-header">
-      <div>
-        <div class="page-title">Causal <em>Engine</em></div>
-        <div class="page-sub">Double ML · CausalForest · Price effect isolated from promotions, seasonality, competitors · Last trained: 3 days ago</div>
+// ═══════════════════ 1. OVERVIEW ═══════════════════
+function renderOverview(){return `
+<div class="anim">
+  <!-- Hero -->
+  <div style="background:var(--navy);border-radius:var(--r14);padding:26px 30px;margin-bottom:18px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-80px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(96,165,250,.12) 0%,transparent 70%);pointer-events:none"></div>
+    <div style="position:relative;z-index:1">
+      <div style="font-size:10px;color:rgba(96,165,250,.8);font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px">Mon 9 Mar 2026 · Q1 Pricing Cycle · AME</div>
+      <div style="font-family:var(--serif);font-size:28px;color:white;line-height:1.2;margin-bottom:8px;letter-spacing:-.02em">
+        Morning, Ravi. <span style="color:#60A5FA">£2.1M</span> margin identified overnight.<br>
+        <span style="font-size:18px;color:rgba(255,255,255,.6);font-weight:400">PPA gap found in 500ml tier · Carrefour window closing in 72h</span>
       </div>
-      <div class="page-actions">
-        <button class="btn btn-ghost btn-sm">⟳ Retrain Model</button>
-        <button class="btn btn-teal btn-sm">⬇ Export Coefficients</button>
+      <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+        <button class="btn btn-blue" onclick="nav('execute')">⚡ Apply Top 3 → +£2.1M</button>
+        <button class="btn" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15)" onclick="nav('ppa')">View PPA Gap →</button>
+        <button class="btn" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15)" onclick="nav('copilot')">Ask Copilot</button>
       </div>
     </div>
+  </div>
 
-    <!-- Step Flow -->
-    <div class="step-flow">
-      ${[
-        ['✓','Signal Ingestion','done'],
-        ['✓','Confound Identification','done'],
-        ['✓','Double ML Residualisation','done'],
-        ['✓','CausalForest Estimation','done'],
-        ['→','CATE Segmentation','active'],
-        ['○','Confidence Calibration',''],
-      ].map(([ic,lb,st])=>`
-        <div class="step ${st}">${ic} ${lb}</div>
-        ${lb!=='Confidence Calibration'?'<div class="step-arrow">›</div>':''}`).join('')}
-    </div>
+  <div class="g4" style="margin-bottom:16px">
+    ${kpi('Margin Opportunity','£2.1M','var(--green)','↑ Top 3 scenarios','up','1,024 overnight runs')}
+    ${kpi('Causal Elasticity','−2.41','var(--blue)','±0.18 CI · p<0.001','neutral','Double ML vs −1.78 naive')}
+    ${kpi('Prediction Error (MAPE)','17%','var(--teal)','−14pp vs Nielsen baseline','up','v4.2 CausalForest')}
+    ${kpi('PPA Coverage Gap','3 SKUs','var(--amber)','Missing £8–10 mid-tier','down','Harpic + Dettol')}
+  </div>
 
-    <div class="g2" style="margin-bottom:14px">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Predicted vs Actual Demand</div>
-          <div class="card-sub">Causal ML fit · Dettol 500ml · R² = 0.87</div>
+  <div class="g-main">
+    <div>
+      <!-- NRM Waterfall -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
+          <div><div class="card-title">Net Revenue Management — Gross to Net Waterfall</div>
+          <div class="card-sub">Dettol 500ml · Shoprite Northern Africa · Current vs. PriceOS Recommended</div></div>
+          ${badge('CORE VIEW','b-navy')}
         </div>
-        <div style="padding:16px 18px"><canvas id="causal-chart" height="220"></canvas></div>
+        <div style="padding:16px 18px" id="nrm-waterfall"></div>
       </div>
+
+      <!-- Pilot -->
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Feature Coefficients — Causal Effect</div>
-          <div class="card-sub">Isolated price effect on volume · *** p&lt;0.001 · Double ML</div>
-        </div>
-        <div>
-          <div class="tbl-head" style="grid-template-columns:1fr 80px 60px 1fr">
-            ${['Feature','Coeff','Sig','Effect Size'].map(h=>`<span class="tbl-col">${h}</span>`).join('')}
-          </div>
-          ${[
-            ['Own Price','−2.41','***',90,'var(--red)'],
-            ['Promo Depth','+3.20','***',85,'var(--green)'],
-            ['Carrefour Price','+1.18','***',55,'var(--teal)'],
-            ['Shelf Share','+0.74','**',35,'var(--teal)'],
-            ['Seasonality','+0.42','**',20,'var(--text-d)'],
-            ['GDP Index','+0.31','*',15,'var(--text-d)'],
-          ].map(([f,c,s,w,col])=>`
-            <div class="tbl-row" style="grid-template-columns:1fr 80px 60px 1fr">
-              <span style="font-weight:600;color:var(--text)">${f}</span>
-              <span class="mono" style="font-weight:700;color:${col}">${c}</span>
-              <span class="mono" style="color:${s==='***'?'var(--green)':s==='**'?'var(--teal)':'var(--text-d)'};font-size:12px">${s}</span>
-              <div style="display:flex;align-items:center;gap:8px">
-                <div style="flex:1;height:4px;background:var(--bg2);border-radius:2px">
-                  <div style="width:${w}%;height:100%;background:${col};border-radius:2px;transition:width 1s var(--ease)"></div>
-                </div>
-                <span style="font-size:10.5px;color:var(--text-d);min-width:28px">${w>60?'High':w>35?'Med':'Low'}</span>
-              </div>
-            </div>`).join('')}
-        </div>
-      </div>
-    </div>
-
-    <!-- Key insight box -->
-    <div style="background:rgba(255,45,120,.05);border:1px solid rgba(255,45,120,.2);border-radius:var(--r12);padding:18px 22px">
-      <div style="font-size:13.5px;color:var(--text);line-height:1.7">
-        <span style="font-weight:700;color:var(--pink)">Why this matters:</span>
-        Naive OLS correlation shows elasticity of −1.78. The causal Double ML estimate isolates the true price effect at <strong style="color:var(--pink)">−2.41</strong> — a 35% difference.
-        Using the naive estimate would have <strong>undershot</strong> the +6% recommendation, leaving <strong style="color:var(--red)">£0.8M on the table</strong> per quarter.
-      </div>
-    </div>
-  </div>`;
-}
-
-function buildCausal() {
-  const ctx = document.getElementById('causal-chart');
-  if (!ctx) return;
-  const actual = [1820,1750,1680,1640,1590,1520,1470,1440,1390,1340,1290,1260,1220,1180,1140,1100,1070,1040];
-  const pred   = actual.map((v,i) => Math.round(v * (0.96 + Math.random()*.08)));
-  const labels = actual.map((_,i) => `W${i+1}`);
-  chartRegistry['causal'] = new Chart(ctx, {
-    type:'line',
-    data:{
-      labels,
-      datasets:[
-        {label:'Actual Demand',data:actual,borderColor:'rgba(255,45,120,.9)',backgroundColor:'rgba(255,45,120,.05)',borderWidth:2,tension:.3,fill:true,pointRadius:0},
-        {label:'Causal ML Prediction',data:pred,borderColor:'rgba(0,212,180,.9)',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,3],tension:.3,pointRadius:0},
-      ]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom',labels:{color:'var(--text-d)',font:{size:11},boxWidth:12}},tooltip:{backgroundColor:'#1E2226',titleColor:'rgba(255,255,255,.8)',bodyColor:'rgba(255,255,255,.6)',padding:10}},
-      scales:{
-        x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'var(--text-dim)',font:{size:10}}},
-        y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'var(--text-dim)',font:{size:10}}}
-      }
-    }
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 3. SCENARIO LAB
-// ══════════════════════════════════════════════════════════════════════════════
-function renderScenarios() {
-  const scenarios = [
-    {id:'S-001',sku:'Dettol 500ml · Shoprite NA',chg:'+6.0%',margin:'+£2.1M ann',conf:94,risk:'Low',status:'Recommended'},
-    {id:'S-002',sku:'Dettol 1L · Shoprite SA',chg:'+4.5%',margin:'+£1.6M ann',conf:89,risk:'Low',status:'Recommended'},
-    {id:'S-003',sku:'Harpic 500ml · Shoprite EA',chg:'+8.0%',margin:'+£0.9M ann',conf:82,risk:'Medium',status:'Recommended'},
-    {id:'S-004',sku:'Dettol 500ml · Carrefour UAE',chg:'−3.0%',margin:'−£420K defence',conf:81,risk:'Low',status:'Defensive'},
-    {id:'S-005',sku:'Finish · Carrefour KSA',chg:'+3.5%',margin:'+£0.4M ann',conf:74,risk:'Medium',status:'Exploratory'},
-    {id:'S-006',sku:'Harpic 1L · LuLu UAE',chg:'+5.0%',margin:'+£0.3M ann',conf:71,risk:'Medium',status:'Exploratory'},
-  ];
-  return `
-  <div class="animate-in">
-    <div class="page-header">
-      <div>
-        <div class="page-title">Scenario <em>Lab</em></div>
-        <div class="page-sub">1,024 scenarios run overnight · Ray parallel compute · Ranked by net margin impact · Competitor signals integrated</div>
-      </div>
-      <div class="page-actions">
-        <button class="btn btn-ghost btn-sm">⬇ Export All</button>
-        <button class="btn btn-pink btn-sm" onclick="nav('execute')">→ Apply All +£2.1M</button>
-      </div>
-    </div>
-
-    <div class="g2" style="margin-bottom:14px">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Margin Uplift vs Volume Risk</div>
-          <div class="card-sub">Bubble size = annual opportunity · All scenarios colour-coded by confidence</div>
-        </div>
-        <div style="padding:16px 18px"><canvas id="scenario-scatter" height="220"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Run Stats</div>
-          <div class="card-sub">Last cycle: tonight 02:14 · Ray compute · 14 market clusters</div>
+        <div class="card-header" style="display:flex;justify-content:space-between">
+          <div><div class="card-title">Pilot vs. Control — A/B Markets (Month 4)</div>
+          <div class="card-sub">PriceOS markets (7) vs. control markets (7) · Northern Africa cluster</div></div>
+          ${badge('● ACTIVE PILOT','b-green')}
         </div>
         <div style="padding:14px 18px">
           ${[
-            ['Total Scenarios Run','1,024','var(--teal)'],
-            ['High Confidence (>80%)','312','var(--green)'],
-            ['Recommended','6','var(--pink)'],
-            ['Discarded (low conf.)','156','var(--text-d)'],
-            ['Compute Time','4m 12s','var(--text-m)'],
-            ['Model Version','v4.2 — Double ML + CausalForest','var(--text-m)'],
-          ].map(([l,v,c])=>`
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-b)">
-              <span style="font-size:12.5px;color:var(--text-d)">${l}</span>
-              <span class="mono" style="font-size:12.5px;font-weight:700;color:${c}">${v}</span>
+            ['+5.4%','Gross Margin Δ — PriceOS markets',92,'var(--green)'],
+            ['−1.8%','Volume Δ — within ±3% tolerance',22,'var(--blue)'],
+            ['+3.1pp','Gross margin absolute improvement',42,'var(--green)'],
+            ['+£2.4M','Annualised run-rate P&L upside',78,'var(--green)'],
+            ['17%','MAPE — causal model accuracy',55,'var(--blue)'],
+          ].map(([v,l,w,col])=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border-s)">
+              <span style="font-size:12.5px;color:var(--text-m)">${l}</span>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:72px;height:5px;background:var(--surface2);border-radius:3px">
+                  <div style="width:${w}%;height:100%;background:${col};border-radius:3px"></div>
+                </div>
+                <span class="mono" style="font-size:13px;font-weight:700;color:${col};min-width:45px;text-align:right">${v}</span>
+              </div>
             </div>`).join('')}
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div class="card-title">Top Scenarios — All Markets</div>
-          <div class="card-sub">Sorted by confidence × margin impact · Click any row to apply</div>
+    <!-- Right -->
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
+          <div class="card-title">Top Actions Ready</div>
+          <button class="btn btn-blue btn-xs" onclick="nav('execute')">Apply All</button>
         </div>
-        <div style="display:flex;gap:6px">
-          <span class="badge b-green">3 Recommended</span>
-          <span class="badge b-amber">1 Defensive</span>
-          <span class="badge b-dark">2 Exploratory</span>
+        ${[
+          {sku:'Dettol 500ml · Shoprite NA',chg:'+6.0%',val:'+£2.1M',conf:94,risk:'Low'},
+          {sku:'Dettol 1L · Shoprite SA',chg:'+4.5%',val:'+£1.6M',conf:89,risk:'Low'},
+          {sku:'Harpic 500ml · Shoprite EA',chg:'+8.0%',val:'+£0.9M',conf:82,risk:'Med'},
+        ].map(s=>`
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border-s);cursor:pointer;transition:var(--t)" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''" onclick="nav('execute')">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div><div style="font-size:12.5px;font-weight:700;color:var(--text)">${s.sku}</div>
+              <div style="font-size:10.5px;color:var(--text-dim);margin-top:2px">Conf: ${s.conf}% · ${badge(s.risk+' risk',s.risk==='Low'?'b-green':'b-amber')}</div></div>
+              <div style="text-align:right"><div class="mono" style="font-size:15px;font-weight:700;color:var(--green)">${s.val}</div>
+              <div class="mono" style="font-size:11px;color:var(--text-d)">${s.chg}</div></div>
+            </div>
+          </div>`).join('')}
+      </div>
+
+      <!-- E2E Status -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header"><div class="card-title">Pipeline Status</div></div>
+        <div style="padding:12px 14px">
+          ${[
+            ['Data Hub','POS + Nielsen synced 2h ago','done'],
+            ['Consumer Lab','Virtual shoppers calibrated','done'],
+            ['Elasticity','Double ML ε=−2.41 locked','done'],
+            ['PPA','Gap identified — 3 SKUs','active'],
+            ['Promo Model','Queued post-PPA','idle'],
+            ['Scenario Lab','1,024 runs complete','done'],
+            ['Execution','3 actions armed','armed'],
+          ].map(([n,d,s])=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border-s)">
+              <div style="width:7px;height:7px;border-radius:50%;background:${s==='done'?'var(--green)':s==='active'?'var(--blue)':s==='armed'?'var(--amber)':'var(--border-m)'};flex-shrink:0;${s==='active'?'animation:pulse 1.5s infinite':''}"></div>
+              <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">${n}</div>
+              <div style="font-size:10.5px;color:var(--text-dim)">${d}</div></div>
+              ${badge(s==='done'?'✓ Done':s==='active'?'Running':s==='armed'?'Armed':'Queued',s==='done'?'b-green':s==='active'?'b-blue':s==='armed'?'b-amber':'b-dark')}
+            </div>`).join('')}
         </div>
       </div>
-      <div class="tbl-head" style="grid-template-columns:70px 1fr 80px 110px 70px 80px 110px">
-        ${['ID','SKU & Market','Price Δ','Annual Margin','Confidence','Risk','Status'].map(h=>`<span class="tbl-col">${h}</span>`).join('')}
-      </div>
-      ${scenarios.map(s=>`
-      <div class="tbl-row" style="grid-template-columns:70px 1fr 80px 110px 70px 80px 110px;cursor:pointer" onclick="nav('execute')">
-        <span class="mono" style="color:var(--text-d);font-size:11.5px">${s.id}</span>
-        <span style="font-weight:600;color:var(--text)">${s.sku}</span>
-        <span class="mono" style="font-weight:700;color:${s.chg.startsWith('+')?'var(--green)':'var(--red)'}">${s.chg}</span>
-        <span class="mono" style="font-weight:700;color:${s.chg.startsWith('+')?'var(--green)':'var(--amber)'}">${s.margin}</span>
-        <div style="display:flex;align-items:center;gap:5px">
-          <div style="width:28px;height:4px;background:var(--bg2);border-radius:2px">
-            <div style="width:${s.conf}%;height:100%;background:${s.conf>85?'var(--green)':s.conf>75?'var(--teal)':'var(--amber)'};border-radius:2px"></div>
-          </div>
-          <span class="mono" style="font-size:11.5px;color:var(--text-m)">${s.conf}%</span>
+
+      <div class="card" style="border-color:rgba(29,78,216,.2);background:var(--blue-dim)">
+        <div style="padding:13px 16px">
+          <div style="font-size:10px;font-weight:800;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px">EU AI Act · Article 13 + 14</div>
+          <div style="font-size:12px;font-weight:700;color:var(--text)">Full compliance enabled</div>
+          <div style="font-size:11px;color:var(--text-d);margin-top:3px;line-height:1.5">Every action includes causal trace, counterfactual + human override record.</div>
+          <button class="btn btn-ghost btn-xs" style="margin-top:9px" onclick="nav('audit')">View Audit →</button>
         </div>
-        <span class="badge ${s.risk==='Low'?'b-green':'b-amber'}" style="font-size:9px">${s.risk}</span>
-        <span class="badge ${s.status==='Recommended'?'b-pink':s.status==='Defensive'?'b-amber':'b-dark'}" style="font-size:9px">${s.status}</span>
-      </div>`).join('')}
+      </div>
     </div>
-  </div>`;
+  </div>
+</div>`;}
+
+function buildOverview(){
+  const el=document.getElementById('nrm-waterfall');
+  if(!el)return;
+  const rows=[
+    {label:'Gross Invoice Price',cur:14.80,rec:15.69,pct:100,col:'#1D4ED8'},
+    {label:'— Trade Discounts',cur:-1.20,rec:-1.25,pct:83,col:'#DC2626'},
+    {label:'— Promotional Spend',cur:-0.85,rec:-0.88,pct:75,col:'#DC2626'},
+    {label:'— Retailer Margin',cur:-0.75,rec:-0.76,pct:68,col:'#DC2626'},
+    {label:'Net Revenue (NR)',cur:12.00,rec:12.80,pct:86,col:'#0EA5E9'},
+    {label:'— COGS',cur:-8.10,rec:-8.10,pct:60,col:'#DC2626'},
+    {label:'Gross Margin',cur:3.90,rec:4.70,pct:31,col:'#059669'},
+  ];
+  el.innerHTML=rows.map(r=>`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <div style="font-size:11.5px;color:var(--text-m);min-width:170px;font-weight:${r.label.includes('Net')||r.label.includes('Gross M')?700:500}">${r.label}</div>
+      <div style="flex:1;height:22px;background:var(--surface2);border-radius:3px;position:relative;overflow:hidden">
+        <div style="width:${r.pct}%;height:100%;background:${r.col};opacity:.15;position:absolute;left:0"></div>
+        <div style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:10px;font-weight:700;color:${r.col}">CUR: ${r.cur>0?'+':''}£${Math.abs(r.cur).toFixed(2)}</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${r.rec>r.cur?'var(--green)':r.rec<0?'var(--red)':'var(--blue)'};min-width:80px;text-align:right">REC: ${r.rec>0?'+':''}£${Math.abs(r.rec).toFixed(2)}</div>
+      <div style="font-family:var(--mono);font-size:10.5px;min-width:50px;text-align:right;color:${r.rec>r.cur&&r.rec>0?'var(--green)':r.rec<r.cur&&r.rec<0?'var(--red)':'var(--text-dim)'}">
+        ${r.rec!==r.cur?(r.rec>r.cur?'▲':'▼')+Math.abs(r.rec-r.cur).toFixed(2):'—'}
+      </div>
+    </div>`).join('');
 }
 
-function buildScenarios() {
-  const ctx = document.getElementById('scenario-scatter');
-  if (!ctx) return;
-  chartRegistry['sc'] = new Chart(ctx, {
-    type:'bubble',
-    data:{
-      datasets:[
-        {label:'Recommended',data:[{x:6.0,y:2.1,r:18},{x:4.5,y:1.6,r:14},{x:8.0,y:0.9,r:11}],backgroundColor:'rgba(16,212,160,.6)',borderColor:'rgba(16,212,160,.9)',borderWidth:1.5},
-        {label:'Defensive',data:[{x:-3.0,y:-0.42,r:10}],backgroundColor:'rgba(244,185,66,.5)',borderColor:'rgba(244,185,66,.9)',borderWidth:1.5},
-        {label:'Exploratory',data:[{x:3.5,y:0.4,r:8},{x:5.0,y:0.3,r:7}],backgroundColor:'rgba(96,165,250,.4)',borderColor:'rgba(96,165,250,.8)',borderWidth:1.5},
-      ]
-    },
+// ═══════════════════ 2. DATA HUB ═══════════════════
+function renderDataHub(){return `
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title">Data <em>Hub</em></div>
+    <div class="page-sub">Unified ingestion layer · POS, Nielsen/Circana, ERP, distributor sell-out, competitor scraping · Real-time quality monitoring</div></div>
+    <div class="page-actions">
+      <button class="btn btn-ghost btn-sm">+ Add Source</button>
+      <button class="btn btn-blue btn-sm">⟳ Force Sync</button>
+    </div>
+  </div>
+
+  <div class="g4" style="margin-bottom:16px">
+    ${kpi('Data Sources','12','var(--blue)','↑ 3 added this quarter','up','Active integrations')}
+    ${kpi('Record Freshness','98.3%','var(--green)','Avg 1.8h lag','up','POS + Nielsen + ERP')}
+    ${kpi('Data Quality Score','91/100','var(--teal)','−3pp Harpic EA gap','neutral','Completeness × accuracy')}
+    ${kpi('Missing Periods','4 weeks','var(--amber)','Shoprite Lebanon gap','down','Backfill in progress')}
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Source Health Monitor</div><div class="card-sub">All active data pipelines · Auto-refresh every 15min</div></div>
+      <div style="padding:12px 16px">
+        ${[
+          {name:'Shoprite POS (NA+SA)',type:'POS',lag:'42min',rows:'2.4M',q:98,'stat':'b-green',stxt:'Healthy'},
+          {name:'Nielsen AME Panel',type:'Panel',lag:'2.1h',rows:'850K',q:95,'stat':'b-green',stxt:'Healthy'},
+          {name:'Reckitt ERP (SAP)',type:'ERP',lag:'1.2h',rows:'340K',q:99,'stat':'b-green',stxt:'Healthy'},
+          {name:'Carrefour UAE Scraper',type:'Web',lag:'6min',rows:'12K',q:88,'stat':'b-green',stxt:'Healthy'},
+          {name:'Shoprite East Africa',type:'POS',lag:'4.8h',rows:'1.1M',q:74,'stat':'b-amber',stxt:'Delayed'},
+          {name:'Lebanon Distributor',type:'Sell-out',lag:'8 days',rows:'90K',q:41,'stat':'b-red',stxt:'Stale'},
+          {name:'IRI/Circana KSA',type:'Panel',lag:'3.2h',rows:'420K',q:91,'stat':'b-green',stxt:'Healthy'},
+        ].map(r=>`
+          <div class="dq-row">
+            <div style="min-width:190px">
+              <div style="font-size:12px;font-weight:700;color:var(--text)">${r.name}</div>
+              <div style="font-size:10px;color:var(--text-dim)">${badge(r.type,'b-dark')} · ${r.lag} lag · ${r.rows} rows</div>
+            </div>
+            <div class="dq-track"><div class="dq-fill" style="width:${r.q}%;background:${r.q>85?'var(--green)':r.q>65?'var(--amber)':'var(--red)'}"></div></div>
+            <div class="dq-pct">${r.q}%</div>
+            <div class="dq-status">${badge(r.stxt,r.stat)}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header"><div class="card-title">Schema Coverage by Module</div></div>
+        <div style="padding:12px 16px">
+          ${[
+            ['Elasticity Engine','POS + panel + promo history',96],
+            ['Consumer Lab','Panel + conjoint + switching',88],
+            ['PPA Optimizer','Pack size + price + volume',94],
+            ['Promo Modeler','Promo depth + timing + uplift',79],
+            ['Competitor Intel','Scraper + Nielsen benchmark',91],
+          ].map(([m,d,p])=>`
+            <div style="padding:9px 0;border-bottom:1px solid var(--border-s)">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <span style="font-size:12px;font-weight:600;color:var(--text)">${m}</span>
+                <span class="mono" style="font-size:11px;color:${p>90?'var(--green)':p>75?'var(--amber)':'var(--red)'};font-weight:700">${p}%</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-dim);margin-bottom:5px">${d}</div>
+              <div style="height:4px;background:var(--surface2);border-radius:2px">
+                <div style="width:${p}%;height:100%;background:${p>90?'var(--green)':p>75?'var(--amber)':'var(--red)'};border-radius:2px"></div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="card" style="background:var(--amber-dim);border-color:rgba(217,119,6,.25)">
+        <div style="padding:13px 16px">
+          <div style="font-size:12px;font-weight:800;color:var(--amber);margin-bottom:5px">⚠ 1 Data Gap Affecting Execution</div>
+          <div style="font-size:12px;color:var(--text-m);line-height:1.6">Lebanon distributor sell-out data is 8 days stale. Promo modeling for Lebanon market is paused. All other markets unaffected.</div>
+          <button class="btn btn-ghost btn-xs" style="margin-top:9px">Request Manual Upload</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;}
+
+// ═══════════════════ 3. CONSUMER LAB ═══════════════════
+function renderConsumer(){return `
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title">Consumer <em>Lab</em></div>
+    <div class="page-sub">Virtual Consumer simulation · 3.2M synthetic shoppers calibrated on panel + POS data · WTP curves · Switching behavior · Choice modeling</div></div>
+    <div class="page-actions">
+      <button class="btn btn-ghost btn-sm">⬇ Export WTP</button>
+      <button class="btn btn-blue btn-sm">⟳ Recalibrate</button>
+    </div>
+  </div>
+  <div class="g4" style="margin-bottom:16px">
+    ${kpi('Virtual Consumers','3.2M','var(--blue)','Calibrated on 18mo panel','neutral','NA + SA + EA + Gulf')}
+    ${kpi('WTP — Dettol 500ml','£10.20–£14.10','var(--green)','P10–P90 distribution','up','Current price £12.40 ✓')}
+    ${kpi('Switching Threshold','−8.5%','var(--red)','Price > £13.50 triggers switch','down','To private label / Savlon')}
+    ${kpi('Brand Loyalty Index','0.72','var(--teal)','Dettol vs category avg 0.58','up','High stickiness')}
+  </div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Willingness-to-Pay Distribution — Dettol 500ml</div>
+      <div class="card-sub">Calibrated on 3.2M virtual consumers · Van Westendorp + conjoint hybrid</div></div>
+      <div style="padding:16px 18px"><canvas id="wtp-chart" height="220"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Market Share Simulation @ Price Points</div>
+      <div class="card-sub">What happens to share when Dettol 500ml price changes · Shoprite NA</div></div>
+      <div style="padding:14px 16px">
+        ${[
+          {brand:'Dettol 500ml',share:41,col:'#1D4ED8',note:'Current share @ £12.40'},
+          {brand:'Savlon (private label)',share:22,col:'#6B7280',note:'Would gain at £13.50+'},
+          {brand:'Dettol 250ml (trade-down)',share:18,col:'#0EA5E9',note:'Internal cannibalization'},
+          {brand:'Harpic 500ml (alt.)',share:12,col:'#7C3AED',note:'Category switch'},
+          {brand:'Other',share:7,col:'#9CA3AF',note:'Fragmented'},
+        ].map(r=>`
+          <div class="consumer-bar">
+            <div class="c-brand">${r.brand}</div>
+            <div class="c-track"><div class="c-fill" style="width:${r.share*2.2}%;background:${r.col};">${r.share}%</div></div>
+            <div class="c-pct" style="color:${r.col}">${r.share}%</div>
+          </div>
+          <div style="font-size:10px;color:var(--text-dim);padding-left:110px;margin-bottom:4px">${r.note}</div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Consumer Segment Price Sensitivity</div>
+    <div class="card-sub">Heterogeneous elasticity by segment · Basis for CATE segmentation in Causal Engine</div></div>
+    <div style="padding:0">
+      <div class="tbl-head" style="grid-template-columns:160px 1fr 80px 80px 80px 120px">
+        ${['Segment','Description','Size','WTP Range','Elasticity','Price Recommendation'].map(h=>`<span class="tbl-col">${h}</span>`).join('')}
+      </div>
+      ${[
+        {seg:'Premium Loyalist',desc:'High income, brand-led, low sensitivity',sz:'24%',wtp:'£13–16',elas:'−1.2',rec:'Can absorb +8%','col':'var(--green)'},
+        {seg:'Value Seeker',desc:'Price-conscious, promotion-driven, high switch',sz:'31%',wtp:'£10–12.50',elas:'−3.8',rec:'Hold or −2% max','col':'var(--red)'},
+        {seg:'Quality Pragmatist',desc:'Mid-income, quality aware, moderate switch',sz:'28%',wtp:'£11–14',elas:'−2.4',rec:'+4–6% safe window','col':'var(--blue)'},
+        {seg:'Convenience Buyer',desc:'Location-driven, low engagement, moderate',sz:'17%',wtp:'£11.50–13',elas:'−2.0',rec:'Neutral to +3%','col':'var(--teal)'},
+      ].map(r=>`
+        <div class="tbl-row" style="grid-template-columns:160px 1fr 80px 80px 80px 120px">
+          <span style="font-weight:700;color:${r.col}">${r.seg}</span>
+          <span style="font-size:11.5px;color:var(--text-d)">${r.desc}</span>
+          <span class="mono" style="font-weight:700">${r.sz}</span>
+          <span class="mono" style="font-size:11.5px">${r.wtp}</span>
+          <span class="mono" style="font-weight:700;color:${parseFloat(r.elas)<-3?'var(--red)':parseFloat(r.elas)<-2?'var(--amber)':'var(--green)'}">${r.elas}</span>
+          <span style="font-size:11.5px;color:${r.col};font-weight:600">${r.rec}</span>
+        </div>`).join('')}
+    </div>
+  </div>
+</div>`;}
+
+function buildConsumer(){
+  const ctx=document.getElementById('wtp-chart');
+  if(!ctx)return;
+  const prices=[];const acceptable=[];const tooExpensive=[];const tooCheap=[];
+  for(let p=8;p<=18;p+=0.5){
+    prices.push('£'+p.toFixed(1));
+    tooExpensive.push(Math.round(100*(1/(1+Math.exp(-(p-14.1)*1.5)))));
+    acceptable.push(Math.max(0,100-Math.round(100*(1/(1+Math.exp(-(p-14.1)*1.5))))-Math.round(100*(1/(1+Math.exp((p-10.2)*2))))));
+    tooCheap.push(Math.round(100*(1/(1+Math.exp((p-10.2)*2)))));
+  }
+  chartRegistry['wtp']=new Chart(ctx,{
+    type:'line',
+    data:{labels:prices,datasets:[
+      {label:'Too Expensive',data:tooExpensive,borderColor:'#DC2626',backgroundColor:'rgba(220,38,38,.06)',borderWidth:2,tension:.4,pointRadius:0,fill:false},
+      {label:'Acceptable',data:acceptable,borderColor:'#059669',backgroundColor:'rgba(5,150,105,.1)',borderWidth:2.5,tension:.4,pointRadius:0,fill:true},
+      {label:'Too Cheap (quality concern)',data:tooCheap,borderColor:'#D97706',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,4],tension:.4,pointRadius:0},
+    ]},
     options:{
       responsive:true,maintainAspectRatio:false,
-      plugins:{
-        legend:{position:'bottom',labels:{color:'var(--text-d)',font:{size:11},boxWidth:10}},
-        tooltip:{
-          backgroundColor:'#1E2226',titleColor:'rgba(255,255,255,.8)',bodyColor:'rgba(255,255,255,.6)',padding:10,
-          callbacks:{label:ctx=>`Δ${ctx.raw.x}% price → £${ctx.raw.y}M margin`}
-        }
-      },
+      plugins:{legend:{position:'bottom',labels:{color:'#6B7280',font:{size:11},boxWidth:12}},
+        tooltip:{backgroundColor:'white',titleColor:'#0D1117',bodyColor:'#6B7280',borderColor:'#DDE1E9',borderWidth:1,padding:10,callbacks:{label:i=>`${i.dataset.label}: ${i.raw}% of shoppers`}}},
       scales:{
-        x:{title:{display:true,text:'Price Change %',color:'var(--text-d)',font:{size:11}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'var(--text-dim)',font:{size:10}}},
-        y:{title:{display:true,text:'Annual Margin (£M)',color:'var(--text-d)',font:{size:11}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'var(--text-dim)',font:{size:10}}}
+        x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9CA3AF',font:{size:10},maxTicksLimit:8}},
+        y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9CA3AF',font:{size:10}},max:100,title:{display:true,text:'% of Shoppers',color:'#9CA3AF',font:{size:10}}}
       }
     }
   });
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// 4. COMPETITOR INTEL
-// ══════════════════════════════════════════════════════════════════════════════
-function renderCompetitor() {
-  const comps = [
-    {name:'Carrefour UAE',     sku:'Dettol 500ml equiv',their:'£11.20',our:'£12.40',delta:'↓ −9.7%',when:'7 days ago', alert:'b-red',   atxt:'⚡ HIGH',   rec:true},
-    {name:'LuLu Hypermarket',  sku:'Dettol 500ml equiv',their:'£12.50',our:'£12.40',delta:'→ Stable',when:'4 days ago', alert:'b-green', atxt:'✓ Stable', rec:false},
-    {name:'Shoprite Egypt',    sku:'Harpic 500ml equiv',their:'£9.80', our:'£9.20', delta:'↑ +6.5%', when:'2 days ago', alert:'b-amber', atxt:'⚠ Watch',  rec:false},
-    {name:'Panda KSA',         sku:'Dettol 1L equiv',   their:'£18.90',our:'£19.20',delta:'→ Stable',when:'1 day ago',  alert:'b-green', atxt:'✓ Stable', rec:false},
-    {name:'Spinneys Lebanon',  sku:'Dettol 500ml equiv',their:'£10.90',our:'£12.40',delta:'↓ −12.1%',when:'New',        alert:'b-red',   atxt:'⚡ HIGH',   rec:true},
-    {name:'Choithrams UAE',    sku:'Harpic 1L equiv',   their:'£17.10',our:'£16.80',delta:'→ Stable',when:'3 days ago', alert:'b-green', atxt:'✓ Stable', rec:false},
+// ═══════════════════ 4. CAUSAL ENGINE ═══════════════════
+function renderCausal(){return `
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title">Elasticity <em>Engine</em></div>
+    <div class="page-sub">Double ML · CausalForest · CATE by segment · Price effect isolated from promo, seasonality, competitor · Last train: 3 days ago</div></div>
+    <div class="page-actions">
+      <button class="btn btn-ghost btn-sm">⟳ Retrain</button>
+      <button class="btn btn-blue btn-sm">⬇ Export</button>
+    </div>
+  </div>
+
+  <div class="pipeline">
+    ${[['Signal Ingestion','done'],['Confounder ID','done'],['Double ML Residuals','done'],['CausalForest','done'],['CATE Segments','active'],['Confidence Cal.','idle']].map(([l,s])=>`<div class="pipe-step ${s}">${s==='done'?'✓ ':s==='active'?'⟳ ':''}${l}</div>`).join('')}
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Causal ML vs. Naive Correlation — Demand Curve</div>
+      <div class="card-sub">Double ML eliminates confounders · True price effect isolated · Dettol 500ml · 18-month window</div></div>
+      <div style="padding:16px 18px"><canvas id="causal-chart" height="220"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Feature Coefficients — Causal Effects</div>
+      <div class="card-sub">Double ML partial effects · Isolated from cross-effects · *** p&lt;0.001</div></div>
+      <div>
+        <div class="tbl-head" style="grid-template-columns:1fr 70px 50px 1fr"><span class="tbl-col">Feature</span><span class="tbl-col">Coeff</span><span class="tbl-col">Sig</span><span class="tbl-col">Effect</span></div>
+        ${[
+          ['Own Price','−2.41','***',90,'var(--red)'],
+          ['Promo Depth','+3.20','***',85,'var(--green)'],
+          ['Competitor Price','+1.18','***',55,'var(--blue)'],
+          ['Shelf Share','+0.74','**',35,'var(--blue)'],
+          ['Seasonality','+0.42','**',20,'var(--text-d)'],
+          ['GDP Index','+0.31','*',15,'var(--text-d)'],
+        ].map(([f,v,s,w,col])=>`
+          <div class="tbl-row" style="grid-template-columns:1fr 70px 50px 1fr">
+            <span style="font-weight:600">${f}</span>
+            <span class="mono" style="font-weight:700;color:${col}">${v}</span>
+            <span class="mono" style="color:${s==='***'?'var(--green)':s==='**'?'var(--blue)':'var(--text-d)'};font-size:11.5px">${s}</span>
+            <div style="display:flex;align-items:center;gap:6px">
+              <div style="flex:1;height:5px;background:var(--surface2);border-radius:3px">
+                <div style="width:${w}%;height:100%;background:${col};border-radius:3px"></div>
+              </div>
+              <span style="font-size:10px;color:var(--text-d);min-width:24px">${w>60?'High':w>35?'Med':'Low'}</span>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div style="background:var(--blue-dim);border:1px solid rgba(29,78,216,.2);border-radius:var(--r10);padding:16px 20px">
+    <div style="font-size:13px;color:var(--text);line-height:1.7">
+      <strong style="color:var(--blue)">Key Insight:</strong> Naive OLS shows ε = −1.78. Causal Double ML isolates true price effect at <strong style="color:var(--blue)">ε = −2.41</strong> — 35% larger.
+      Using naive estimate would undershoot optimal price, leaving <strong>~£0.8M per quarter</strong> on the table. Causal approach also prevents false confidence when promo and price move together.
+    </div>
+  </div>
+</div>`;}
+
+function buildCausal(){
+  const ctx=document.getElementById('causal-chart');if(!ctx)return;
+  const prices=[],causal=[],naive=[],upper=[],lower=[];
+  for(let p=8;p<=18;p+=0.5){prices.push('£'+p.toFixed(1));const dC=5000*Math.pow(p,-2.41),dN=5000*Math.pow(p,-1.78);causal.push(Math.round(dC));naive.push(Math.round(dN));upper.push(Math.round(dC*1.12));lower.push(Math.round(dC*0.88));}
+  chartRegistry['causal']=new Chart(ctx,{type:'line',data:{labels:prices,datasets:[
+    {label:'CI Band (upper)',data:upper,borderWidth:0,backgroundColor:'rgba(29,78,216,.08)',fill:'+1',tension:.4,pointRadius:0},
+    {label:'CI Band (lower)',data:lower,borderWidth:0,fill:false,tension:.4,pointRadius:0},
+    {label:'Causal ML ε=−2.41',data:causal,borderColor:'#1D4ED8',backgroundColor:'transparent',borderWidth:2.5,tension:.4,pointRadius:0},
+    {label:'Naive OLS ε=−1.78',data:naive,borderColor:'#DC2626',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,4],tension:.4,pointRadius:0},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#6B7280',font:{size:11},boxWidth:12}},tooltip:{backgroundColor:'white',titleColor:'#0D1117',bodyColor:'#6B7280',borderColor:'#DDE1E9',borderWidth:1,padding:10}},scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9CA3AF',font:{size:10},maxTicksLimit:8}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9CA3AF',font:{size:10}}}}}});
+}
+
+// ═══════════════════ 5. PPA OPTIMIZER ═══════════════════
+function renderPPA(){return `
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title">Price Pack <em>Architecture</em></div>
+    <div class="page-sub">Full portfolio mapping · Pack size × price ladder × channel · Gaps, over-pricing, cannibalization · Optimise the ladder, not just individual SKUs</div></div>
+    <div class="page-actions">
+      <button class="btn btn-ghost btn-sm">⬇ Export PPA</button>
+      <button class="btn btn-blue btn-sm">Run Portfolio Optimiser</button>
+    </div>
+  </div>
+
+  <div class="alert-strip warning">
+    <div style="font-size:16px">⚠</div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:3px">3 PPA Gaps Identified — Estimated £1.4M Uncaptured Value</div>
+      <div style="font-size:12px;color:var(--text-m);line-height:1.6">Missing mid-tier pack in Harpic 500ml (£7.50–£9.00 window vacant). Dettol 250ml priced too close to 500ml — internal cannibalization detected. Finish mid-tier underpenetrated in Gulf.</div>
+      <button class="btn btn-blue btn-xs" style="margin-top:8px" onclick="nav('scenarios')">Model Fix in Scenario Lab →</button>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <!-- Pack Ladder -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">Dettol — Pack Ladder Analysis</div>
+      <div class="card-sub">Price per litre × pack size · Green = optimally positioned · Red = cannibalizing · Yellow = gap</div></div>
+      <div style="padding:16px 18px">
+        <div style="font-size:10.5px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Pack Size × Relative Price per Litre</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px">
+          ${[
+            {size:'100ml',ppl:'£26.0',status:'ok',note:'Entry-tier'},
+            {size:'250ml',ppl:'£18.4',status:'cannibal',note:'⚠ Too close to 500ml'},
+            {size:'500ml',ppl:'£12.4',status:'ok',note:'Hero SKU'},
+            {size:'750ml',ppl:'VACANT',status:'gap',note:'Price gap here'},
+            {size:'1L',ppl:'£11.1',status:'ok',note:'Value tier'},
+          ].map(p=>`
+            <div class="ppa-cell ${p.status==='ok'?'highlight':p.status==='cannibal'?'overpriced':'gap'}">
+              <div style="font-size:12px;font-weight:800;color:var(--text)">${p.size}</div>
+              <div class="mono" style="font-size:13px;font-weight:700;margin:4px 0;color:${p.status==='gap'?'var(--amber)':p.status==='cannibal'?'var(--red)':'var(--green)'}">${p.ppl}</div>
+              <div style="font-size:9.5px;color:var(--text-d)">${p.note}</div>
+            </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--text-d)"><div style="width:10px;height:10px;border-radius:2px;background:var(--green-dim);border:1px solid var(--green)"></div>Optimal</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--text-d)"><div style="width:10px;height:10px;border-radius:2px;background:var(--amber-dim);border:1px dashed var(--amber)"></div>Gap opportunity</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--text-d)"><div style="width:10px;height:10px;border-radius:2px;background:var(--red-dim);border:1px solid var(--red)"></div>Cannibalising</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cannibalization -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">Internal Cannibalization Matrix</div>
+      <div class="card-sub">Own-brand switching effects · Volume at risk if price gap too narrow</div></div>
+      <div style="padding:14px 16px">
+        <div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px">When Dettol 250ml lifts price, customers switch to...</div>
+        ${[
+          {to:'Dettol 500ml (up-tier)',prob:42,rev:'Positive — higher margin',col:'var(--green)'},
+          {to:'Savlon 250ml (competitor)',prob:28,rev:'Negative — lost share',col:'var(--red)'},
+          {to:'Private label 250ml',prob:18,rev:'Negative — margin erosion',col:'var(--red)'},
+          {to:'Dettol 100ml (trade-down)',prob:12,rev:'Negative — lower spend',col:'var(--amber)'},
+        ].map(r=>`
+          <div style="padding:9px 0;border-bottom:1px solid var(--border-s)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <span style="font-size:12px;font-weight:600;color:var(--text)">${r.to}</span>
+              <span class="mono" style="font-size:12px;font-weight:700;color:${r.col}">${r.prob}%</span>
+            </div>
+            <div style="height:5px;background:var(--surface2);border-radius:2px;margin-bottom:4px">
+              <div style="width:${r.prob*2}%;height:100%;background:${r.col};border-radius:2px"></div>
+            </div>
+            <div style="font-size:10px;color:var(--text-dim)">${r.rev}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-brand PPA -->
+  <div class="card">
+    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
+      <div><div class="card-title">Portfolio Price Ladder — All Brands × Pack Sizes × Channels</div>
+      <div class="card-sub">Dettol · Harpic · Finish · Shoprite + Carrefour + LuLu · Price per unit, current vs. recommended</div></div>
+      ${badge('PPA CORE','b-navy')}
+    </div>
+    <div class="tbl-head" style="grid-template-columns:100px 90px 100px 85px 85px 80px 80px 120px">
+      ${['Brand','Pack','Channel','Cur Price','Rec Price','Δ%','Margin Δ','Status'].map(h=>`<span class="tbl-col">${h}</span>`).join('')}
+    </div>
+    ${[
+      {brand:'Dettol',pack:'250ml',channel:'Shoprite NA',cur:'£5.80',rec:'£5.50',delta:'−5.2%',mdelta:'−£0.3',status:'Cannibal','stat':'b-red'},
+      {brand:'Dettol',pack:'500ml',channel:'Shoprite NA',cur:'£11.69',rec:'£12.40',delta:'+6.0%',mdelta:'+£2.1M','status':'Recommended','stat':'b-green'},
+      {brand:'Dettol',pack:'1L',channel:'Shoprite SA',cur:'£18.37',rec:'£19.20',delta:'+4.5%',mdelta:'+£1.6M','status':'Recommended','stat':'b-green'},
+      {brand:'Harpic',pack:'500ml',channel:'Shoprite EA',cur:'£8.65',rec:'£9.35',delta:'+8.0%',mdelta:'+£0.9M','status':'Recommended','stat':'b-green'},
+      {brand:'Harpic',pack:'750ml',channel:'All',cur:'—',rec:'£11.50',delta:'NEW',mdelta:'+£1.4M','status':'Gap Opp.','stat':'b-amber'},
+      {brand:'Finish',pack:'All-in-1',channel:'Carrefour KSA',cur:'£8.90',rec:'£9.20',delta:'+3.4%',mdelta:'+£0.4M','status':'Exploratory','stat':'b-blue'},
+    ].map(r=>`
+      <div class="tbl-row" style="grid-template-columns:100px 90px 100px 85px 85px 80px 80px 120px">
+        <span style="font-weight:700;color:var(--navy)">${r.brand}</span>
+        <span class="mono" style="font-size:11.5px">${r.pack}</span>
+        <span style="font-size:11.5px;color:var(--text-d)">${r.channel}</span>
+        <span class="mono" style="color:var(--text-m)">${r.cur}</span>
+        <span class="mono" style="font-weight:700;color:var(--blue)">${r.rec}</span>
+        <span class="mono" style="font-weight:700;color:${r.delta.startsWith('+')||r.delta==='NEW'?'var(--green)':'var(--red)'}">${r.delta}</span>
+        <span class="mono" style="font-size:11.5px;color:${r.mdelta.startsWith('+')?'var(--green)':'var(--red)'}">${r.mdelta}</span>
+        <span class="badge ${r.stat}">${r.status}</span>
+      </div>`).join('')}
+  </div>
+</div>`;}
+
+// ═══════════════════ 6. PROMO MODELER ═══════════════════
+function renderPromo(){return `
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title">Promo <em>Modeler</em></div>
+    <div class="page-sub">Promotional elasticity × base price interaction · Uplift modeling · Promo ROI · Timing + depth + frequency optimisation</div></div>
+    <div class="page-actions">
+      <button class="btn btn-blue btn-sm">Run Promo Optimisation</button>
+    </div>
+  </div>
+  <div class="g4" style="margin-bottom:16px">
+    ${kpi('Avg Promo ROI','1.8×','var(--green)','Revenue per £1 promo spend','up','Dettol AME portfolio')}
+    ${kpi('Promo Elasticity','−4.2','var(--blue)','1.7× base own-price elas.','neutral','Amplification effect')}
+    ${kpi('Post-Promo Dip','+3.2 weeks','var(--amber)','Pull-forward normalisation','down','Shoprite NA baseline')}
+    ${kpi('Optimal Promo Depth','−12%','var(--teal)','Below this: underperforms','neutral','Above this: margin destroyed')}
+  </div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Promo Uplift vs. Base Price Interaction</div>
+      <div class="card-sub">Promotional uplift (demand increase) as a function of base price level · Dettol 500ml · Shoprite NA</div></div>
+      <div style="padding:16px 18px"><canvas id="promo-chart" height="220"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Promo ROI by Type & Depth</div>
+      <div class="card-sub">Multi-mechanism promo performance · Base: Dettol 500ml · Last 12 promos</div></div>
+      <div style="padding:12px 16px">
+        ${[
+          {type:'Price Reduction −10%',roi:'2.4×',uplift:'+34%',post:'−2.1%',rec:'b-green',rtxt:'Optimal'},
+          {type:'Price Reduction −15%',roi:'1.9×',uplift:'+48%',post:'−4.8%',rec:'b-amber',rtxt:'Caution'},
+          {type:'Price Reduction −20%+',roi:'0.9×',uplift:'+61%',post:'−8.2%',rec:'b-red',rtxt:'Avoid'},
+          {type:'BOGOF (2-for-1)',roi:'2.1×',uplift:'+28%',post:'−5.5%',rec:'b-amber',rtxt:'Review'},
+          {type:'Multi-buy 3-for-2',roi:'2.6×',uplift:'+31%',post:'−2.3%',rec:'b-green',rtxt:'Optimal'},
+          {type:'Display + Price cut',roi:'3.2×',uplift:'+52%',post:'−1.9%',rec:'b-green',rtxt:'Best ROI'},
+        ].map(r=>`
+          <div style="display:grid;grid-template-columns:1fr 45px 50px 50px 70px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-s);gap:8px">
+            <span style="font-size:11.5px;font-weight:600;color:var(--text)">${r.type}</span>
+            <span class="mono" style="font-weight:700;font-size:12px;color:${parseFloat(r.roi)>2.2?'var(--green)':parseFloat(r.roi)>1.5?'var(--amber)':'var(--red)'}">${r.roi}</span>
+            <span class="mono" style="font-size:11px;color:var(--green)">${r.uplift}</span>
+            <span class="mono" style="font-size:11px;color:var(--red)">${r.post}</span>
+            <span class="badge ${r.rec}">${r.rtxt}</span>
+          </div>`).join('')}
+        <div style="font-size:10px;color:var(--text-dim);margin-top:8px">ROI = Incremental revenue ÷ Promo cost · Post = 4-week post-promo volume dip</div>
+      </div>
+    </div>
+  </div>
+</div>`;}
+
+function buildPromo(){
+  const ctx=document.getElementById('promo-chart');if(!ctx)return;
+  const bases=[10,10.5,11,11.5,12,12.5,13,13.5,14,14.5,15];
+  const uplift10=bases.map(b=>Math.round((1+Math.exp(-(b-10)*0.3))*22));
+  const uplift15=bases.map(b=>Math.round((1+Math.exp(-(b-10)*0.3))*35));
+  const roi=bases.map(b=>parseFloat((2.8-b*0.08+Math.random()*0.1).toFixed(1)));
+  chartRegistry['promo']=new Chart(ctx,{type:'line',data:{labels:bases.map(b=>'£'+b.toFixed(1)),datasets:[
+    {label:'Uplift @ −10% promo',data:uplift10,borderColor:'#1D4ED8',backgroundColor:'rgba(29,78,216,.06)',borderWidth:2,tension:.4,pointRadius:3,fill:true},
+    {label:'Uplift @ −15% promo',data:uplift15,borderColor:'#059669',backgroundColor:'rgba(5,150,105,.06)',borderWidth:2,tension:.4,pointRadius:3,fill:true},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#6B7280',font:{size:11},boxWidth:12}},tooltip:{backgroundColor:'white',titleColor:'#0D1117',bodyColor:'#6B7280',borderColor:'#DDE1E9',borderWidth:1,padding:10,callbacks:{label:i=>`${i.dataset.label}: +${i.raw}% volume uplift`}}},scales:{x:{title:{display:true,text:'Base Price (£)',color:'#9CA3AF',font:{size:10}},grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9CA3AF',font:{size:10}}},y:{title:{display:true,text:'Volume Uplift %',color:'#9CA3AF',font:{size:10}},grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9CA3AF',font:{size:10}}}}}});
+}
+
+// ═══════════════════ 7. SCENARIO LAB ═══════════════════
+function renderScenarios(){
+  const scenarios=[
+    {id:'S-001',sku:'Dettol 500ml · Shoprite NA',chg:'+6.0%',gmΔ:'+£2.1M',volΔ:'−3.1%',nrΔ:'+£1.8M',conf:94,risk:'Low',status:'Recommended','st':'b-green'},
+    {id:'S-002',sku:'Dettol 1L · Shoprite SA',chg:'+4.5%',gmΔ:'+£1.6M',volΔ:'−2.2%',nrΔ:'+£1.4M',conf:89,risk:'Low',status:'Recommended','st':'b-green'},
+    {id:'S-003',sku:'Harpic 500ml · Shoprite EA',chg:'+8.0%',gmΔ:'+£0.9M',volΔ:'−5.0%',nrΔ:'+£0.7M',conf:82,risk:'Med',status:'Recommended','st':'b-green'},
+    {id:'S-004',sku:'Harpic 750ml · All Channels (NEW)',chg:'Launch',gmΔ:'+£1.4M',volΔ:'New',nrΔ:'+£1.2M',conf:76,risk:'Med',status:'PPA Gap','st':'b-amber'},
+    {id:'S-005',sku:'Dettol 500ml · Carrefour UAE',chg:'−3.0%',gmΔ:'−£420K def.',volΔ:'+1.8%',nrΔ:'−£320K',conf:81,risk:'Low',status:'Defensive','st':'b-blue'},
+    {id:'S-006',sku:'Finish · Carrefour KSA',chg:'+3.5%',gmΔ:'+£0.4M',volΔ:'−1.4%',nrΔ:'+£0.3M',conf:74,risk:'Med',status:'Exploratory','st':'b-dark'},
   ];
   return `
-  <div class="animate-in">
-    <div class="page-header">
-      <div>
-        <div class="page-title">Competitor <em>Intel</em></div>
-        <div class="page-sub">Scraping 48 retailers across AME · Refresh every 6 min · Game-theory response engine active</div>
-      </div>
-      <div class="page-actions">
-        <button class="btn btn-ghost btn-sm">⟳ Force Refresh</button>
-      </div>
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title">Scenario <em>Lab</em></div>
+    <div class="page-sub">1,024 scenarios · Ray parallel compute · Ranked by net revenue + gross margin composite · Side-by-side P&L comparison</div></div>
+    <div class="page-actions">
+      <button class="btn btn-ghost btn-sm">⬇ Export All</button>
+      <button class="btn btn-blue btn-sm" onclick="nav('execute')">Apply All → +£2.1M</button>
     </div>
+  </div>
 
-    <!-- Alert callout -->
-    <div style="background:rgba(255,77,106,.06);border:1px solid rgba(255,77,106,.2);border-radius:var(--r12);padding:14px 18px;margin-bottom:18px;display:flex;align-items:flex-start;gap:12px">
-      <div style="font-size:20px;flex-shrink:0">⚡</div>
-      <div>
-        <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:4px">2 High-Priority Alerts Require Attention</div>
-        <div style="font-size:12.5px;color:var(--text-d);line-height:1.6">
-          Carrefour UAE cut Dettol 500ml by −9.7% (7 days ago). Spinneys Lebanon cut by −12.1% (new signal).
-          Combined at-risk market: <strong style="color:var(--red)">UAE + Lebanon Dettol 500ml</strong>.
-          Game-theory model recommends defensive response within <strong>72 hours</strong>.
-        </div>
-        <button class="btn btn-pink btn-xs" style="margin-top:10px" onclick="nav('execute')">→ Apply Defensive Response −£420K Protection</button>
-      </div>
+  <!-- Pareto scatter -->
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Pareto Frontier — Margin Uplift vs. Volume Risk</div>
+      <div class="card-sub">Efficient frontier of all 1,024 scenarios · Bubble size = annual opportunity · Target: upper-left</div></div>
+      <div style="padding:16px 18px"><canvas id="pareto-chart" height="220"></canvas></div>
     </div>
-
-    <div class="card" style="overflow:hidden;margin-bottom:14px">
-      <div class="card-header">
-        <div class="card-title">Live Competitor Price Matrix</div>
-        <div class="card-sub">48 retailers scraped · Updated 6 min ago · 2 high-priority alerts</div>
-      </div>
-      <div class="tbl-head" style="grid-template-columns:1fr 1fr 80px 80px 120px 60px 110px">
-        ${['Competitor','SKU Match','Their Price','Our Price','Δ Change','Age','Alert Level'].map(h=>`<span class="tbl-col">${h}</span>`).join('')}
-      </div>
-      ${comps.map(r=>`
-      <div class="tbl-row" style="grid-template-columns:1fr 1fr 80px 80px 120px 60px 110px">
-        <span style="font-weight:700;color:var(--text)">${r.name}</span>
-        <span style="color:var(--text-d);font-size:12.5px">${r.sku}</span>
-        <span class="mono" style="font-weight:700;color:${r.delta.includes('↓')?'var(--red)':r.delta.includes('↑')?'var(--green)':'var(--text-m)'}">${r.their}</span>
-        <span class="mono" style="font-weight:600;color:var(--text-m)">${r.our}</span>
-        <span style="font-size:12.5px;font-weight:600;color:${r.delta.includes('↓')?'var(--red)':r.delta.includes('↑')?'var(--green)':'var(--text-d)'}">${r.delta}</span>
-        <span style="font-size:11px;color:var(--text-dim)">${r.when}</span>
-        <span class="badge ${r.alert}">${r.atxt}</span>
-      </div>`).join('')}
-    </div>
-
-    <div class="g2">
-      <div class="card" style="border-color:rgba(255,45,120,.2);background:rgba(255,45,120,.03)">
-        <div style="padding:18px 20px">
-          <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:8px">🎯 Game-Theory Recommendation</div>
-          <div style="font-size:13px;color:var(--text-d);line-height:1.7;margin-bottom:14px">
-            Carrefour UAE's −9.7% move is a <strong style="color:var(--text)">promotional reset</strong> (confidence: 81%), not permanent repositioning.
-            Recommended response: <strong style="color:var(--pink)">−3.0% defensive cut on Dettol 500ml UAE only</strong>.
-            This protects share without triggering a price war.
-          </div>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-pink btn-sm" onclick="nav('execute')">→ Apply Response</button>
-            <button class="btn btn-ghost btn-sm" onclick="nav('copilot')">Ask Copilot</button>
-          </div>
+    <div>
+      <div class="card" style="margin-bottom:10px">
+        <div class="card-header"><div class="card-title">Side-by-Side P&L — Top 2 Scenarios</div></div>
+        <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          ${[
+            {label:'S-001: Dettol 500ml +6%',chg:'+6.0%',gm:'+£2.1M',vol:'−3.1%',nr:'+£1.8M',conf:'94%',col:'var(--green)'},
+            {label:'S-002: Dettol 1L +4.5%',chg:'+4.5%',gm:'+£1.6M',vol:'−2.2%',nr:'+£1.4M',conf:'89%',col:'var(--blue)'},
+          ].map(s=>`
+            <div class="sc-col recommended">
+              <div class="sc-col-header">${s.label}</div>
+              ${[['Price Δ',s.chg],['Gross Margin Δ',s.gm],['Volume Δ',s.vol],['Net Revenue Δ',s.nr],['Confidence',s.conf]].map(([l,v])=>`
+                <div class="sc-metric"><div class="sc-metric-l">${l}</div><div class="sc-metric-v" style="color:${v.startsWith('+')?'var(--green)':v.startsWith('−')?'var(--red)':'var(--blue)'}">${v}</div></div>`).join('')}
+            </div>`).join('')}
         </div>
       </div>
       <div class="card">
-        <div style="padding:18px 20px">
-          <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:12px">Market Position Summary</div>
+        <div class="card-header"><div class="card-title">Run Stats</div></div>
+        <div style="padding:11px 14px">
           ${[
-            ['Price Premium vs Competition','avg +4.2%','var(--teal)'],
-            ['Markets Where We Lead','9 / 14','var(--green)'],
-            ['At-Risk Share (90-day)','£420K','var(--red)'],
-            ['Confidence in Intel','81%','var(--text-m)'],
+            ['Total Scenarios','1,024','var(--blue)'],
+            ['High Confidence (>80%)','312','var(--green)'],
+            ['Recommended','6','var(--blue)'],
+            ['Discarded (<60% conf.)','156','var(--text-d)'],
+            ['Compute Time','4m 12s','var(--text-m)'],
           ].map(([l,v,c])=>`
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-b)">
-              <span style="font-size:12.5px;color:var(--text-d)">${l}</span>
-              <span class="mono" style="font-size:13px;font-weight:700;color:${c}">${v}</span>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border-s)">
+              <span style="font-size:12px;color:var(--text-d)">${l}</span>
+              <span class="mono" style="font-size:12px;font-weight:700;color:${c}">${v}</span>
             </div>`).join('')}
         </div>
       </div>
     </div>
-  </div>`;
+  </div>
+
+  <div class="card">
+    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
+      <div><div class="card-title">All Scenarios — Ranked by Composite Score (Margin × Confidence)</div></div>
+      <div style="display:flex;gap:6px">${badge('4 Recommended','b-green')}${badge('1 Defensive','b-blue')}${badge('1 Exploratory','b-dark')}</div>
+    </div>
+    <div class="tbl-head" style="grid-template-columns:60px 1fr 70px 90px 80px 80px 60px 80px 110px">
+      ${['ID','SKU & Market','Price Δ','Gross Margin Δ','Volume Δ','Net Rev Δ','Conf','Risk','Status'].map(h=>`<span class="tbl-col">${h}</span>`).join('')}
+    </div>
+    ${scenarios.map(s=>`
+      <div class="tbl-row" style="grid-template-columns:60px 1fr 70px 90px 80px 80px 60px 80px 110px;cursor:pointer" onclick="nav('execute')">
+        <span class="mono" style="font-size:10.5px;color:var(--text-dim)">${s.id}</span>
+        <span style="font-weight:600">${s.sku}</span>
+        <span class="mono" style="font-weight:700;color:${s.chg.startsWith('+')?'var(--green)':s.chg==='Launch'?'var(--amber)':'var(--red)'}">${s.chg}</span>
+        <span class="mono" style="font-weight:700;color:${s.gmΔ.startsWith('+')?'var(--green)':'var(--red)'}">${s.gmΔ}</span>
+        <span class="mono" style="font-size:11.5px;color:${s.volΔ.startsWith('+')?'var(--green)':s.volΔ==='New'?'var(--blue)':'var(--red)'}">${s.volΔ}</span>
+        <span class="mono" style="font-size:11.5px;color:${s.nrΔ.startsWith('+')?'var(--green)':'var(--red)'}">${s.nrΔ}</span>
+        <span class="mono" style="font-size:11.5px;font-weight:700;color:${s.conf>85?'var(--green)':s.conf>75?'var(--blue)':'var(--amber)'}">${s.conf}%</span>
+        <span class="badge ${s.risk==='Low'?'b-green':'b-amber'}">${s.risk}</span>
+        <span class="badge ${s.st}">${s.status}</span>
+      </div>`).join('')}
+  </div>
+</div>`;}
+
+function buildScenarios(){
+  const ctx=document.getElementById('pareto-chart');if(!ctx)return;
+  chartRegistry['pareto']=new Chart(ctx,{type:'bubble',data:{datasets:[
+    {label:'Recommended',data:[{x:6.0,y:2.1,r:18},{x:4.5,y:1.6,r:14},{x:8.0,y:0.9,r:11},{x:0,y:1.4,r:12}],backgroundColor:'rgba(5,150,105,.5)',borderColor:'#059669',borderWidth:1.5},
+    {label:'Defensive',data:[{x:-3.0,y:-0.42,r:10}],backgroundColor:'rgba(29,78,216,.35)',borderColor:'#1D4ED8',borderWidth:1.5},
+    {label:'Exploratory',data:[{x:3.5,y:0.4,r:8},{x:5.0,y:0.3,r:7}],backgroundColor:'rgba(217,119,6,.35)',borderColor:'#D97706',borderWidth:1.5},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#6B7280',font:{size:11},boxWidth:10}},tooltip:{backgroundColor:'white',titleColor:'#0D1117',bodyColor:'#6B7280',borderColor:'#DDE1E9',borderWidth:1,padding:10,callbacks:{label:i=>`Δ${i.raw.x}% price → £${i.raw.y}M margin`}}},scales:{x:{title:{display:true,text:'Price Change %',color:'#9CA3AF',font:{size:10}},grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9CA3AF',font:{size:10}}},y:{title:{display:true,text:'Annual Margin (£M)',color:'#9CA3AF',font:{size:10}},grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9CA3AF',font:{size:10}}}}}});
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// 5. AI COPILOT
-// ══════════════════════════════════════════════════════════════════════════════
-function renderCopilot() {
+// ═══════════════════ 8. COMPETITOR INTEL ═══════════════════
+function renderCompetitor(){
+  const comps=[
+    {name:'Carrefour UAE',sku:'Dettol 500ml',their:'£11.20',our:'£12.40',delta:'↓ −9.7%',age:'7 days',stat:'b-red',stxt:'⚡ HIGH',game:'Promotional reset — −3.0% defensive rec.'},
+    {name:'Spinneys Lebanon',sku:'Dettol 500ml',their:'£10.90',our:'£12.40',delta:'↓ −12.1%',age:'New',stat:'b-red',stxt:'⚡ HIGH',game:'New entrant positioning — monitor 2 weeks'},
+    {name:'LuLu Hypermarket',sku:'Dettol 500ml',their:'£12.50',our:'£12.40',delta:'→ Stable',age:'4 days',stat:'b-green',stxt:'✓ OK',game:'No action needed'},
+    {name:'Shoprite Egypt',sku:'Harpic 500ml',their:'£9.80',our:'£9.20',delta:'↑ +6.5%',age:'2 days',stat:'b-blue',stxt:'⬆ OPP',game:'Competitor raised — window to +4% on Harpic EA'},
+    {name:'Panda KSA',sku:'Dettol 1L',their:'£18.90',our:'£19.20',delta:'→ Stable',age:'1 day',stat:'b-green',stxt:'✓ OK',game:'No action needed'},
+  ];
   return `
-  <div class="animate-in">
-    <div class="page-header">
-      <div>
-        <div class="page-title">AI <em>Copilot</em></div>
-        <div class="page-sub">Grounded in your live data · Causal model aware · Scenario-linked · EU AI Act compliant</div>
-      </div>
-      <div class="page-actions">
-        <span class="badge b-green">● Live AI</span>
-        <button class="btn btn-ghost btn-sm" onclick="clearCopilot()">Clear Chat</button>
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title">Competitor <em>Intel</em></div>
+    <div class="page-sub">48 retailers scraped across AME · 6-minute refresh · Game-theory response engine · Price gap + share-at-risk quantified</div></div>
+    <div class="page-actions"><button class="btn btn-blue btn-sm">⟳ Force Refresh</button></div>
+  </div>
+  <div class="alert-strip warning" style="margin-bottom:16px">
+    <div style="font-size:16px">⚡</div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--red)">2 High-Priority Competitor Moves — Response Required Within 72h</div>
+      <div style="font-size:12px;color:var(--text-m);margin-top:3px;line-height:1.6">Carrefour UAE (−9.7%) + Spinneys Lebanon (−12.1%) on Dettol 500ml. Combined at-risk share: <strong>~£420K over 90 days</strong> if no response.</div>
+      <button class="btn btn-blue btn-xs" style="margin-top:8px" onclick="nav('execute')">Apply Defensive Response →</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px;overflow:hidden">
+    <div class="card-header"><div class="card-title">Live Competitor Price Matrix</div><div class="card-sub">48 retailers · Last updated 4 min ago · Colour = alert severity</div></div>
+    <div class="tbl-head" style="grid-template-columns:160px 120px 80px 80px 110px 70px 100px 1fr">
+      ${['Competitor','SKU','Their Price','Our Price','Δ','Age','Alert','Game-Theory Rec.'].map(h=>`<span class="tbl-col">${h}</span>`).join('')}
+    </div>
+    ${comps.map(r=>`
+      <div class="tbl-row" style="grid-template-columns:160px 120px 80px 80px 110px 70px 100px 1fr">
+        <span style="font-weight:700">${r.name}</span>
+        <span style="font-size:11.5px;color:var(--text-d)">${r.sku}</span>
+        <span class="mono" style="font-weight:700;color:${r.delta.includes('↓')?'var(--red)':r.delta.includes('↑')?'var(--green)':'var(--text-m)'}">${r.their}</span>
+        <span class="mono" style="color:var(--text-m)">${r.our}</span>
+        <span style="font-size:12px;font-weight:700;color:${r.delta.includes('↓')?'var(--red)':r.delta.includes('↑')?'var(--green)':'var(--text-d)'}">${r.delta}</span>
+        <span style="font-size:11px;color:var(--text-dim)">${r.age}</span>
+        <span class="badge ${r.stat}">${r.stxt}</span>
+        <span style="font-size:11px;color:var(--text-d)">${r.game}</span>
+      </div>`).join('')}
+  </div>
+  <div class="g2">
+    <div class="card" style="border-color:rgba(29,78,216,.2);background:var(--blue-dim)">
+      <div style="padding:16px 18px">
+        <div style="font-size:13px;font-weight:800;color:var(--navy);margin-bottom:8px">🎯 Game-Theory Response Engine</div>
+        <div style="font-size:12.5px;color:var(--text-m);line-height:1.7;margin-bottom:12px">Carrefour UAE's −9.7% is a <strong>promotional reset</strong> (conf: 81%), not permanent repositioning. Recommended: <strong style="color:var(--blue)">−3.0% defensive on Dettol 500ml UAE only</strong>. This closes the gap without triggering a price war. Probability of retaliation: 12%.</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-blue btn-sm" onclick="nav('execute')">Apply Response</button>
+          <button class="btn btn-ghost btn-sm" onclick="nav('copilot')">Simulate Scenarios</button>
+        </div>
       </div>
     </div>
-    <div class="copilot-shell">
-      <div class="copilot-header">
-        <div class="copilot-title">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--pink);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white">P</div>
-          Pricing Copilot
-        </div>
-        <div style="margin-left:auto;font-size:11.5px;color:var(--text-d);display:flex;align-items:center;gap:5px">
-          <div style="width:6px;height:6px;border-radius:50%;background:var(--green)"></div>
-          Causal model loaded · 1,024 scenarios indexed
-        </div>
-      </div>
-      <div class="copilot-msgs" id="copilot-msgs"></div>
-      <div class="copilot-chips" id="copilot-chips">
-        ${['Optimal price for Dettol 500ml next week?','What if Carrefour drops 8%?','Explain the −2.41 elasticity coefficient','Which SKUs have highest margin recovery?'].map(q=>`
-          <div class="chip" onclick="sendPrompt('${q}')">${q}</div>`).join('')}
-      </div>
-      <div class="copilot-input-row">
-        <input class="copilot-input" id="copilot-input" placeholder="Ask about SKUs, scenarios, competitor moves, model confidence..." type="text" onkeydown="if(event.key==='Enter')sendCopilot()"/>
-        <button class="copilot-send" id="copilot-send" onclick="sendCopilot()">Ask</button>
+    <div class="card">
+      <div style="padding:16px 18px">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">Market Position Summary</div>
+        ${[
+          ['Price premium vs. competition','avg +4.2%','var(--blue)'],
+          ['Markets where we lead price','9 / 14','var(--green)'],
+          ['At-risk share (90-day)','£420K','var(--red)'],
+          ['Opportunity (comp raised)','£0.4M potential','var(--green)'],
+          ['Intel confidence (avg)','81%','var(--text-m)'],
+        ].map(([l,v,c])=>`
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-s)">
+            <span style="font-size:12px;color:var(--text-d)">${l}</span>
+            <span class="mono" style="font-size:12.5px;font-weight:700;color:${c}">${v}</span>
+          </div>`).join('')}
       </div>
     </div>
-  </div>`;
+  </div>
+</div>`;}
+
+// ═══════════════════ 9. COPILOT ═══════════════════
+function renderCopilot(){return `
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title">AI <em>Copilot</em></div>
+    <div class="page-sub">Grounded in live data · Causal model-aware · PPA + promo context loaded · EU AI Act compliant explanations</div></div>
+    <div class="page-actions">${badge('● Live','b-green')}<button class="btn btn-ghost btn-sm" onclick="clearCopilot()">Clear</button></div>
+  </div>
+  <div class="copilot-shell">
+    <div class="copilot-header">
+      <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#93C5FD">P</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text)">PriceOS Copilot</div>
+      <div style="margin-left:auto;font-size:11px;color:var(--text-d);display:flex;align-items:center;gap:5px">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--green)"></div>
+        Causal model loaded · 1,024 scenarios · PPA indexed
+      </div>
+    </div>
+    <div class="copilot-msgs" id="copilot-msgs"></div>
+    <div style="padding:8px 14px 6px;border-top:1px solid var(--border-s);display:flex;gap:6px;flex-wrap:wrap" id="copilot-chips">
+      ${['Optimal price for Dettol 500ml?','What if Carrefour drops another 8%?','Explain the PPA gap in Harpic','Which promo type gives best ROI?','Show me the NRM waterfall impact'].map(q=>`<div class="chip" onclick="sendPrompt('${q}')">${q}</div>`).join('')}
+    </div>
+    <div class="copilot-input-row">
+      <input class="copilot-input" id="copilot-input" placeholder="Ask about SKUs, scenarios, PPA, promo, competitor response..." type="text" onkeydown="if(event.key==='Enter')sendCopilot()"/>
+      <button class="copilot-send" id="copilot-send" onclick="sendCopilot()">Ask →</button>
+    </div>
+  </div>
+</div>`;}
+
+function buildCopilot(){
+  copilotHistory=[];
+  appendMessage('ai',`Good morning. PriceOS v2 ran <strong>1,024 scenarios</strong> across Dettol · Harpic · Finish in 14 AME markets.<br><br>
+Key findings:<br>
+• <strong>+£2.1M margin opportunity</strong> — Dettol 500ml +6% at Shoprite NA (confidence 94%)<br>
+• <strong>3 PPA gaps</strong> found — Harpic 750ml vacant tier is the biggest at £1.4M uncaptured<br>
+• <strong>Carrefour UAE</strong> cut Dettol 500ml by −9.7% — game-theory recommends −3.0% defensive, within 72h<br>
+• Causal elasticity locked at <strong>ε = −2.41</strong> (Double ML, vs naive −1.78)<br><br>
+What would you like to model or explore?`);
 }
 
-function buildCopilot() {
-  copilotHistory = [];
-  const initMsg = `Good morning. Ran <strong>1,024 scenarios overnight</strong> across Dettol · Harpic · Finish in 14 AME markets.<br><br>
-Top recommendation: <span class="p-pink">+6% on Dettol 500ml at Shoprite NA</span>, projecting <span class="p-green">+3.8% net margin uplift</span> with &lt;2% volume loss.<br><br>
-Carrefour hasn't moved in 8 days — low defensive risk. Causal elasticity: <span class="p-teal">−2.41</span> (Double ML, 94% confidence interval).<br><br>
-Ready to simulate competitor response or walk through the top 3 scenarios?`;
-  appendMessage('ai', initMsg);
+function appendMessage(role,text){
+  const el=document.getElementById('copilot-msgs');if(!el)return;
+  const isAI=role==='ai';
+  const div=document.createElement('div');
+  div.className=`msg ${isAI?'':'user'}`;
+  div.innerHTML=`<div class="msg-avatar ${isAI?'avatar-ai':'avatar-user'}">${isAI?'P':'R'}</div><div class="msg-bubble ${isAI?'bubble-ai':'bubble-user'}">${text}</div>`;
+  el.appendChild(div);el.scrollTop=el.scrollHeight;
 }
-
-function appendMessage(role, text) {
-  const el = document.getElementById('copilot-msgs');
-  if (!el) return;
-  const isAI = role === 'ai';
-  const div = document.createElement('div');
-  div.className = `msg ${isAI?'':'user'}`;
-  div.innerHTML = `
-    <div class="msg-avatar ${isAI?'avatar-ai':'avatar-user'}">${isAI?'P':'R'}</div>
-    <div class="msg-bubble ${isAI?'bubble-ai':'bubble-user'}">${text}</div>`;
-  el.appendChild(div);
-  el.scrollTop = el.scrollHeight;
+function appendTyping(){
+  const el=document.getElementById('copilot-msgs');if(!el)return;
+  const div=document.createElement('div');div.className='msg';div.id='typing-indicator';
+  div.innerHTML=`<div class="msg-avatar avatar-ai">P</div><div class="msg-bubble bubble-ai"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  el.appendChild(div);el.scrollTop=el.scrollHeight;
 }
-
-function appendTyping() {
-  const el = document.getElementById('copilot-msgs');
-  if (!el) return;
-  const div = document.createElement('div');
-  div.className = 'msg'; div.id = 'typing-indicator';
-  div.innerHTML = `<div class="msg-avatar avatar-ai">P</div><div class="msg-bubble bubble-ai"><div class="typing"><span></span><span></span><span></span></div></div>`;
-  el.appendChild(div);
-  el.scrollTop = el.scrollHeight;
-}
-
-function removeTyping() {
-  const el = document.getElementById('typing-indicator');
-  if (el) el.remove();
-}
-
-function sendPrompt(q) {
-  const input = document.getElementById('copilot-input');
-  if (input) input.value = q;
-  sendCopilot();
-}
-
-function clearCopilot() {
-  copilotHistory = [];
-  buildCopilot();
-}
-
-async function sendCopilot() {
-  const input = document.getElementById('copilot-input');
-  const btn = document.getElementById('copilot-send');
-  const text = input?.value?.trim();
-  if (!text) return;
-
-  input.value = '';
-  appendMessage('user', text);
+function removeTyping(){const el=document.getElementById('typing-indicator');if(el)el.remove();}
+function sendPrompt(q){const i=document.getElementById('copilot-input');if(i)i.value=q;sendCopilot();}
+function clearCopilot(){copilotHistory=[];buildCopilot();}
+async function sendCopilot(){
+  const input=document.getElementById('copilot-input');
+  const btn=document.getElementById('copilot-send');
+  const text=input?.value?.trim();if(!text)return;
+  input.value='';
+  appendMessage('user',text);
   copilotHistory.push({role:'user',content:text});
-
-  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  if(btn){btn.disabled=true;btn.textContent='…';}
   appendTyping();
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:`You are P — PriceOS's embedded AI Copilot for FMCG Revenue Growth Management.
-You are grounded in real data about Reckitt's Dettol, Harpic, and Finish brands across the AME region (Shoprite, Carrefour, LuLu, Panda).
-Key facts always in context:
-- Causal elasticity for Dettol 500ml: −2.41 (Double ML, ±0.18 CI, p<0.001)
-- Top recommendation: +6% Dettol 500ml Shoprite NA → +£2.1M annual margin
-- Carrefour UAE cut Dettol 500ml by −9.7% seven days ago (promotional reset, confidence 81%)
-- 1,024 scenarios run overnight; 3 high-confidence actions ready
-- Autopilot guardrails: max +8% single increase, max −5% decrease, max 3 SKU changes/week
-- EU AI Act compliant: full causal trace, Article 13 + 14 satisfied
-
-Be precise, commercial, and quantitative. Reference specific SKUs, markets, and £ figures. Format responses with clear structure. Keep responses under 150 words. You can use basic HTML tags (strong, span) for emphasis.`,
-        messages: copilotHistory
-      })
-    });
-    const data = await res.json();
-    const reply = data.content?.map(i=>i.text||'').join('') || 'I encountered an error. Please try again.';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:1000,
+      system:`You are the PriceOS v2 AI Copilot for Reckitt FMCG Revenue Growth Management.
+Context always loaded:
+- Causal elasticity Dettol 500ml: ε=−2.41 (Double ML, ±0.18 CI, p<0.001)
+- Top rec: +6% Dettol 500ml Shoprite NA → +£2.1M ann. margin
+- PPA gaps: Harpic 750ml vacant (£1.4M), Dettol 250ml cannibalising 500ml
+- Promo: best ROI = display+price cut (3.2×), avoid >−20% (ROI=0.9×)
+- Carrefour UAE cut −9.7% (promotional reset, 81% conf.) → rec −3.0% defensive
+- Consumer: WTP range £10.20–14.10, switching threshold −8.5% below £13.50
+- Guardrails: max +8% single move, max −5% cut, max 3 SKU/week
+- EU AI Act: full causal trace, Article 13+14 satisfied
+Be precise, quantitative, commercial. Reference £ figures, elasticities, confidence levels. Keep under 150 words. Use <strong> for key numbers.`,
+      messages:copilotHistory
+    })});
+    const data=await res.json();
+    const reply=data.content?.map(i=>i.text||'').join('')||'Connection error. Please try again.';
     removeTyping();
     copilotHistory.push({role:'assistant',content:reply});
-    appendMessage('ai', reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>'));
-  } catch(err) {
+    appendMessage('ai',reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>'));
+  }catch(err){
     removeTyping();
-    appendMessage('ai','<span style="color:var(--text-d)">Connection error. In production this connects to live Reckitt data. For this demo, ask me anything about pricing strategy — I\'ll respond from training knowledge.</span>');
+    appendMessage('ai','<span style="color:var(--text-d)">Connection error. In production this connects to live Reckitt data streams. Try asking again.</span>');
   }
-  if (btn) { btn.disabled = false; btn.textContent = 'Ask'; }
+  if(btn){btn.disabled=false;btn.textContent='Ask →';}
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// 6. AGENT STATUS
-// ══════════════════════════════════════════════════════════════════════════════
-function renderAgents() {
-  const agents = [
-    {name:'Signal Agent',   icon:'🔭',color:'var(--teal)',  bg:'rgba(0,212,180,.08)',  status:'done',  label:'COMPLETE',     detail:'Scanned 50 alt-data signals · Satellite, AIS, weather, news NLP · 14 market feeds',    last:'2h ago', next:'12 min'},
-    {name:'Causal Agent',   icon:'🧠',color:'var(--blue)',  bg:'rgba(96,165,250,.08)', status:'done',  label:'COMPLETE',     detail:'Double ML + CausalForest · Dettol 500ml · R²=0.87 · 18-month training window',          last:'3 days', next:'7 days'},
-    {name:'Scenario Engine',icon:'🎯',color:'var(--pink)',  bg:'rgba(255,45,120,.08)', status:'active',label:'RUNNING',      detail:'1,024 parallel Ray jobs · 14 market clusters · Game-theory competitor integration',         last:'02:14',  next:'14 min'},
-    {name:'Competitor Intel',icon:'👁',color:'var(--amber)',bg:'rgba(244,185,66,.08)', status:'done',  label:'COMPLETE',     detail:'48 retailer scrapers active · Price normalisation · 2 high-priority alerts flagged',       last:'6 min',  next:'6 min'},
-    {name:'Risk Guard',     icon:'🛡',color:'var(--green)', bg:'rgba(16,212,160,.08)', status:'done',  label:'COMPLETE',     detail:'IFRS 9 guardrails applied · EU AI Act Article 13+14 · Price corridor validated',            last:'6 min',  next:'14 min'},
-    {name:'Execution Agent',icon:'⚡',color:'var(--gold)',  bg:'rgba(244,185,66,.08)', status:'armed', label:'ARMED',        detail:'Autopilot ON · 3 scenarios pre-approved · Awaiting final confirmation or auto-execute',    last:'—',      next:'Auto'},
-  ];
-  return `
-  <div class="animate-in">
-    <div class="page-header">
-      <div>
-        <div class="page-title">Agent <em>Status</em></div>
-        <div class="page-sub">6 autonomous agents running in a coordinated pipeline · Last full cycle: 02:14 tonight · Next: 14 min</div>
+// ═══════════════════ 10. EXECUTE ═══════════════════
+function renderExecute(){return `
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title"><em>Execute</em></div>
+    <div class="page-sub">Guardrailed autonomous execution · Full NRM waterfall impact · Causal audit trail · Human override always available</div></div>
+    <div class="page-actions"><button class="btn btn-ghost btn-sm" onclick="nav('audit')">Audit Log</button></div>
+  </div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
+        <div><div class="card-title" style="display:flex;align-items:center;gap:8px">Autopilot Configuration ${badge('● ARMED','b-green')}</div>
+        <div class="card-sub">2 changes applied this week · All within guardrail bounds</div></div>
+        <div class="toggle on" id="exec-toggle" onclick="this.classList.toggle('on')"></div>
       </div>
-    </div>
-
-    <!-- Pipeline flow -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r14);padding:20px;margin-bottom:18px">
-      <div style="font-size:11px;font-weight:700;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px">Pipeline Flow</div>
-      <div style="display:flex;align-items:center;gap:0;overflow-x:auto;padding-bottom:4px">
-        ${agents.map((a,i)=>`
-          <div style="flex-shrink:0;text-align:center;min-width:100px">
-            <div style="width:44px;height:44px;border-radius:var(--r10);background:${a.bg};border:1px solid ${a.color}30;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 6px">${a.icon}</div>
-            <div style="font-size:11.5px;font-weight:700;color:${a.status==='active'?a.color:a.status==='done'?'var(--text-m)':'var(--text-d)'}">${a.name}</div>
-            <div style="margin-top:4px"><span class="badge ${a.status==='done'?'b-green':a.status==='active'?'b-pink':'b-amber'}" style="font-size:8.5px">${a.label}</span></div>
-          </div>
-          ${i<5?`<div style="flex-shrink:0;padding:0 8px;font-size:18px;color:var(--text-dim);margin-bottom:22px">›</div>`:''}
-        `).join('')}
-      </div>
-    </div>
-
-    <!-- Agent cards -->
-    <div class="g2">
-      ${agents.map(a=>`
-      <div class="agent-card">
-        <div class="agent-icon-wrap" style="background:${a.bg};border:1px solid ${a.color}25">${a.icon}</div>
-        <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <div style="font-size:14px;font-weight:700;color:var(--text)">${a.name}</div>
-            <span class="badge ${a.status==='done'?'b-green':a.status==='active'?'b-pink':'b-amber'}" style="font-size:9px">${a.label}</span>
-          </div>
-          <div style="font-size:12px;color:var(--text-d);line-height:1.5;margin-bottom:8px">${a.detail}</div>
-          <div style="display:flex;gap:12px;font-size:11px;color:var(--text-dim)">
-            <span>Last run: <strong style="color:var(--text-m)">${a.last}</strong></span>
-            <span>Next: <strong style="color:var(--text-m)">${a.next}</strong></span>
-          </div>
-        </div>
-      </div>`).join('')}
-    </div>
-  </div>`;
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 7. EXECUTE
-// ══════════════════════════════════════════════════════════════════════════════
-function renderExecute() {
-  return `
-  <div class="animate-in">
-    <div class="page-header">
-      <div>
-        <div class="page-title"><em>Execute</em></div>
-        <div class="page-sub">Guardrailed autonomous execution · EU AI Act compliant · Full causal audit trail · Human override always available</div>
-      </div>
-      <div class="page-actions">
-        <button class="btn btn-ghost btn-sm" onclick="nav('audit')">View Audit Log</button>
-      </div>
-    </div>
-
-    <div class="g2" style="margin-bottom:14px">
-      <!-- Guardrails -->
-      <div class="card">
-        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div class="card-title" style="display:flex;align-items:center;gap:8px">
-              Auto-Pilot Configuration
-              <span class="badge b-green" style="font-size:9.5px">● ARMED</span>
-            </div>
-            <div class="card-sub">2 changes executed this week · All within guardrail policy</div>
-          </div>
-          <div class="toggle on" id="exec-toggle" onclick="this.classList.toggle('on')"></div>
-        </div>
-        <div style="padding:16px 20px">
+      <div style="padding:14px 18px">
+        ${[
+          ['Max single price increase','+8.0%','var(--green)'],
+          ['Max single price decrease','−5.0%','var(--green)'],
+          ['Max SKU changes per week','3','var(--green)'],
+          ['Promo period price lock','14 days','var(--green)'],
+          ['Competitor trigger threshold','Δ > 7% → auto-review','var(--green)'],
+          ['Human approval above','±6% change','var(--amber)'],
+          ['EU AI Act explainability','Full trace · Art. 13+14','var(--green)'],
+        ].map(([l,v,c])=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-s)">
+            <span style="font-size:12px;color:var(--text-d)">${l}</span>
+            <span class="mono" style="font-size:12px;font-weight:700;color:${c}">${v}</span>
+          </div>`).join('')}
+        <div style="margin-top:14px">
+          <div style="font-size:9.5px;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">SKU Pricing Corridors</div>
           ${[
-            ['Max single price increase','+8.0%','var(--green)'],
-            ['Max single price decrease','−5.0%','var(--green)'],
-            ['Max weekly SKU changes','3 SKUs','var(--green)'],
-            ['Promotional period lock','14 days freeze','var(--green)'],
-            ['Competitor trigger threshold','Δ > 7% → auto-review','var(--green)'],
-            ['Human approval required above','+6% or −4%','var(--amber)'],
-            ['EU AI Act explainability','Full trace · Article 13+14','var(--green)'],
-          ].map(([l,v,c])=>`
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border-b)">
-              <span style="font-size:12.5px;color:var(--text-d)">${l}</span>
-              <span class="mono" style="font-size:12.5px;font-weight:700;color:${c}">${v}</span>
-            </div>`).join('')}
-          <!-- Guardrail bars -->
-          <div style="margin-top:14px">
-            <div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">SKU Pricing Corridors</div>
-            ${[
-              {name:'Dettol 500ml',floor:'$10.20',ceil:'$14.80',cur:'$12.40',pct:58,safe:true},
-              {name:'Harpic 500ml',floor:'$8.60', ceil:'$12.00',cur:'$11.90',pct:92,safe:false},
-              {name:'Dettol 1L',   floor:'$18.40',ceil:'$26.00',cur:'$19.80',pct:18,safe:true},
-            ].map(g=>`
-              <div class="guardrail-row">
-                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-m);margin-bottom:4px">
-                  <span style="font-weight:600">${g.name}</span>
-                  <span class="badge ${g.safe?'b-green':'b-amber'}" style="font-size:9px">${g.safe?'Safe':'Near Ceiling'}</span>
-                </div>
-                <div class="guardrail-bar-wrap">
-                  <div class="guardrail-bar-fill" style="width:${g.pct}%;background:${g.safe?'var(--teal)':'var(--amber)'}"></div>
-                </div>
-                <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--text-dim)">
-                  <span>Floor ${g.floor}</span><span style="color:var(--text-m)">Current ${g.cur}</span><span>Ceil ${g.ceil}</span>
-                </div>
-              </div>`).join('')}
-          </div>
-        </div>
-      </div>
-
-      <!-- Actions -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Pending Actions — Apply Now</div>
-          <div class="card-sub">Top 3 overnight scenarios · Total opportunity: <strong style="color:var(--green)">+£2.1M ann.</strong></div>
-        </div>
-        <div style="padding:16px 18px;display:flex;flex-direction:column;gap:12px">
-          ${[
-            {sku:'Dettol 500ml · Shoprite NA',chg:'+6.0%',val:'+£2.1M ann.',conf:94},
-            {sku:'Dettol 1L · Shoprite SA',   chg:'+4.5%',val:'+£1.6M ann.',conf:89},
-            {sku:'Harpic 500ml · Shoprite EA', chg:'+8.0%',val:'+£0.9M ann.',conf:82},
-          ].map((s,i)=>`
-            <div class="exec-card">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-                <div>
-                  <div style="font-size:13.5px;font-weight:700;color:var(--text)">${s.sku}</div>
-                  <div style="font-size:11px;color:var(--text-d);margin-top:2px">Confidence: ${s.conf}% · Within guardrail · Causal ML</div>
-                </div>
-                <div style="text-align:right;flex-shrink:0;margin-left:12px">
-                  <div class="mono" style="font-size:16px;font-weight:700;color:var(--green)">${s.val}</div>
-                  <div class="mono" style="font-size:12px;color:var(--text-d)">${s.chg}</div>
-                </div>
+            {name:'Dettol 500ml',floor:'£10.20',ceil:'£14.80',cur:'£12.40',pct:58,safe:true},
+            {name:'Harpic 500ml',floor:'£8.60',ceil:'£12.00',cur:'£11.90',pct:91,safe:false},
+            {name:'Dettol 1L',floor:'£18.40',ceil:'£26.00',cur:'£19.80',pct:18,safe:true},
+          ].map(g=>`
+            <div class="gr-row">
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px">
+                <span style="font-weight:600;color:var(--text-m)">${g.name}</span>
+                ${badge(g.safe?'Safe':'Near Ceiling',g.safe?'b-green':'b-amber')}
               </div>
-              <button class="btn btn-pink btn-sm" style="width:100%;justify-content:center" onclick="applyScenario(this,'${s.sku}')">→ Apply ${s.val}</button>
+              <div class="gr-track"><div class="gr-fill" style="width:${g.pct}%;background:${g.safe?'var(--blue)':'var(--amber)'}"></div></div>
+              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--text-dim)">
+                <span>Floor ${g.floor}</span><span style="color:var(--text-m)">Cur ${g.cur}</span><span>Ceil ${g.ceil}</span>
+              </div>
             </div>`).join('')}
-          <div style="padding-top:4px">
-            <button class="btn btn-pink" style="width:100%;justify-content:center;font-size:14px;padding:13px" onclick="applyAll(this)">⚡ Apply All 3 → +£2.1M This Week</button>
-          </div>
         </div>
       </div>
     </div>
-
-    <!-- EU AI Act compliance -->
-    <div class="card" style="border-color:rgba(96,165,250,.2);background:rgba(96,165,250,.02)">
-      <div style="padding:16px 20px">
-        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px">
-          ⚖️ EU AI Act Compliance
-          <span class="badge b-blue">Article 13 + 14</span>
-        </div>
-        <div style="font-size:13px;color:var(--text-d);line-height:1.7;margin-bottom:10px">
-          Every executed action includes a <strong style="color:var(--text)">full causal reasoning trace</strong>, counterfactual explanation, and human override record — satisfying Article 14 (human oversight) and Article 13 (transparency) for high-risk AI systems. Audit export in PDF or JSON available for board review.
-        </div>
-        <button class="btn btn-ghost btn-sm" onclick="nav('audit')">View Full Audit Log →</button>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Pending Actions</div>
+      <div class="card-sub">Total opportunity: <strong style="color:var(--green)">+£2.1M ann.</strong></div></div>
+      <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+        ${[
+          {sku:'Dettol 500ml · Shoprite NA',chg:'+6.0%',val:'+£2.1M ann.',conf:94},
+          {sku:'Dettol 1L · Shoprite SA',chg:'+4.5%',val:'+£1.6M ann.',conf:89},
+          {sku:'Harpic 500ml · Shoprite EA',chg:'+8.0%',val:'+£0.9M ann.',conf:82},
+        ].map(s=>`
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r8);padding:13px 14px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+              <div><div style="font-size:13px;font-weight:700;color:var(--text)">${s.sku}</div>
+              <div style="font-size:10.5px;color:var(--text-dim);margin-top:2px">Confidence: ${s.conf}% · Within guardrail · Causal ML</div></div>
+              <div style="text-align:right">
+                <div class="mono" style="font-size:15px;font-weight:700;color:var(--green)">${s.val}</div>
+                <div class="mono" style="font-size:11px;color:var(--text-d)">${s.chg}</div>
+              </div>
+            </div>
+            <button class="btn btn-blue btn-sm" style="width:100%;justify-content:center" onclick="applyScenario(this,'${s.sku}')">Apply ${s.val}</button>
+          </div>`).join('')}
+        <button class="btn btn-green" style="width:100%;justify-content:center;font-size:13px;padding:11px" onclick="applyAll(this)">⚡ Apply All 3 → +£2.1M</button>
       </div>
     </div>
-  </div>`;
+  </div>
+  <div class="card" style="border-color:rgba(29,78,216,.2);background:var(--blue-dim)">
+    <div style="padding:14px 18px">
+      <div style="font-size:13.5px;font-weight:700;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;gap:8px">⚖️ EU AI Act Compliance ${badge('Article 13 + 14','b-blue')}</div>
+      <div style="font-size:12.5px;color:var(--text-d);line-height:1.7">Every executed action includes a <strong>full causal reasoning trace</strong>, counterfactual explanation, confidence interval, and human override record.</div>
+      <button class="btn btn-ghost btn-xs" style="margin-top:9px" onclick="nav('audit')">View Full Audit →</button>
+    </div>
+  </div>
+</div>`;}
+
+function applyScenario(btn,sku){
+  const orig=btn.innerHTML;btn.innerHTML='✓ Applied — Executing';btn.style.background='var(--green)';btn.disabled=true;
+  setTimeout(()=>{btn.innerHTML=orig;btn.style.background='';btn.disabled=false;},3500);
+}
+function applyAll(btn){
+  const orig=btn.innerHTML;btn.innerHTML='✓ All 3 Applied — +£2.1M Executing';btn.style.background='#047857';btn.disabled=true;
+  setTimeout(()=>{btn.innerHTML=orig;btn.style.background='';btn.disabled=false;},4000);
 }
 
-function applyScenario(btn, sku) {
-  const orig = btn.innerHTML;
-  btn.innerHTML = '✓ Applied — Executing';
-  btn.style.background = 'var(--green)';
-  btn.disabled = true;
-  setTimeout(()=>{btn.innerHTML=orig;btn.style.background='';btn.disabled=false;}, 3500);
+// ═══════════════════ 11. MONITOR ═══════════════════
+function renderMonitor(){return `
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title"><em>Monitor</em></div>
+    <div class="page-sub">Actuals vs. projected · Ongoing model recalibration · Volume cliff detection · Margin trajectory tracking</div></div>
+    <div class="page-actions"><button class="btn btn-blue btn-sm">⬇ Report</button></div>
+  </div>
+  <div class="g4" style="margin-bottom:16px">
+    ${kpi('Gross Margin (QTD)','34.1%','var(--green)','↑ +2.1pp vs. Q4 baseline','up','On-track to target')}
+    ${kpi('Volume vs. Plan','−1.8%','var(--amber)','Within ±3% tolerance','neutral','Dettol NA slight under')}
+    ${kpi('Forecast Accuracy','83%','var(--blue)','↑ +12pp vs. 3 months ago','up','Model improving')}
+    ${kpi('Net Revenue Run-Rate','£12.4M','var(--green)','↑ +4.8% vs. prior year','up','AME region total')}
+  </div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Actuals vs. Projected — Dettol 500ml Margin</div>
+      <div class="card-sub">Post-execution tracking · Week 1–12 · PriceOS recommendation applied Week 8</div></div>
+      <div style="padding:16px 18px"><canvas id="monitor-chart" height="220"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">SKU Tracking Dashboard</div><div class="card-sub">All active recommendations · Red flag if >±5% miss</div></div>
+      <div>
+        <div class="tbl-head" style="grid-template-columns:1fr 80px 80px 70px"><span class="tbl-col">SKU</span><span class="tbl-col">Projected</span><span class="tbl-col">Actual</span><span class="tbl-col">Status</span></div>
+        ${[
+          {sku:'Dettol 500ml NA',proj:'+2.1M',act:'+1.98M',s:'b-green',st:'On Track'},
+          {sku:'Dettol 1L SA',proj:'+1.6M',act:'+1.42M',s:'b-amber',st:'−11% miss'},
+          {sku:'Harpic 500ml EA',proj:'+0.9M',act:'+0.91M',s:'b-green',st:'On Track'},
+          {sku:'Dettol 500ml UAE (def.)',proj:'−420K',act:'−380K',s:'b-green',st:'Better'},
+        ].map(r=>`
+          <div class="tbl-row" style="grid-template-columns:1fr 80px 80px 70px">
+            <span style="font-weight:600;font-size:12px">${r.sku}</span>
+            <span class="mono" style="font-size:12px;color:var(--text-m)">${r.proj}</span>
+            <span class="mono" style="font-size:12px;font-weight:700;color:${r.s==='b-green'?'var(--green)':'var(--amber)'}">${r.act}</span>
+            <span class="badge ${r.s}">${r.st}</span>
+          </div>`).join('')}
+      </div>
+      <div style="padding:12px 14px;border-top:1px solid var(--border-s)">
+        <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:4px">⚠ Dettol 1L SA — Volume miss −11%</div>
+        <div style="font-size:11px;color:var(--text-d);line-height:1.5;margin-bottom:8px">Actual volume −4.8% vs. projected −2.2%. Possible: competitor response in SA not captured. Model recalibration triggered.</div>
+        <button class="btn btn-ghost btn-xs" onclick="nav('causal')">→ Recalibrate Model</button>
+      </div>
+    </div>
+  </div>
+</div>`;}
+
+function buildMonitor(){
+  const ctx=document.getElementById('monitor-chart');if(!ctx)return;
+  const weeks=['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12'];
+  const proj=[3.65,3.65,3.67,3.68,3.66,3.68,3.70,4.10,4.12,4.15,4.14,4.16];
+  const act=[3.62,3.68,3.64,3.70,3.65,3.67,3.69,4.05,4.08,4.11,4.10,null];
+  chartRegistry['mon']=new Chart(ctx,{type:'line',data:{labels:weeks,datasets:[
+    {label:'Projected Margin %',data:proj,borderColor:'#1D4ED8',backgroundColor:'rgba(29,78,216,.06)',borderWidth:2,tension:.4,pointRadius:3,fill:true,borderDash:[5,4]},
+    {label:'Actual Margin %',data:act,borderColor:'#059669',backgroundColor:'transparent',borderWidth:2.5,tension:.4,pointRadius:4,fill:false},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{
+    legend:{position:'bottom',labels:{color:'#6B7280',font:{size:11},boxWidth:12}},
+    tooltip:{backgroundColor:'white',titleColor:'#0D1117',bodyColor:'#6B7280',borderColor:'#DDE1E9',borderWidth:1,padding:10},
+    annotation:{annotations:{line1:{type:'line',xMin:'W8',xMax:'W8',borderColor:'rgba(220,38,38,.4)',borderWidth:1.5,borderDash:[4,4],label:{content:'PriceOS applied',enabled:true,position:'start',color:'#DC2626',font:{size:9}}}}}
+  },scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9CA3AF',font:{size:10}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9CA3AF',font:{size:10}},title:{display:true,text:'Gross Margin %',color:'#9CA3AF',font:{size:10}}}}}});
 }
 
-function applyAll(btn) {
-  const orig = btn.innerHTML;
-  btn.innerHTML = '✓ All 3 Applied — +£2.1M Executing via Autopilot';
-  btn.style.background = 'var(--green)';
-  btn.disabled = true;
-  setTimeout(()=>{btn.innerHTML=orig;btn.style.background='';btn.disabled=false;}, 4000);
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 8. AUDIT LOG
-// ══════════════════════════════════════════════════════════════════════════════
-function renderAudit() {
-  const entries = [
-    {ts:'02 Mar 02:14','action':'Scenario Engine Run','agent':'Scenario Agent','sku':'All SKUs · AME','result':'1,024 scenarios generated','impact:':'—','status':'b-teal','stxt':'LOG'},
-    {ts:'01 Mar 18:42','action':'Price Applied +6.0%','agent':'Execution Agent','sku':'Dettol 500ml · Shoprite NA','result':'Price: £11.69 → £12.40','impact':'<span style="color:var(--green)">+£2.1M projected</span>','status':'b-green','stxt':'EXECUTED'},
-    {ts:'01 Mar 18:40','action':'Human Approval Received','agent':'Risk Guard','sku':'Dettol 500ml · Shoprite NA','result':'Approved by Ravi S.','impact':'—','status':'b-blue','stxt':'APPROVED'},
-    {ts:'01 Mar 16:22','action':'Competitor Alert Fired','agent':'Competitor Intel','sku':'Carrefour UAE · Dettol 500ml','result':'−9.7% price move detected','impact':'<span style="color:var(--red)">−£420K risk flagged</span>','status':'b-red','stxt':'ALERT'},
-    {ts:'28 Feb 02:11','action':'Causal Model Retrained','agent':'Causal Agent','sku':'Dettol 500ml · NA','result':'R²=0.87 · RMSE improved 3.2%','impact':'Model v4.2','status':'b-teal','stxt':'LOG'},
-    {ts:'27 Feb 14:08','action':'Price Applied +4.5%','agent':'Execution Agent','sku':'Dettol 1L · Shoprite SA','result':'Price: £18.37 → £19.20','impact':'<span style="color:var(--green)">+£1.6M projected</span>','status':'b-green','stxt':'EXECUTED'},
-    {ts:'26 Feb 09:31','action':'Guardrail Override','agent':'Risk Guard','sku':'Harpic 500ml · Shoprite EA','result':'Proposed +12% blocked (>+8% max)','impact':'Blocked +12% → capped +8%','status':'b-amber','stxt':'BLOCKED'},
+// ═══════════════════ 12. AUDIT LOG ═══════════════════
+function renderAudit(){
+  const entries=[
+    {ts:'09 Mar 02:14',action:'Scenario Engine Run',agent:'Scenario Agent',sku:'All SKUs · AME',result:'1,024 scenarios generated',stat:'b-teal',stxt:'LOG'},
+    {ts:'08 Mar 18:42',action:'Price Applied +6.0%',agent:'Execution Agent',sku:'Dettol 500ml · Shoprite NA',result:'£11.69 → £12.40 · +£2.1M proj.',stat:'b-green',stxt:'EXECUTED'},
+    {ts:'08 Mar 18:40',action:'Human Approval',agent:'Risk Guard',sku:'Dettol 500ml NA',result:'Approved by Ravi S.',stat:'b-blue',stxt:'APPROVED'},
+    {ts:'08 Mar 16:22',action:'Competitor Alert',agent:'Competitor Intel',sku:'Carrefour UAE · Dettol 500ml',result:'−9.7% detected · −£420K risk',stat:'b-red',stxt:'ALERT'},
+    {ts:'07 Mar 02:11',action:'PPA Gap Identified',agent:'PPA Agent',sku:'Harpic 750ml · All markets',result:'£1.4M uncaptured — no SKU in £7.50–9.00',stat:'b-amber',stxt:'INSIGHT'},
+    {ts:'06 Mar 14:08',action:'Price Applied +4.5%',agent:'Execution Agent',sku:'Dettol 1L · Shoprite SA',result:'£18.37 → £19.20 · +£1.6M proj.',stat:'b-green',stxt:'EXECUTED'},
+    {ts:'05 Mar 09:31',action:'Guardrail Block',agent:'Risk Guard',sku:'Harpic 500ml · EA',result:'Proposed +12% blocked → capped +8%',stat:'b-amber',stxt:'BLOCKED'},
   ];
   return `
-  <div class="animate-in">
-    <div class="page-header">
-      <div>
-        <div class="page-title">Audit <em>Log</em></div>
-        <div class="page-sub">Full causal trace for every decision · EU AI Act Article 13 + 14 · Export for board review</div>
-      </div>
-      <div class="page-actions">
-        <button class="btn btn-ghost btn-sm">⬇ Export PDF</button>
-        <button class="btn btn-ghost btn-sm">⬇ Export JSON</button>
-      </div>
+<div class="anim">
+  <div class="page-header">
+    <div><div class="page-title">Audit <em>Log</em></div>
+    <div class="page-sub">Full causal trace for every decision · EU AI Act Article 13 + 14 · Board-export ready</div></div>
+    <div class="page-actions">
+      <button class="btn btn-ghost btn-sm">⬇ PDF</button>
+      <button class="btn btn-ghost btn-sm">⬇ JSON</button>
     </div>
-
-    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-      <div class="kpi" style="--kc:var(--green);flex:1;min-width:140px"><div class="kpi-label">Executions</div><div class="kpi-val" style="color:var(--green)">2</div><div class="kpi-sub">This week · All approved</div></div>
-      <div class="kpi" style="--kc:var(--teal);flex:1;min-width:140px"><div class="kpi-label">Guardrail Triggers</div><div class="kpi-val" style="color:var(--teal)">1</div><div class="kpi-sub">+12% blocked, capped at +8%</div></div>
-      <div class="kpi" style="--kc:var(--amber);flex:1;min-width:140px"><div class="kpi-label">Human Approvals</div><div class="kpi-val" style="color:var(--amber)">1</div><div class="kpi-sub">Required for >+6% change</div></div>
-      <div class="kpi" style="--kc:var(--blue);flex:1;min-width:140px"><div class="kpi-label">EU AI Act Status</div><div class="kpi-val" style="color:var(--blue)">✓</div><div class="kpi-sub">Article 13 + 14 satisfied</div></div>
+  </div>
+  <div class="g4" style="margin-bottom:16px">
+    ${kpi('Executions','2','var(--green)','This week · Both approved','up','')}
+    ${kpi('Guardrail Triggers','1','var(--blue)','+12% blocked → capped','neutral','')}
+    ${kpi('Human Approvals','1','var(--amber)','Required for >±6%','neutral','')}
+    ${kpi('EU AI Act','✓','var(--green)','Article 13 + 14 satisfied','up','')}
+  </div>
+  <div class="card" style="overflow:hidden">
+    <div class="card-header"><div class="card-title">Decision Trace — All Agent Actions</div><div class="card-sub">Chronological · All executions, alerts, model runs, guardrail triggers</div></div>
+    <div class="tbl-head" style="grid-template-columns:110px 1fr 120px 1fr 90px">
+      ${['Timestamp','Action','Agent','Outcome','Status'].map(h=>`<span class="tbl-col">${h}</span>`).join('')}
     </div>
-
-    <div class="card" style="overflow:hidden">
-      <div class="card-header">
-        <div class="card-title">Decision Trace — All Agent Actions</div>
-        <div class="card-sub">Chronological · All executions, alerts, guardrails, model runs</div>
-      </div>
-      <div style="display:grid;grid-template-columns:110px 1fr 120px 1fr 100px;padding:9px 18px;background:var(--bg2);border-bottom:1px solid var(--border)">
-        ${['Timestamp','Action','Agent','Outcome','Status'].map(h=>`<span class="tbl-col">${h}</span>`).join('')}
-      </div>
-      ${entries.map(e=>`
-      <div class="audit-entry" style="grid-template-columns:110px 1fr 120px 1fr 100px">
+    ${entries.map(e=>`
+      <div class="tbl-row" style="grid-template-columns:110px 1fr 120px 1fr 90px">
         <span class="mono" style="font-size:10.5px;color:var(--text-dim)">${e.ts}</span>
-        <span style="font-weight:600;color:var(--text);font-size:12.5px">${e.action}</span>
+        <span style="font-weight:600;font-size:12.5px">${e.action}</span>
         <span style="font-size:11.5px;color:var(--text-d)">${e.agent}</span>
         <span style="font-size:12px;color:var(--text-d)">${e.result}</span>
-        <span class="badge ${e.status}" style="font-size:9px">${e.stxt}</span>
+        <span class="badge ${e.stat}">${e.stxt}</span>
       </div>`).join('')}
-    </div>
-  </div>`;
-}
+  </div>
+</div>`;}
 
-// ══════════════════════════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
+// ═══════════════════ INIT ═══════════════════
+document.addEventListener('DOMContentLoaded',()=>{
   nav('overview');
   startAgentBar();
 });
